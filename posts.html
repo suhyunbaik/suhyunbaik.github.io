@@ -1,0 +1,26 @@
+---
+layout: page
+title: "블로그"
+permalink: /posts/
+---
+
+{% for post in site.posts %}
+  {% assign post_year = post.date | date: '%Y' %}
+  {% if post_year != year %}
+    {% assign year = post_year %}
+    {% if forloop.first == false %}
+      <hr>
+    {% endif %}
+    <h2 id="{{ post_year }}">{{ post_year }}</h2>
+  {% endif %}
+  <ul class="posts-list">
+    <li>
+      <strong>
+        <a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+      </strong>
+      <span class="post-date">- {{ post.date | date_to_long_string }}</span><br>
+    </li>
+  </ul>
+{% endfor %}
+
+<br>
