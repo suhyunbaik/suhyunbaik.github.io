@@ -4,5 +4,10 @@ title: About
 image: '/images/pages/about.jpeg'
 ---
 
-s well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
+파이선 개발자
+
+링크드인
+깃허브
+트위터
+
 
