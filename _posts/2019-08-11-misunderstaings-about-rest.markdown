@@ -22,7 +22,7 @@ tags: [REST, Flask, Django]
 이 밑에 정리한 몇가지 오해들은 개발자 중에서도 REST에 익숙하지 않은 python 개발자들이 특히 자주 빠지기 쉬운 오해다.
 
 
-### 1. django drf, flask rest-plus를 사용해야 restful api 이다.
+### 1. django drf, flask rest-plus를 사용해야 RESTful api 이다.
 
 위의 패키지들은 RESTful한 API구현을 쉽게 도와주기 위해 있는 패키지다. 해당 패키지를 사용하더라도 REST의 제약조건들을 충족하지 못하면 RESTful API가 아니다.
 REST는 uri로 자원을 표현하고, 자원에 대한 행위를 method를 통해 구현해야 한다는 제약 조건이 있다. 
@@ -48,7 +48,18 @@ status code는 REST 아키텍쳐가 아니라 http와 관련있다. http 통신�
 REST의 제약조건 중에 method를 제한하는 조건은 없다. RESTful하게 methods 를 사용하려면 자원에 대한 행위를 method로 표현하면 된다.  
 
 ### 4. REST를 따르게 되면 method 가 get일때 json을 못보내기 때문에 비효율적이다.
-get을 사용할때 json 을 보내는 것은 기술적으로는 가
+http통신은 get을 사용할때 request body를 보내는것을 허용한다. 쉽게 말하자면 기술적으로 get일때 json을 보내는 게 가능하다는 말이다. 하지만 시맨틱하게 바라본다면 GET일때 뭔가를 보낸다는 건 유용하지 않다.
+로이필딩이 get일때 request body를 추가하는 것에 대해 남긴 코멘트를 첨부한다. 최종 결정은 개발자에게 달려있다.
+>Yes. In other words, any HTTP request message is allowed to contain
+a message body, and thus must parse messages with that in mind.
+Server semantics for GET, however, are restricted such that a body,
+if any, has no semantic meaning to the request. The requirements
+on parsing are separate from the requirements on method semantics.
+So, yes, you can send a body with GET, and no, it is never useful
+to do so.
+This is part of the layered design of HTTP/1.1 that will become
+clear again once the spec is partitioned (work in progress).
+....Roy 
 
 django drf [공식문서](https://www.django-rest-framework.org/api-guide/status-codes/)를 읽어보면 status code에 대한 정리가 잘 되어있다. 
 예제에는 response를 반환할때 status code를 적극 활용한다. flask문서에는 status code 반환 부분이 빠져있다. 그래서 이런 오해가 발생하는 것 같다. 
