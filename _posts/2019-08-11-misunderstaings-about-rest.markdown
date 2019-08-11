@@ -22,7 +22,8 @@ tags: [REST, Flask, Django]
 이 밑에 정리한 몇가지 오해들은 개발자 중에서도 REST에 익숙하지 않은 python 개발자들이 특히 자주 빠지기 쉬운 오해다.
 
 
-1. django drf, flask rest-plus를 사용해야 restful api 이다.
+### 1. django drf, flask rest-plus를 사용해야 restful api 이다.
+
 위의 패키지들은 RESTful한 API구현을 쉽게 도와주기 위해 있는 패키지다. 해당 패키지를 사용하더라도 REST의 제약조건들을 충족하지 못하면 RESTful API가 아니다.
 REST는 uri로 자원을 표현하고, 자원에 대한 행위를 method를 통해 구현해야 한다는 제약 조건이 있다. 
 회원 탈퇴 API를 아래와 같이 구현한다면, drf, flask-restplus를 사용했다 하더라도 RESTful 하지 않다.
@@ -39,20 +40,21 @@ REST는 uri로 자원을 표현하고, 자원에 대한 행위를 method를 통�
 
 이런 오해는 REST를 개념이 아닌 패키지, 모듈, 또는 코드로 이해했을 때 발생한다.
 
-2. RESTful 하게 API를 설계하면 status code를 상황에 따라 다양하게 내려줘야 하기 때문에 개발공수가 더 든다.
+### 2. RESTful 하게 API를 설계하면 status code를 상황에 따라 다양하게 내려줘야 하기 때문에 개발공수가 더 든다.
 status code는 REST 아키텍쳐가 아니라 http와 관련있다. http 통신을 한다면 status code를 반환해줘야 한다. 상황에 따라 다른 상태코드를 내려주는 행위가 불편하고 무의미 하다고 생각한다면 팀의 협의에 따라 사용하지 않을 수 있다.
 대신 그럴 경우에 API는 어떤 상황에서든 200을 반환하게 될 것이고, 서버가 죽었을때는 500을 반환하니 결과적으로 200 아니면 500 코드만 존재하게 된다.
 
-3. `REST`는 단 4가지 methods, `get`, `post`, `put`, `delete`만을 허용한다.
-REST의 제약조건 중에 method를 제한하는 조건은 없다. RESTful하게 methods 를 사용하려면 자원에 대한 행위를 method로 표현하면 된다. 
+### 3. `REST`는 단 4가지 methods, `get`, `post`, `put`, `delete`만을 허용한다.
+REST의 제약조건 중에 method를 제한하는 조건은 없다. RESTful하게 methods 를 사용하려면 자원에 대한 행위를 method로 표현하면 된다.  
 
-4. REST를 따르게 되면 method 가 get일때 json을 못보내기 때문에 비효율적이다.
+### 4. REST를 따르게 되면 method 가 get일때 json을 못보내기 때문에 비효율적이다.
+get을 사용할때 json 을 보내는 것은 기술적으로는 가
 
 django drf [공식문서](https://www.django-rest-framework.org/api-guide/status-codes/)를 읽어보면 status code에 대한 정리가 잘 되어있다. 
 예제에는 response를 반환할때 status code를 적극 활용한다. flask문서에는 status code 반환 부분이 빠져있다. 그래서 이런 오해가 발생하는 것 같다. 
 
 
-5. 
+### 5. 
 
 "대부분의 회사가 `TDD`를 한다고 말합니다. 하지만 실상은 API를 먼저 만들고 나중에 슬며시 test를 추가합니다. 레스트 역시 마찬가지 입니다. `HATEOAS`를 API마다 구현하는 건 어려운 일이기 때문에 대부분의 회사가 그부분은 슬며시 건너뜁니다. 저는 그런 방법이 바쁘다고 생각하지 않고, 적극적으로 상황에 맞게 구현하면 된다고 생각합니다. 아무리 생각해도 "
 `flask`는 `blueprint`라는 앱을 사용한다. 한국웹의 예제를 빠르게 훑어보니, 대부분의 예제가 `def`를 사용해 API를 만들고 `blueprint`로 라우팅한다. 
