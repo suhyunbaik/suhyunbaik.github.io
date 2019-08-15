@@ -1,7 +1,10 @@
 ---
-layout: post
 title: Django, Flask를 사용하는 개발자들이 REST를 생각할때 갖기 쉬운 오해들
-tags: [REST, Flask, Django]
+layout: post
+tags:
+- REST
+- Flask
+- Django
 ---
 
 * 제목을 지을때 고민을 많이 했다. Django, Flask를 사용한다고 해서 모두가 이런 오해를 하는게 아니다.  
@@ -73,10 +76,7 @@ This is part of the layered design of HTTP/1.1 that will become clear again once
 돈을 지불하기 전이기 때문에 status 는 `ready`로 표현하고 rds 에 저장한다. 
 그 후 고객이 돈을 지불하면 status를 `prepared`로 변경해 저장한다. 왜 `paid`가 아닐까? 왜냐면 pg사에서 결제 완료를 알리는 callback이 아직 안왔기 때문이다. callback을 받으면 status가 paid로 변한다.
 상대방은 이렇게 주장했다. "status가 paid가 아니고 prepared으로 변하는 현상은 get, post, put, delete 어디에도 맞지 않습니다. 그래서 REST를 도입하는건 비효율적입니다." 
-REST를 사용하지 않더라도 현재 개발하는 API는 http통신을 하기 때문에 method를 get, post, put, patch, delete중에 선택해야 한다. 자원에 대한 행위에 대해 생각보면, 
-status를 변경하는 행위는 동사 update로 표현할 수 있다. 그래서 put을 사용할 수 있다. 그리고 아키텍쳐를 적용하면 client 와 server가 지켜야 할 규칙이 생기는 것이고, 결국 커뮤니케이션 비용도 줄일 거라고 생각한다.
+REST를 사용하지 않더라도 현재 개발하는 API는 http통신을 하기 때문에 method를 get, post, put, patch, delete중에 선택해야 한다. 자원에 대한 행위에 대해 생각보면, status를 변경하는 행위는 동사 update로 표현할 수 있다. 그래서 put을 사용할 수 있다. 그리고 아키텍쳐를 적용하면 client 와 server가 지켜야 할 규칙이 생기는 것이고, 결국 커뮤니케이션 비용도 줄일 거라고 생각한다.
 
 
-이렇게 REST에 대한 오해를 정리해봤다. 개발을 하면서 느낀점인데, REST는 널리 알려졌지만 그만큼 개발자들마다 이해도도 다르다. 
-이 글이 RESTful API개발을 하려는 개발자들에게 도움이 됐으면 좋겠다.
-
+이렇게 REST에 대한 오해를 정리해봤다. 개발을 하면서 느낀점인데, REST는 널리 알려졌지만 그만큼 개발자들마다 이해도도 다르다. 이 글이 RESTful API개발을 하려는 개발자들에게 도움이 됐으면 좋겠다.
