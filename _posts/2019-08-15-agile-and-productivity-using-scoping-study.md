@@ -1,10 +1,11 @@
 [단독 "빨라야 살아남는다"…신한금융, 애자일조직 도입한다](https://www.msn.com/ko-kr/money/topstories/%EB%8B%A8%EB%8F%85-%EB%B9%A8%EB%9D%BC%EC%95%BC-%EC%82%B4%EC%95%84%EB%82%A8%EB%8A%94%EB%8B%A4%E2%80%A6%EC%8B%A0%ED%95%9C%EA%B8%88%EC%9C%B5-%EC%95%A0%EC%9E%90%EC%9D%BC%EC%A1%B0%EC%A7%81-%EB%8F%84%EC%9E%85%ED%95%9C%EB%8B%A4/ar-AAzyXzC)
+
 [금융 빅5, 조직·인력 탈바꿈…신한 ‘사내벤처’ KB ‘애자일’](http://www.fntimes.com/html/view.php?ud=201902282135037701dd55077bc2_18)
 
 기사에 따르면 신한은행은 애자일 조직체계에 도입해 직급과 관계없이 일에 적합한 사람을 팀장으로 임명해, 민첩한 의사결정을 통해서 빠른 실행력을 얻을 것이라 기대한다고 전한다. 많은 IT 관련 회사와 조직이 애자일을 도입하는데, 과연 애자일을 실행해서 생산성이 향상됐을까? 
 
-####Measuring Productivity in Agile Software Development Process: A Scoping Study 
-####애자일 소프트웨어 개발 과정에서 생산성 측정하기: 주제범위 스터디
+### Measuring Productivity in Agile Software Development Process: A Scoping Study 
+### 애자일 소프트웨어 개발 과정에서 생산성 측정하기: 주제범위 스터디
 
 이 논문은 직접 애자일을 실행하고 생산성을 측정하는 대신, 애자일 방법론대로 소프트웨어를 만들고 생산성을 측정한 12개의 논문을 모아서 각 논문에서 정의한 생산성에 대해 정리했다. 그리고 각 연구에서 생산성을 측정하는데 사용한 방법도 연구했다. 논문에서 몇가지 부분을 번역해봤다.		
 				
@@ -38,6 +39,7 @@ Exclusion Criteria: The studies that did not satisfy any of the inclusion criter
 배제 기준 : 포함 기준을 충족시키지 못한 연구는 제외했다.
 
 생산성 메트릭 
+
 |연구|생산성측정|지식 근로자 수|
 |---|-------|-----------|
 |J1 |실행가능한 코드 라인 수 / 평균 개발자 1일 평균 업무량|팀|
