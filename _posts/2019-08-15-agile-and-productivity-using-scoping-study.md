@@ -1,24 +1,23 @@
-[단독] "빨라야 살아남는다"…신한금융, 애자일조직 도입한다
-https://www.msn.com/ko-kr/money/topstories/%EB%8B%A8%EB%8F%85-%EB%B9%A8%EB%9D%BC%EC%95%BC-%EC%82%B4%EC%95%84%EB%82%A8%EB%8A%94%EB%8B%A4%E2%80%A6%EC%8B%A0%ED%95%9C%EA%B8%88%EC%9C%B5-%EC%95%A0%EC%9E%90%EC%9D%BC%EC%A1%B0%EC%A7%81-%EB%8F%84%EC%9E%85%ED%95%9C%EB%8B%A4/ar-AAzyXzC
-금융 빅5, 조직·인력 탈바꿈…신한 ‘사내벤처’ KB ‘애자일’
-http://www.fntimes.com/html/view.php?ud=201902282135037701dd55077bc2_18
+[단독 "빨라야 살아남는다"…신한금융, 애자일조직 도입한다](https://www.msn.com/ko-kr/money/topstories/%EB%8B%A8%EB%8F%85-%EB%B9%A8%EB%9D%BC%EC%95%BC-%EC%82%B4%EC%95%84%EB%82%A8%EB%8A%94%EB%8B%A4%E2%80%A6%EC%8B%A0%ED%95%9C%EA%B8%88%EC%9C%B5-%EC%95%A0%EC%9E%90%EC%9D%BC%EC%A1%B0%EC%A7%81-%EB%8F%84%EC%9E%85%ED%95%9C%EB%8B%A4/ar-AAzyXzC)
+[금융 빅5, 조직·인력 탈바꿈…신한 ‘사내벤처’ KB ‘애자일’](http://www.fntimes.com/html/view.php?ud=201902282135037701dd55077bc2_18)
 
 기사에 따르면 신한은행은 애자일 조직체계에 도입해 직급과 관계없이 일에 적합한 사람을 팀장으로 임명해, 민첩한 의사결정을 통해서 빠른 실행력을 얻을 것이라 기대한다고 전한다. 많은 IT 관련 회사와 조직이 애자일을 도입하는데, 과연 애자일을 실행해서 생산성이 향상됐을까? 
 
-Measuring Productivity in Agile Software Development Process: A Scoping Study 
-애자일 소프트웨어 개발 과정에서 생산성 측정하기: 주제범위 스터디
+####Measuring Productivity in Agile Software Development Process: A Scoping Study 
+####애자일 소프트웨어 개발 과정에서 생산성 측정하기: 주제범위 스터디
 
 이 논문은 직접 애자일을 실행하고 생산성을 측정하는 대신, 애자일 방법론대로 소프트웨어를 만들고 생산성을 측정한 12개의 논문을 모아서 각 논문에서 정의한 생산성에 대해 정리했다. 그리고 각 연구에서 생산성을 측정하는데 사용한 방법도 연구했다. 논문에서 몇가지 부분을 번역해봤다.		
 				
 					
-ABSTRACT
+>ABSTRACT
 An agile software development process is often claimed to increase productivity. However, productivity measurement in agile software development is little researched. Measures are not explicitly defined nor commonly agreed upon. In this paper, we highlight the agile productivity measures reported in literature by means of a research method called scoping study. We were able to identify 12 papers reporting the productivity measures in agile software development processes. We found that finding, understanding and putting into use agile productivity definitions is not an easy task. From the perspective of common roles in agile software development process and existing knowledge workers’ productivity dimensions, we also emphasize that none of the productivity measures satisfy these fully. We recommend that future effort should be focused on defining agile productivity in measurable, practicable and meaningful form. 
+
 초록
 애자일 소프트웨어 개발 방법론은 생산성을 향상시킨다고 알려져있다. 그러나 애자일 소프트웨어 개발 방법론에서 생산성 측정 방법에 대해서는 연구가 거의 이뤄지지 않았다. 측정 방법은 명시적으로 정의되거나, 공통적으로 합의되지 않았다. 본 논문에서는, 범위 연구(scoping study)라는 연구 방법을 사용해 논문에 보고된 애자일 생산성 측정 방법을 알아본다. 애자일 소프트웨어 개발 방법 과정에서 생산성을 측정한 12개의 논문을 연구했고, 애자일 개발 과정에서 생산성의 정의를 찾고 이해하고 활용하는 것이 어려운 일이라는 것을 알았다. 애자일 소프트웨어 개발 방법론에서의 역할과 기존 지식 근로자의 생산성 관점은 생산성 측정 방법을 완전히 만족시킬 수 없었다.
 미래에는 측정 가능하고 실행 가능하며 의미있는 형식으로 애자일 생산성을 정의하는 데 중점을 두도록 노력해야 한다.	
 
 
-3.3 Stage 3: Study Selection
+>3.3 Stage 3: Study Selection
 We scanned all downloaded papers to find evidence in literature of measuring productivity in agile software development processes.
 This led to a selection of 12 papers in total, out of 124. The inclusion and exclusion criteria employed is defined below.
 Inclusion Criteria: The inclusion criteria were applied at three subsequent levels. First, the titles were screened. They were selected if the title contained ‘agile’ and ‘productivity’. Second, we analyzed the abstracts of the papers where it had to demonstrate some experience in agile software development concerning productivity compared to other factors, such as quality, cost and schedule. As a third step, we thoroughly read the papers and included only those studies which described/discusses at least one of the following:
@@ -31,63 +30,34 @@ Exclusion Criteria: The studies that did not satisfy any of the inclusion criter
 애자일 소프트웨어 개발 방법에서 생산성을 측정에 대한 부분을 찾기 위해 다운로드 받은 모든 문서를 읽었다.
 이렇게 해서 124개 중 총 12개의 논문을 선택했다. 채택 및 제외 기준은 아래에 정의했다.
 포함 기준 : 포함 기준은 세 가지로 적용했다. 먼저 제목에 애자일과 생산성이 포함되면 선정했다. 둘째, 품질, 비용 및 일정과 같은 다른 요소와 비교하여 생산성에 관한 애자일 소프트웨어 개발 경험을 보여 주는 논문의 초록을 분석했다. 세 번째, 우리는 논문을 처음부터 끝까지 읽고 다음 중 하나 이상을 설명 / 토론 한 연구만 포함했다.
-애자일 소프트웨어 개발 프로세스
-생산성
-생산성 계산 방법 또는 생산성 메트릭
+
+* 애자일 소프트웨어 개발 프로세스
+* 생산성
+* 생산성 계산 방법 또는 생산성 메트릭
+
 배제 기준 : 포함 기준을 충족시키지 못한 연구는 제외했다.
 
-생산성 메트릭
-연구
-생산성 측정
-지식 근로자 수
-J1
-실행가능한 코드 라인 수 / 평균 개발자 1일 평균 업무량
-팀
-J1
-기능 점수 / 평균 개발자 1개월 평균 업무량
-팀
-J2
-코드 라인 수 / 1인이 1시간 작업 단위
-팀
-J3
-기능 점수 / 1인 
-팀
-J4
-시간당 완료된 평균 기능 점수 
-개발자 2명으로 구성된 팀
-J5
-해결된 이슈 수 / 개월
-개발자별
-C1
-해결된 이슈 수 / 평균 개발자 1일 평균 업무량
-팀
-C2
-코드 라인 수 / 1인 1시간 업무
-팀
-C3
-코드 라인 수  
-팀
-C4
-코드 라인 수 
-팀
-C5
-코드 라인 수 / 시간
-개발자 4명으로 구성된 팀
-C6
-기능크기 / 노력
-팀(스크럼)
-C7
-기능점수 / 개월수
-개발자별
+생산성 메트릭 
+|연구|생산성측정|지식 근로자 수|
+|---|-------|-----------|
+|J1 |실행가능한 코드 라인 수 / 평균 개발자 1일 평균 업무량|팀|
+|J1 |기능 점수 / 평균 개발자 1개월 평균 업무량         |팀|
+|J2|코드 라인 수 / 1인이 1시간 작업 단위|팀|
+|J3|기능 점수 / 1인 |팀|
+|J4|시간당 완료된 평균 기능 점수|개발자 2명으로 구성된 팀|
+|J5|해결된 이슈 수 / 개월|개발자별|
+|C1|해결된 이슈 수 / 평균 개발자 1일 평균 업무량|팀|
+|C2|코드 라인 수 / 1인 1시간 업무|팀|
+|C3|코드 라인 수  |팀|C4|코드 라인 수 |팀|
+|C5|코드 라인 수 / 시간|개발자 4명으로 구성된 |팀|
+|C6|기능크기 / 노력|팀(스크럼)|
+|C7|기능점수 / 개월수|개발자별|
 
+>RQ1: How is productivity measured in the agile software development process? 
 
+RQ1 : 애자일 소프트웨어 개발 방법에서는 생산성을 어떻게 측정하는가? 
 
-결론
-RQ1: How is productivity measured in the agile software development process? 
-RQ1 : 애자일 소프트웨어 개발 방법에서는 생산성을 어떻게 측정하는가?
-
-요약
-6. SUMMARY
+> SUMMARY 
 In summary, we could state that the present productivity measures are not efficient enough to satisfy the requirements for defining productivity in agile software development. It is clear that defining agile productivity measures must consider the knowledge dimension. In the future, we have a twofold research direction, first we aim at defining measureable productivity metrics for different agile roles that would also satisfy the knowledge worker dimensions and cover all aspects (from requirements to delivery of working product to a customer) of agile development process.
 
 6. 요약
