@@ -40,7 +40,24 @@ Exclusion Criteria: The studies that did not satisfy any of the inclusion criter
 
 배제 기준 : 포함 기준을 충족시키지 못한 연구는 제외했다.
 
-생산성 메트릭 
+채택된 연구들 
+
+|ID |                                 정보                 |
+|---|----------------------------------------------------|
+|J1|Layman, L.; Williams, L.; Cunningham, L., Motivations and measurements in an agile case study, Journal of Systems Architecture, Volume 52, Issue 11, November 2006, Pages 654-667, ISSN 1383-7621|
+|J2|Tarhan, A.; Yilmaz, S. G., Systematic analyses andcomparison of development performance and productquality of Incremental Process and Agile Process,Information and Software Technology, Volume 56, Issue5, May 2014, Pages 477-494, ISSN 0950-5849,|
+|J3|Moser, R.; Abrahamsson, P., Pedrycz, W., Sillitti, A., and Succi, G., “A Case Study on the Impact of Refactoring on Quality and Productivity in an Agile Team,” inBalancing Agility and Formalism in Software Engineering, vol. 5082, B. Meyer, J. Nawrocki, and B.Walter, Eds. Springer Berlin Heidelberg, 2008, pp. 252–266.|
+|J4|Parrish, A.; Smith, R.; Hale, D.; Hale, J., "A field study of developer pairs: productivity impacts and implications," Software, IEEE , vol.21, no.5, pp.76,79, Sept.-Oct. 2004|
+|J5|Athanasiou, D.; Nugroho, A.; Visser, J.; Zaidman, A.,"Test Code Quality and Its Relation to Issue HandlingPerformance," Software Engineering, IEEE Transactions on , vol.40, no.11, pp.1100,1125, Nov. 1 2014|
+|C1|Ramasubbu, N.; Balan, R. K., 2009. The impact of process choice in high maturity environments: An empirical analysis. In Proceedings of the 31st International Conference on Software Engineering (ICSE '09). IEEE Computer Society, Washington, DC, USA, 529-539.|
+|C2|Abrahamsson, P.; Koskela, J., "Extreme programming: a survey of empirical data from a controlled case study," Empirical Software Engineering, 2004. ISESE '04. Proceedings. 2004 International Symposium on , vol., no., pp.73,82, 19-20 Aug. 2004|
+|C3|Hu Guang-yong, "Study and practice of import Scrum agile software development," Communication Software and Networks (ICCSN), 2011 IEEE 3rd International Conference on , vol., no., pp.217,220, 27-29 May 2011|
+|C4|Williams, L.; Brown, G.; Meltzer, A.; Nagappan, N., "Scrum + Engineering Practices: Experiences of Three Microsoft Teams," Empirical Software Engineering and Measurement (ESEM), 2011 International Symposium on , vol., no., pp.463,471, 22-23 Sept. 2011|
+|C5|Abrahamsson, P., "Extreme programming: first results from a controlled case study," Euromicro Conference, 2003. Proceedings. 29th , vol., no., pp.259,266, 1-6 Sept. 2003|
+|C6|de Souza Carvalho, W.C.; Rosa, P.F.; dos Santos Soares, M.; Teixeira da Cunha Junior, M.A.; Buiatte, L.C., "AComparative Analysis of the Agile and Traditional Software Development Processes Productivity," Computer Science Society (SCCC), 201130th International Conference of the Chilean , vol., no., pp.74,82, 9-11 Nov. 2011|
+|C7|Sutherland, J.; Viktorov, A.; Blount, J.; Puntikov, N., "Distributed Scrum: Agile Project Management with Outsourced Development Teams," System Sciences, 2007. HICSS 2007. 40th Annual Hawaii International Conference on , vol., no., pp.274a,274a, Jan. 2007|
+
+생산성 메트릭  
 
 |연구|생산성측정|지식 근로자 수|
 |---|-------|-----------|
@@ -53,7 +70,7 @@ Exclusion Criteria: The studies that did not satisfy any of the inclusion criter
 |C1 |해결된 이슈 수 / 평균 개발자 1일 평균 업무량|팀|
 |C2 |코드 라인 수 / 1인 1시간 업무|팀|
 |C3 |코드 라인 수  |팀|
-|C4|코드 라인 수 |팀|
+|C4 |코드 라인 수 |팀|
 |C5 |코드 라인 수 / 시간|개발자 4명으로 구성된 |팀|
 |C6 |기능크기 / 노력|팀(스크럼)|
 |C7 |기능점수 / 개월수|개발자별|
