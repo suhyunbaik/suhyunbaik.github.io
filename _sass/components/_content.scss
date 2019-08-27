@@ -3,11 +3,11 @@
 \*------------------------------------*/
 
 .c-content {
+    font-size: $font-size-medium;
+    font-family: $noto-font;
   a:not(.c-btn) {
     text-decoration: underline;
     text-decoration-skip: ink;
-    font-size: $font-size-medium;
-    font-family: $noto-font;
 
     @include attention() {
       color: $color-brand;
