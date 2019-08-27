@@ -7,7 +7,7 @@
       <img src='{{ post.image | prepend: site.baseurl }}' class='c-post__image' alt='{{ post.title }}'>
     {% endif %}
 
-    <p class='c-post-card__excerpt u-font-small'>
+    <p class='c-post-card__excerpt noto-font-small'>
       {{ post.content | strip_html | truncatewords:35 }}
     </p>
 

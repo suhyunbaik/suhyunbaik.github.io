@@ -12,7 +12,14 @@
   line-height: $line-height-small;
 }
 
+.noto-font-small {
+  font-family: 'Noto Serif KR', serif;
+  font-size: $font-size-small;
+  line-height: $line-height-small;
+}
+
 .u-font-tiny {
   font-size: $font-size-tiny;
   line-height: $line-height-tiny;
 }
+
