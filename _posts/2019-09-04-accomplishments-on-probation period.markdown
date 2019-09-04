@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 
+title: 수습기간 회고
 tags: [flask, python, boilerplate]
 ---
 
