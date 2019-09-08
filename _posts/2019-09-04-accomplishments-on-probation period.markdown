@@ -39,7 +39,7 @@ api마다 response body format이 다 달랐다. 이력을 찾아보니 포맷�
 
 이 작업을 하면서 한가지 배운 점이 있다면, 어떤 조직에 이제 막 참여한 사람이 새로운 것을 도입하는건 큰 일이라는 것이다. Swagger처럼 결과가 즉각적으로 눈에 보이는 라이브러리는 도입이 수월하다. 반면 효과가 가시적이지 않은 새로운 아키텍처(REST), 라이브러리, 코드 스타일은 도입하기 전에 우선 사람들을 설득해야 한다. 내가 합류한지 며칠 안됐을때 위의 요소들을 제안했을때는 부정적인 피드백을 받았다. 나중에 새로운 멤버들이 대거 합류한뒤 개선점을 찾고 수정하자는 목소리가 커지는 분위기로 변했다. 분위기를 타서 똑같은 제안을 다시 했더니 받아들여졌다. (그래도 여전히 작업과정은 순탄하지 않았다.) 이러한 과정이 약 2개월 정도 걸렸다. 기회도 힘들게 얻었고 작업과정도 힘들었지만 결과물은 마음에 들었다. 
 
-[flask boilerplate](https://github.com/suhyunbaik/flask-restplus-boilerplate)
+[flask boilerplate](https://github.com/suhyunbaik/flask-restful-boilerplate)
 
 
 
