@@ -5,7 +5,7 @@ tags: [HTTP, Protocol, ComputerScience]
 ---
 Http 는 request에 대한 response를 받아야만 다음 request를 처리할 수 있다.
 
-###HTTP/1.1
+### HTTP/1.1
 Http 1.0은 `connection`을 매번 생성했다. 그래서 요청한 리소스 개수에 비례해서 `latency`가 길어진다. 이러한 문제를 해결하기 위해 1.1부터 `persistent connection(connection 재사용)`, `pipelining(여러개의 request 를 미리 날림)` 등의 기술이 등장했다. 하지만 다음과 같은 문제가 있었다.
 
     1. HOL Blocking(Head Of Line Blocking)  
@@ -13,13 +13,14 @@ Http 1.0은 `connection`을 매번 생성했다. 그래서 요청한 리소스 �
     
     2. RTT(Round Trip Time) 증가  
      매요청별로 connection을 생성하기 때문에 3-way handshake가 반복적으로 발생해 성능 저하를 초래한다.
+     
     3.무거운 Header  
      매 요청시마다 중복된 헤더값을 전송한다.
 
 요약: HTTP/1.1은 동시전송이 불가능하다. 요청과 응답이 순차로 이뤄진다. header가 무겁다. 1.1 은 plain text 를 리턴한다.
 
 
-###HTTP/2.0
+### HTTP/2.0
 HTTP 2.0은 한 `connection`으로 여러개의 메세지를 주고 받는다. `from`, `message`, `stream`개념이 도입됐고 응답은 순서에 상관없이 `stream`으로 주고 받는다.
 
     1. Stream Prioritization  
