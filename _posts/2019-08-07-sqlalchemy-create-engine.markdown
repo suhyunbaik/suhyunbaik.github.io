@@ -10,10 +10,11 @@ tags: [flask, sqlalchemy, timeit]
 
 엔진을 한번만 만드는 경우
 
-```
+```bash
 python -m timeit -s "from sqlalchemy import create_engine" "engine=create_engine('mysql://root:@localhost:3306/quicket');engine.execute('SELECT 1')"
 ```
-```
+
+```bash
 result:
 100 loops, best of 3: 5.55 msec per loop
 ```
@@ -21,13 +22,13 @@ result:
 
 엔진을 실행할때마다 매번 생성할 경우
 
-```
+```bash
 python -m timeit -s "from sqlalchemy import create_engine;engine=create_engine('mysql://root@localhost:3306/quicket')" "engine.execute('SELECT 1')"
 ```
-```
+```bash
 result:
 10000 loops, best of 3: 135 usec per loop
 ```
     
-결과를 봤을때는 app.run()으로 코드를 메모리에 올렸을 때 최초 한번 실행하는 게 제일 좋은 방법이다.
+결과를 봤을때는 `app.run()`으로 코드를 메모리에 올렸을 때 최초 한번 실행하는 게 제일 좋은 방법이다.
 
