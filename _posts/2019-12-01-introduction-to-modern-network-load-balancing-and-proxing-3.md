@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 최신 네트워크 로드 밸런싱 및 프록시 3 - L4 로드밸런싱 최신 기술 Introduction to modern network load balancing and proxing #2 - Current state of the art in L4 load balancing
-tags: [번역, 로드밸런서, 토폴로지]
+tags: [번역, 로드밸런서, L4, 토폴로지]
 ---
 
 [Introduction to modern network load balancing and proxing](https://blog.envoyproxy.io/introduction-to-modern-network-load-balancing-and-proxying-a57f6ff80236)
