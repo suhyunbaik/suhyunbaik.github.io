@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 최신 네트워크 로드 밸런싱 및 프록시 - 로드밸런서 들어가기 Introduction to modern network load balancing and proxing #1
+title: 최신 네트워크 로드 밸런싱 및 프록시 #1 - 로드밸런서 들어가기 Introduction to modern network load balancing and proxing #1
 tags: [번역, 로드밸런서]
 ---
 
