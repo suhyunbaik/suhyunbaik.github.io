@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 슈퍼 스타를 고용하기 보다 유독한 직원을 피하는 게 낫다.
-tags: [번역, hbr, 고용]
+tags: [번역, HBR, 고용]
 ---
 
 [원문보기](https://hbr.org/2015/12/its-better-to-avoid-a-toxic-employee-than-hire-a-superstar)
