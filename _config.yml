@@ -12,7 +12,7 @@ description: 'Python, Django, Flask, Agile, Kaizen'
 baseurl:     '' # The subpath of your site, e.g. /blog
 url:         'https://suhyunbaik.github.io' # The base hostname & protocol for your site
 twitter:     ''
-github:      ''
+github:      'https://github.com/suhyunbaik/shorty'
 instagram:   ''
 facebook:    ''
 
