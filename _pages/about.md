@@ -5,6 +5,7 @@ layout: page
 ---
 
 ### Skills
-Python Flask Django 
-MySQL Redis PostgreSQL
-React.js
+* Language: Python
+* Framework: Flask Django 
+* DB: MySQL Redis PostgreSQL
+* Front-end: React.js
