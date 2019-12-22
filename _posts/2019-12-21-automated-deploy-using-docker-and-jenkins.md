@@ -12,13 +12,6 @@ tags: [Docker, Jenkins, DevOps]
 먼저 도커파일을 작성해서 로컬에서 띄어보았다. 해당 프로젝트는 빗버킷 프라이빗 리포지토리를 `pip install` 로 설치해 라이브러리로 사용하는데, 이때 ssh key 가 필요하다. 그래서 로컬의 ssh key를 카피해서 도커 실행시 argument로 전달하는 방법으로 해결했다. 
 
 
-도커 이미지를 `test` 라는 이름으로 빌드한다.
-
-```shell
-docker build -t test --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" .
-```
-
-
 
 python 2.7 alpine 버전을 사용하는 도커 파일을 작성한다.
 
@@ -59,6 +52,11 @@ CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 EXPOSE 80
 ```
 
+도커 이미지를 `test` 라는 이름으로 빌드한다.
+
+```shell
+docker build -t test --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" .
+```
 
 
 도커 이미지로 컨테이너를 띄운다.
