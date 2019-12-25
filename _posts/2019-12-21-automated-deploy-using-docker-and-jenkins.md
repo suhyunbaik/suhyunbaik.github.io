@@ -3,6 +3,8 @@ layout: post
 title: 도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 1 도커파일 작성 
 tags: [Docker, Jenkins, DevOps]
 ---
+
+updated: 2019-12-25
 최근 ECS를 사용해서 컨테이너 기반으로 스테이징 서버를 구축했다. Circle CI를 써보고 싶었는데, 이미 사내에 젠킨스가 구축되어 있어서 젠킨스를 쓰기로 했다.  
 
 ![deploy process](/images/posts/deploy-process.png)  
@@ -21,34 +23,54 @@ ARG SSH_PRIVATE_KEY
 FROM python:2.7-alpine
 
 # set envs
-ENV DJANGO_SETTINGS_MODULE="settings.staging"
+ENV DJANGO_SETTINGS_MODULE=staging
 ENV PYTHONIOENCODING=utf-8
 
-RUN apt-get update -y \
-    && apt-get install apt-file -y \
-    && apt-file update -y \
-    && apt-get install -y python3-dev build-essential libmysqlclient-dev git libffi-dev openssh-client nginx vim netcat netcat-openbsd \
-    && pip install --upgrade pip
+RUN apk add --no-cache\
+	python2-dev\
+	build-base\  # for gcc
+	mariadb-dev\  # for mysqlclient
+	openssh-client\ # for ssh-keyscan
+	zlib-dev\  # for pillow
+	jpeg-dev\  # for pillow
+	libressl-dev\  # for scipy, numpy
+	libffi-dev\  # for scipy, numpy
+	lapack-dev\  # for scipy, numpy
+	gfortran\  # for scipy, numpy
+	musl-dev\  # for scipy, numpy
+	git\
+	nginx\
+	vim\
+    && rm -rf /var/cache/apk/* \ #remove cache
+    && pip install cpython  # for scipy, numpy
 
-# create .ssh folder and known_hosts
 RUN mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh && \
     ssh-keyscan bitbucket.org > /root/.ssh/known_hosts
 
-# create ssh private key
 RUN echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa && \
     chmod 400 /root/.ssh/id_rsa
 
 # create working directory
-RUN mkdir -p /app
-WORKDIR /app
+RUN mkdir -p /srv/www && mkdir -p /srv/www/backgrounds/ && mkdir -p /srv/www/backgrounds/current
 
-# install dependency
+ADD bghd /srv/www/backgrounds/current/bghd
+ADD bghd.wsgi /srv/www/backgrounds/current
+ADD doc /srv/www/backgrounds/current
+
+# set working directory
+WORKDIR /srv/www/backgrounds/current/bghd
+
+# install dependencies
 RUN pip install -r requirements.txt
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# run django project
+CMD ["python", "manage.py", "runserver", "0.0.0.0:80"]
 
+# open port 80, 5672 for rabbitmq
 EXPOSE 80
+EXPOSE 5672
+
 ```
 
 도커 이미지를 `test` 라는 이름으로 빌드한다.
