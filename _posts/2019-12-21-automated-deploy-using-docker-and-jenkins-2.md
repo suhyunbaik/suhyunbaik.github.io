@@ -3,7 +3,7 @@ layout: post
 title: 도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성
 tags: [Docker, Jenkins, DevOps]
 ---
-
+updated: 2019-12-27  
 이번에는 젠킨스 파일을 작성한다.
 
 젠킨스는 2가지 문법을 지원한다. `Scripted`, `Declarative` 2가지가 있다. `Scripted` 문법은 쉘 스크립트처럼 작성해서 파이프라인을 구성할 수 있다. `Groovy` 를 써봤으면 쉽게 쓸 수 있다. 그래서 이번에는 `Scripted` 문법을 사용했다.
@@ -19,6 +19,14 @@ tags: [Docker, Jenkins, DevOps]
 `def`: 변수 또는 함수 선언
 
 `dir`: 명령을 수행할 디렉토리/ 폴더 정의
+
+나는 스테이지를 3개로 나눴다. 
+
+첫번째 스테이지는 도커 이미지를 빌드한다. 내가 작성한 도커 파일은 `AWS ECR`에 있는 베이스 이미지를 갖고 오기 위해 AWS에 로그인 한다. `region`은 명시하지 않아도 된다. 젠킨스에서는 `aws`에서 로그인 할 때 `aws cli` 를 사용한다. `aws cli`를 사용해봤던 개발자들은 알고 있겠지만, `AWS configuration`을 해야 `aws cli`를 사용할 수 있다. 내가 사용하는 사내 젠킨스는 서버내 `aws configuration`이 다른 팀에서 사용하는 다른 리전의 계정이 세팅되어 있어서, 리전을 명시해줘야 내가 만든 `AWS ECR`에 접근 할 수 있었다. 로그인을 하면 캐싱없이 베이스 이미지를 기반으로 빌드한다. 
+
+두번째 스테이지에서는 빌드한 도커 이미지를 `AWS ECR`에 푸시한다. 
+
+세번째 스테이지에서는 `AWS ECS` 에 배포한다. 첫번째 스테이지에서 로그인을 해도, 다른 서비스를 사용하려면 `region`을 명시해줘야 `No basic auth` 라는 `authorization`  관련 에러를 피할 수 있다. ECS에 배포하기 전에 ECS container의 spec이 적힌 task definition의 파일의 내용을 적절하게 바꾼다. 파일을 열어서 문자를 치환할때는 `sed` 명령어가 유용하므로 그것을 써서 치환한다.
 
 
 
