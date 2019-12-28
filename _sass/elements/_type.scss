@@ -18,6 +18,7 @@ h6 {
   font-weight: inherit;
   line-height: initial;
   font-weight: $font-weight-bold;
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
 h1 {
@@ -42,4 +43,8 @@ h5 {
 
 h6 {
   font-size: $font-size-h6;
+}
+
+p, span {
+  font-family: 'Noto Sans KR', sans-serif;
 }
