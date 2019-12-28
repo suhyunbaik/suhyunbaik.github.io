@@ -52,14 +52,12 @@ RUN echo "$SSH_PRIVATE_KEY" > /root/.ssh/id_rsa && \
     chmod 400 /root/.ssh/id_rsa
 
 # create working directory
-RUN mkdir -p /srv/www && mkdir -p /srv/www/backgrounds/ && mkdir -p /srv/www/backgrounds/current
+RUN mkdir -p /app
 
-ADD bghd /srv/www/backgrounds/current/bghd
-ADD bghd.wsgi /srv/www/backgrounds/current
-ADD doc /srv/www/backgrounds/current
+ADD app /app
 
 # set working directory
-WORKDIR /srv/www/backgrounds/current/bghd
+WORKDIR /app
 
 # install dependencies
 RUN pip install -r requirements.txt
@@ -68,8 +66,7 @@ RUN pip install -r requirements.txt
 CMD ["python", "manage.py", "runserver", "0.0.0.0:80"]
 
 # open port 80, 5672 for rabbitmq
-EXPOSE 80
-EXPOSE 5672
+EXPOSE 80 5672
 
 ```
 
