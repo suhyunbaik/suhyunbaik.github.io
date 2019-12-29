@@ -71,3 +71,4 @@ pipeline {
 }
 ```
 
+이제 `AWS ECS`를 설정하고, 배포할때 사용할 `task definition.json`파일을 작성해야 한다.

@@ -10,6 +10,7 @@ tags: [AWS Lambda, DevOps]
 
 이런 반복 작업에 버리는 시간이 아까워서 `AWS Lambda` 에 `boto3` 라이브러리를 사용해 자동으로 서버를 띄우고 내리는 기능을 만들었다.
 
+![automated server create and destroy](/images/posts/automated_server.png)  
 
 
 스테이징 서버를 중지하는 스크립트.
