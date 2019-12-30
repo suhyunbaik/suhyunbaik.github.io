@@ -2,6 +2,7 @@
 title: Django, Flask를 사용하는 개발자들이 REST를 생각할때 갖기 쉬운 오해들
 layout: post
 tags: [REST, Flask, Django]
+categories: [Python]
 ---
 
 * 제목을 지을때 고민을 많이 했다. Django, Flask를 사용한다고 해서 모두가 이런 오해를 하는게 아니다.  

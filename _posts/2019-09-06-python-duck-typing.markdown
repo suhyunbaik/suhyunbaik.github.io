@@ -2,6 +2,7 @@
 layout: post
 title: 파이선의 덕타이핑(Duck Typing)
 tags: [Python, Duck Typing, Language]
+categories: [Python]
 ---
 
 새처럼 생긴 동물이 있다. 정확하게 무슨 동물인지 알아보기 전에,

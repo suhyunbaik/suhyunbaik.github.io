@@ -2,6 +2,7 @@
 layout: post
 title: EC2 인스턴스 생성시 Public DNS, IP 미할당 
 tags: [AWS, EC2, troubleshooting]
+categories: [DevOps]
 ---
 인스턴스를 새로 생성했는데 Public DNS가 계속 미할당됐다. 인스턴스 종료 및 생성 과정을 계속 반복했는데 원인은 다른곳에 있었다.
 
