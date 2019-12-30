@@ -11,6 +11,12 @@
       {{ post.content | strip_html | truncatewords:35 }}
     </p>
 
+    {% if post.layout == "category" %}
+        <li><a class="category-link {% if page.url == post.url %} active{% endif %}"
+          href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+    {% endif %}
+
+
     <span class='c-post-card__date'>{{ post.date | date: '%d %b %Y' }}</span>
   </a>
 
