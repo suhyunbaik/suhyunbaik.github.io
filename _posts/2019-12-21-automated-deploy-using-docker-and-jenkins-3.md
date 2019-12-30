@@ -2,6 +2,7 @@
 layout: post
 title: 도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 3 AWS ECS  
 tags: [AWS ECS, DevOps]
+categories: [DevOps]
 ---
 
 이제 `AWS ECS`를 설정해서 파게이트를 띄워야 한다. `AWS ECS`를 쓰려면 알아야 할 것들을 정리했다.

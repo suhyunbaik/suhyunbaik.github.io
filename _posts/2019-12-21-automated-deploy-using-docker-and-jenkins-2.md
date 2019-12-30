@@ -2,6 +2,7 @@
 layout: post
 title: 도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성
 tags: [Docker, Jenkins, DevOps]
+categories: [DevOps]
 ---
 updated: 2019-12-27  
 이번에는 젠킨스 파일을 작성한다.
