@@ -1,11 +1,7 @@
 ---
 title: About
 permalink: "/:basename:output_ext"
-layout: page
+layout: about
 ---
 
-### Skills
-* Language: Python
-* Framework: Flask Django 
-* DB: MySQL Redis PostgreSQL
-* Front-end: React.js
+
