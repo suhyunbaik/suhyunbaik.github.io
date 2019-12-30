@@ -2,6 +2,7 @@
 layout: post
 title: AWS Lambda를 사용해 스테이징 서버 start, stop을 자동화하기
 tags: [AWS Lambda, DevOps]
+categories: [DevOps]
 ---
 
 
