@@ -2,8 +2,8 @@
 
 
   <a href='{{ post.url | prepend: site.baseurl }}' class='c-post-card {% if forloop.first == true %} c-post-card--first {% endif %} {% if forloop.last == true %} c-post-card--last {% endif %}'>
-    <h6 style="margin-bottom:10px; color: #0EB1C8"> {{ post.categories }}</h5>
-    <h3 class='c-post-card__title'>
+    <p style="margin-bottom:10px; font-size:14px; color:#7E8482"> {{ post.categories }}</p>
+    <h3 class='c-post-card__title' style="font-weight:normal">
     {{ post.title }}</h3>
 
     {% if post.image %}
