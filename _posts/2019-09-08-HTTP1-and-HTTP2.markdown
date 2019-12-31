@@ -2,6 +2,7 @@
 layout: post
 title: HTTP1.1와 HTTP2.0 차이점
 tags: [HTTP, Protocol, ComputerScience]
+categories: [Network]
 ---
 Http 는 request에 대한 response를 받아야만 다음 request를 처리할 수 있다.
 
