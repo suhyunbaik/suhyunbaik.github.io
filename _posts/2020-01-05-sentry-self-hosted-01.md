@@ -5,8 +5,8 @@ tags: [Sentry, Docker]
 categories: [DevOps]
 ---
 
-
-Sentry는 소스가 github에 공개되어있어서, 직접 구축해 사용할 수 있다. 여기서는 우선 도커를 사용해 구축하는 방법을 정리했다.
+![sentry](/images/posts/sentry-logo.png)  
+[Sentry](https://sentry.io/welcome/)는 소스가 github에 공개되어있어서, 직접 구축해 사용할 수 있다. 여기서는 우선 도커를 사용해 구축하는 방법을 정리했다.
 
 1. 도커 설치
 2. 도커 컴포즈 설치
