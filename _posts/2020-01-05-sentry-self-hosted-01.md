@@ -15,7 +15,7 @@ categories: [DevOps]
 
 ##### 1. 도커 설치
 
-AWS EC2 ubuntu instnce를 런칭한 후 접속한다.
+AWS EC2 ubuntu instance를 런칭한 후 접속한다.
 
 먼저 기존의 패키지들을 업데이트 해준다. 
 
