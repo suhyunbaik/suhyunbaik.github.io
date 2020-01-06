@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Sentry를 Ubuntu 18.04(Bionic) 에 self-hosted docker로 설치하기
+title: Sentry를 Ubuntu 18.04(Bionic) 에 self-hosted 형태로 구축하기 - 1 docker로 설치하기
 tags: [Sentry, Docker]
 categories: [DevOps]
 ---
