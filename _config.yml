@@ -8,7 +8,7 @@
 # Site settings
 title:       🐍
 email:       'suhyunbaik89@gmail.com'
-description: 'Python, Django, Flask, Agile, Kaizen'
+description: 'Python, DevOps, Agile, startup'
 baseurl:     '' # The subpath of your site, e.g. /blog
 url:         'https://suhyunbaik.github.io' # The base hostname & protocol for your site
 twitter:     ''
