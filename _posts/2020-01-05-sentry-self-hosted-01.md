@@ -5,13 +5,16 @@ tags: [Sentry, Docker]
 categories: [DevOps]
 ---
 
+updated: 2020-01-08
+
 ![sentry](/images/posts/sentry-logo.png)  
 [Sentry](https://sentry.io/welcome/)는 소스가 github에 공개되어있어서, 직접 구축해 사용할 수 있다. 여기서는 우선 도커를 사용해 구축하는 방법을 정리했다.
 
 1. 도커 설치
 2. 도커 컴포즈 설치
 3. 센트리 도커 프로젝트 받기
-4. 센트리 설정
+4. GeoIp 설정
+5. install.sh 로 센트리 실행
 
 ##### 1. 도커 설치
 
@@ -121,7 +124,13 @@ git clone https://github.com/getsentry/onpremise .
 
 
 
-##### 4. 센트리 설정
+##### 4. GeoIP 설정
+
+센트리를 사용하려면 [GeoIp](https://www.maxmind.com/en/geoip-demo)가 필요하다. 만약 GeoIp 데이터베이스가 이미 있다면 센트리 설정 파일에서 패스를 잡아주면 된다.  나는 센트리 프로젝트 폴더에 GeoIP 데이터베이스를 넣어주고 거기로 패스를 잡았다. `sentry.conf.py`  에서 `GEOIP_PATH_MMDB = '../GeoIP.dat'` 를 추가한다.
+
+
+
+##### 5. Install.sh 로 센트리 실행
 
 센트리를 사용하려면 다음과 같은 서비스가 필요하다.
 
@@ -144,7 +153,27 @@ Output
 ERROR: Volume sentry-symbolicator declared as external, but could not be found. Please create the volume manually using `docker volume create --name=sentry-symbolicator` and try again.
 ```
 
-external로 연결하는 데이터 볼륨들은 `docker-compose.yml`에 명시되어 있다. 
+external로 연결하는 데이터 볼륨들은 `docker-compose.yml`에 명시되어 있는데, 명령어를 쳐서 만드는 것보다 가장 빠른 방법을 선택한다. 센트리 프로젝트 내의 설치 스크립트를 실행시킨다. 
+
+```shell
+./install.sh
+```
+
+스트립트를 실행하면 자동으로 db 마이그레이션까지 진행한다. 진행 중에 admin 계정 생성을 위해서 아이디와 이메일, 비밀번호를 입력해야 하는 과정이 있다.
+
+모든 과정이 끝나면 도커 컴포즈 명령어로 실행한다.
+
+```shell
+sudo docker-compose up -d
+```
+
+`ctop` 또는 `sudo docker ps`  로 컨테이너가 떠있는지 확인한다. 센트리를 실행하는 데 문제가 없다면, 인터넷 브라우저 창에서 `127.0.0.1:9000` 을 입력해 센트리로 접속할 수 있다. 아까 생성했던 admin 계정으로 로그인을 한다.
+
+
+
+* 데이터 볼륨
+
+docker-compose.yml 을 보면 데이터 볼륨들이 명시되어있다. 
 
 docker-compose.yml
 
@@ -168,8 +197,6 @@ volumes:
 
 
 
-필요한 데이터 볼륨들을 생성한다.
-
 데이터 볼륨이란?
 
 > Docker 데이터 볼륨은 데이터를 컨테이너가 아닌 호스트에 저장하는 방식입니다. 따라서 데이터볼륨은 컨테이너끼리 데이터를 공유할 때 활용할 수 있습니다.
@@ -178,17 +205,9 @@ volumes:
 >
 > http://pyrasis.com/book/DockerForTheReallyImpatient/Chapter06/04
 
-도커 컴포즈 명령어로 실행한다.
-
-```shell
-sudo docker-compose up -d
-```
 
 
 
-`ctop` 또는 `sudo docker ps`  로 컨테이너를 확인한다.
-
-그리고 인터넷 브라우저에서 `127.0.0.1:9000` 으로 접속해서 센트리가 구동중인지 확인한다.
 
 #### Reference
 
