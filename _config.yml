@@ -6,7 +6,7 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title:       🐍
+title:       ''
 email:       'suhyunbaik89@gmail.com'
 description: 'Python, DevOps, Agile, startup'
 baseurl:     '' # The subpath of your site, e.g. /blog
