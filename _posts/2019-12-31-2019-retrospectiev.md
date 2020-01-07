@@ -2,7 +2,7 @@
 layout: post
 title: 2019년 회고
 tags: [2019]
-categories: [retrospective]
+categories: [Retrospective]
 ---
 
 ![claybanks](/images/posts/2019-retrospective.jpeg)  
