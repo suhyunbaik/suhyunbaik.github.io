@@ -47,7 +47,8 @@ DevOps 의 주요업무를 간략하게 정리해보면 다음과 같다.
 내가 현재 담당한 팀에는 CI/CD, laC, 마이크로서비스, CM 이 없다. 모니터링은 AWS 기본 모니터링 화면으로 모니터링 하고, 로깅은 없다. 자동화 할 부분은 많다. 
 현재 내가 사용예정인 도구들은 다음과 같다.
 
-* Docker 
+* Docker
+    -[ctop으로 도커 컨테이너 모니터링 하기](https://suhyunbaik.github.io/devops/2019/12/20/ctop/) 
 * Jenkins
 * Sentry
     - [Sentry를 Ubuntu 18.04(Bionic) 에 self-hosted 형태로 구축하기 - 1 docker로 설치하기](https://suhyunbaik.github.io/devops/2020/01/05/sentry-self-hosted-01/)
