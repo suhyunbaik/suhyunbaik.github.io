@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: devops_default
 title: 도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성
 tags: [Docker, Jenkins, DevOps]
 categories: [DevOps]
