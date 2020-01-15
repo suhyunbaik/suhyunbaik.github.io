@@ -4,12 +4,13 @@
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+
   <meta name="description" content="A pythonist in startup">
   <meta name="keywords" content="Python, Developer, startup">
   <meta name="author" content="Suhyun Baik">
   <meta name='viewport' content='width=device-width, initial-scale=1'>
+
   <!-- facebook start -->
-  <meta property="og:url"           content="{{ site.base_url }}{{ page.url }}" />
   <meta property="og:type"          content="website" />
   <meta property="og:title"         content="{{ page.title }}" />
   <meta property="og:description"   content="{{ page.title }}" />
@@ -65,9 +66,9 @@
 {% include base_path %}
 
 {% if page.image %}
-  <meta property="og:image" content="{{ base_path }}{{ page.image }}" />
-  <meta itemprop="og:image" content="{{ base_path }}{{ page.image }}">
-  <meta name="twitter:image" content="{{ base_path }}{{ page.image }}" />
+  <meta property="og:image" content="{{ base_path }}/{{ page.image }}" />
+  <meta itemprop="og:image" content="{{ base_path }}/{{ page.image }}">
+  <meta name="twitter:image" content="{{ base_path }}/{{ page.image }}" />
 
 {% endif %}
 
