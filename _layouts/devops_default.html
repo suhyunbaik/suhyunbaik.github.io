@@ -9,22 +9,19 @@
   <meta name="author" content="Suhyun Baik">
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <!-- facebook start -->
-  <meta property="og:url"           content="{{page.url}}" />
+  <meta property="og:url"           content="{{ page.url }}" />
   <meta property="og:type"          content="blog" />
   <meta property="og:title"         content="{{ page.title }}" />
   <meta property="og:description"   content="{{ page.title }}" />
-  <meta property="og:image"         content="{{ page.thumbnail }}" />
 
   <!-- Twitter start -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{page.title}}">
-  <meta name="twitter:description" content="{{page.title}}">
-  <meta name="twitter:image"         content="{{ page.thumbnail }}" />
+  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:description" content="{{ page.title }}">
 
   <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
-  <meta itemprop="name" content="{{page.title}}">
-  <meta itemprop="description" content="{{page.title}}">
-  <meta itemprop="image" content="{{ page.thumbnail }}"/>
+  <meta itemprop="name" content="{{ page.title }}">
+  <meta itemprop="description" content="{{ page.title }}">
 
   <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
   <meta name='description' content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
@@ -38,6 +35,7 @@
     {% endcapture %}
 
     {{ inlineCSS | scssify }}
+    .c-post__image {display: none}
   </style>
 </head>
 <!-- Global site tag (gtag.js) - Google Analytics start -->
@@ -67,7 +65,10 @@
 {% include base_path %}
 
 {% if page.image %}
+  <meta property="og:image" content="{{ base_path }}{{page.image}}" />
   <meta itemprop='og:image' content='{{ base_path }}{{ page.image }}'>
+  <meta name="twitter:image"         content="{{base_path}}{{ page.image }}" />
+
 {% endif %}
 
 <div class='o-wrapper'>
