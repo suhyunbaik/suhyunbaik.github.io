@@ -3,6 +3,8 @@ layout: post
 title: Sentry를 Ubuntu 18.04(Bionic) 에 self-hosted 형태로 구축하기 - 2 추가 설정하기
 tags: [Sentry, Docker]
 categories: [DevOps]
+image: images/thumbnails/sentry_and_selfhosted.png
+
 ---
 
 ![sentry](/images/posts/sentry-logo.png)  

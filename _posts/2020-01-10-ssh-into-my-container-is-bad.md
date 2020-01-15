@@ -3,6 +3,8 @@ layout: post
 title: 컨테이너에 ssh 하는건 나쁜가?
 tags: [Docker]
 categories: [DevOps]
+image: images/thumbnails/container_and_ssh.png
+
 ---
 
 

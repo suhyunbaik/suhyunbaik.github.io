@@ -3,6 +3,7 @@ layout: devops_default
 title: 배포방식
 tags: [deploy, DevOps]
 categories: [DevOps]
+image: images/thumbnails/deploy_method.png
 ---
 
 배포 방식
