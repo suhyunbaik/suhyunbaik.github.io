@@ -6,7 +6,7 @@
     font-size: $font-size-small;
     font-family: $noto-font;
   a:not(.c-btn) {
-    //text-decoration: underline;
+    text-decoration: underline;
     text-decoration-skip: ink;
 
     @include attention() {

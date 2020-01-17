@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: devops_default
 title: 배포방식
 tags: [deploy, DevOps]
 categories: [DevOps]

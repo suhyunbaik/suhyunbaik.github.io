@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post
 title: 리얼월드 HTTP - 0 목차
 tags: [Network, HTTP]
 categories: [Network]
