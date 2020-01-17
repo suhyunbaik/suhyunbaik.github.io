@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: 도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 1 도커파일 작성 
 tags: [Docker, Jenkins, DevOps]
 categories: [DevOps]

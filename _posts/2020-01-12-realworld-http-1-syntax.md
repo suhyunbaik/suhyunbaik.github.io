@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: 리얼월드 HTTP - 1 HTTP/1.0 신택스
 tags: [Network, HTTP]
 categories: [Network]
