@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: DevOps의 주요 업무와 도구
 tags: [DevOps]
 categories: [DevOps]

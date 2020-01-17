@@ -1,6 +1,7 @@
 ---
-title: About
+title: Categories
 permalink: "/:basename:output_ext"
-layout: about
+layout: categories
 ---
+
 

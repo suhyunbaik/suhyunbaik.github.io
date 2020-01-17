@@ -1,7 +1,8 @@
 ---
-layout: post
+layout: default
 title: 깃허브 블로그가 구글에 검색되게 하기
 tags: [blog]
+categories: [blog]
 ---
 
 깃허브 블로그가 구글 검색 결과에 노출되려면 추가 작업을 해야 한다.

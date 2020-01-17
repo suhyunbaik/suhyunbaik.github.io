@@ -1,0 +1,19 @@
+---
+layout: default
+---
+
+<div class='o-wrapper'>
+
+    <div class='o-grid'>
+        <div class='o-grid__col'>
+            <article class='c-post'>
+                <div class='c-content'>
+                     {% for post in page.posts if page.categories == 'devops' %}
+                        {% include post-card.liquid %}
+                    {% endfor %}
+                </div>
+            </article>
+        </div>
+    </div>
+
+</div>

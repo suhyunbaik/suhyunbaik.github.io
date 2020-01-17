@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: 도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 3 AWS ECS  
 tags: [AWS ECS, DevOps]
 categories: [DevOps]
