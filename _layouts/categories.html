@@ -1,6 +1,6 @@
- ---
+---
 layout: default
- ---
+---
 
 <div class='o-wrapper'>
     <div class='o-grid'>
@@ -8,16 +8,27 @@ layout: default
             <article class='c-post'>
                 <div style="display: flex; height: 25px">
                     <h4 class="c-post__title">DevOps</h4>
-                    <div class='c-content'>
-                        <a href="{{site.baseurl}}/">도커 컴포즈 사용하</a>
-                        <!--                     {% for post in page.posts %}-->
-                        <!--                        {% include post-card.liquid %}-->
-                        <!--                    {% endfor %}-->
-                        <!--                    <p class="c-post__title">DevOps</p>-->
-                        <!--                    <p class="c-post__title">Python</p>-->
+                    <div class='o-wrapper'>
+                        <div class='o-grid'>
+                            {% for post in paginator.posts %}
+                            {% include post-category-card.liquid %}
+                            {% endfor %}
+                        </div>
+
+<!--                        <div class='o-grid'>-->
+<!--                            {% include pagination.html %}-->
+<!--                        </div>-->
                     </div>
+                    <!--                    <div class='c-content'>-->
+                    <!--                        <a href="{{site.baseurl}}/">도커 컴포즈 사용하기</a>-->
+                    <!--                     {% for post in page.posts %}-->
+                    <!--                        {% include post-card.liquid %}-->
+                    <!--                    {% endfor %}-->
+                    <!--                    <p class="c-post__title">DevOps</p>-->
+                    <!--                    <p class="c-post__title">Python</p>-->
                 </div>
-            </article>
         </div>
+        </article>
     </div>
+</div>
 </div>
