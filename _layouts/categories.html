@@ -10,14 +10,18 @@ layout: default
                     <h4 class="c-post__title">DevOps</h4>
                     <div class='o-wrapper'>
                         <div class='o-grid'>
-                            {% for post in paginator.posts %}
                             {% include post-category-card.liquid %}
+                        </div>
+
+                        <div class='c-tags'>
+                            {% for tag in tags %}
+                            <a href='{{ site.baseurl }}/tag/{{ tag }}'>{{ tag }}</a>
                             {% endfor %}
                         </div>
 
-<!--                        <div class='o-grid'>-->
-<!--                            {% include pagination.html %}-->
-<!--                        </div>-->
+                        <!--                        <div class='o-grid'>-->
+                        <!--                            {% include pagination.html %}-->
+                        <!--                        </div>-->
                     </div>
                     <!--                    <div class='c-content'>-->
                     <!--                        <a href="{{site.baseurl}}/">도커 컴포즈 사용하기</a>-->
