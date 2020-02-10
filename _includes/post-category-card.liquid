@@ -1,6 +1,6 @@
 <div class='o-grid__col'>
 
-
+{% if post.category == 'DevOps' %}
   <a href='{{ post.url | prepend: site.baseurl }}' class='c-post-card
   {% if forloop.first == true %} c-post-card--first {% endif %}
   {% if forloop.last == true %} c-post-card--last {% endif %}'>
@@ -11,5 +11,5 @@
         {{ post.title }}
     </h3>
   </a>
-
 </div>
+{% endif %}

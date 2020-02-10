@@ -10,7 +10,9 @@ layout: default
                     <h4 class="c-post__title">DevOps</h4>
                     <div class='o-wrapper'>
                         <div class='o-grid'>
-                            {% include post-category-card.liquid %}
+                            {% for post in paginator.posts %}
+                                {% include post-category-card.liquid %}
+                            {% endfor %}
                         </div>
 
                         <div class='c-tags'>
