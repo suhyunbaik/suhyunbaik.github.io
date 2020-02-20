@@ -5,7 +5,7 @@ tags: [Docker, Jenkins, DevOps]
 categories: [DevOps]
 ---
 
-updated: 2019-12-25  
+updated: 2020-02-19
 최근 ECS를 사용해서 컨테이너 기반으로 스테이징 서버를 구축했다. Circle CI를 써보고 싶었는데, 이미 사내에 젠킨스가 구축되어 있어서 젠킨스를 쓰기로 했다.  
 
 ![deploy process](/images/posts/deploy-process.png)  
