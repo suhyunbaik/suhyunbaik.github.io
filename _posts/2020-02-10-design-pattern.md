@@ -1,14 +1,21 @@
 ---
-layout: page
 title: 디자인 패턴
-tags: [Design pattern]
-categories: [Design pattern]
+layout: page
+tags:
+- Design pattern
+categories:
+- Design pattern
 ---
 
-
 1. 생성패턴
-2. 구조패턴
-3. 행위패턴
+	1.1 추상팩토리
+	1.2 빌더
+	1.3 팩토리 매서드
+	1.4 프로토타입
+	1.5 싱글턴
+	
+3. 구조패턴
+4. 행위패턴
 
 
 
@@ -51,6 +58,66 @@ categories: [Design pattern]
 - 스트레트지(Strategy) - 행위를 클래스로 캡슐화해 동적으로 행위를 바꾸는 패턴
 - 템플릿 메서드(Template Method) - 전체 구조는 바꾸지 않으면서 특정 단계에서 수행하는 내역을 바꾸는 패턴
 - 비지터(Visitor)
+- 파사드(facade) - 파사드 패턴은 여러 서브 시스템을 간편하게 사용해 줄 수 있도록 하는 패턴
+
+파사드 패턴 
+간단하게 서브시스템 3개와 facade, client 를 구현한다.
+
+
+
+`subsystems.py`
+
+```python
+class SubSystemOne(object):
+    def do_something(self, name: str):
+        print(f'operate 1 {name}')
+
+
+class SubSystemTwo(object):
+    def do_something(self, name: str):
+        print(f'operate 2 {name}')
+
+
+class SubSystemThree(object):
+    def do_something(self, name: str):
+        print(f'operate 3 {name}')
+```
+
+
+
+`facade_service.py`
+
+```python
+class FacadeService(object):
+    def __init__(self):
+        self.sub_system_one = SubSystemOne()
+        self.sub_system_two = SubSystemTwo()
+        self.sub_system_three = SubSystemThree()
+
+    def operate(self, name: str):
+        self.sub_system_one.do_something(name)
+        self.sub_system_two.do_something(name)
+        self.sub_system_three.do_something(name)
+```
+
+
+
+`client.py`
+
+```python
+class Client(object):
+    def main(self):
+        facade_service = FacadeService()
+        facade_service.operate('Client')
+```
+
+
+
+
+
+Reference 
+
+* https://imasoftwareengineer.tistory.com/29
 
 
 
