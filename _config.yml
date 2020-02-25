@@ -1,49 +1,32 @@
-# Welcome to Jekyll!
-#
-# This config file is meant for settings that affect your whole blog, values
-# which you are expected to set up once and rarely need to edit after that.
-# For technical reasons, this file is *NOT* reloaded automatically when you use
-# 'jekyll serve'. If you change this file, please restart the server process.
-
-# Site settings
-title:       'A python developer'
-email:       'suhyunbaik89@gmail.com'
-description: 'A pythonist in startup'
-baseurl:     '' # The subpath of your site, e.g. /blog
-url:         'https://suhyunbaik.github.io' # The base hostname & protocol for your site
-twitter:     ''
-github:      'https://github.com/suhyunbaik/shorty'
-instagram:   ''
-facebook:    ''
-
-markdown:  kramdown
+title: A python developer
+email: suhyunbaik89@gmail.com
+description: A pythonist in startup
+baseurl: ''
+url: 'https://suhyunbaik.github.io'
+twitter: ''
+github: 'https://github.com/suhyunbaik'
+instagram: ''
+facebook: ''
+markdown: kramdown
 permalink: pretty
-paginate:  60
-
+paginate: 60
 sass:
   style: compressed
-
 plugins:
   - jekyll-paginate
   - jekyll/tagging
   - jekyll-sitemap
-
 include:
   - _pages
-
 exclude:
   - vendor
   - Gemfile
   - Gemfile.lock
-
-# Tags
-tag_page_dir:         tag
-tag_page_layout:      tag_page
-tag_permalink_style:  pretty
-
-# Pages path
+tag_page_dir: tag
+tag_page_layout: tag_page
+tag_permalink_style: pretty
 defaults:
   - scope:
-      path: '_pages'
+      path: _pages
     values:
-      permalink: /:basename:output_ext
+      permalink: '/:basename:output_ext'
