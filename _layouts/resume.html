@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang='en'>
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <meta name="description" content="A pythonist in startup">
+  <meta name="keywords" content="Python, Developer, startup">
+  <meta name="author" content="Suhyun Baik">
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+  <!-- facebook start -->
+  <meta property="og:type"          content="website" />
+  <meta property="og:title"         content="{{ page.title }}" />
+  <meta property="og:description"   content="{{ page.title }}" />
+
+  <!-- Twitter start -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page.title }}">
+  <meta name="twitter:description" content="{{ page.title }}">
+
+  <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+  <meta itemprop="name" content="{{ page.title }}">
+  <meta itemprop="description" content="{{ page.title }}">
+
+  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+  <meta name='description' content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  <link rel='canonical' href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+  <link rel='alternate' type='application/rss+xml' title='{{ site.title }}' href="{{ '/feed.xml' | prepend: site.baseurl | prepend: site.url }}">
+  <!-- css   -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <style>
+    {% capture inlineCSS %}
+      {% include app.scss %}
+    {% endcapture %}
+
+    {{ inlineCSS | scssify }}
+    .c-post__image {display: none}
+  </style>
+</head>
+<!-- Global site tag (gtag.js) - Google Analytics start -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-153773360-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'UA-153773360-1');
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics end -->
+<body>
+<!--{% include analytics.html %}-->
+<div class='js-off-canvas-container c-off-canvas-container'>
+    {% include header.html %}
+
+<!--    {{ content }}-->
+
+{% include base_path %}
+
+{% if page.image %}
+  <meta property="og:image" content="{{ base_path }}/{{ page.image }}" />
+  <meta itemprop="og:image" content="{{ base_path }}/{{ page.image }}">
+  <meta name="twitter:image" content="{{ base_path }}/{{ page.image }}" />
+
+{% endif %}
+
+<div class='o-wrapper'>
+
+  <div class='o-grid'>
+    <div class='o-grid__col'>
+      <article class='c-post' itemscope itemtype='http://schema.org/BlogPosting'>
+
+        <h1 class='c-post__title'>{{ page.title }}</h1>
+
+        <time class='c-post__date' datetime='{{ page.date | date_to_xmlschema }}' itemprop='datePublished'>{{ page.date | date: '%d %b %Y' }}</time>
+
+        <div class='c-content' itemprop='articleBody'>
+                    <iframe src="https://docs.google.com/document/d/e/2PACX-1vRdClPBFE-3MOIp5wyACP41XoQIW35QC2x6js9nk4B2FbCM42bazcNXrQBrbm1VAclDoob8KFm-S8JU/pub?embedded=true"></iframe>
+
+          {% include page-image.html %}
+
+          {{ content }}
+        </div>
+
+        <div class='c-tags'>
+          {% for tag in page.tags %}
+            <a href='{{ site.baseurl }}/tag/{{ tag }}'>{{ tag }}</a>
+          {% endfor %}
+        </div>
+        <hr/>
+         <!-- Your share button code start-->
+<!--          <div class="fb-share-button"-->
+<!--            data-href="{{ site.url }}"-->
+<!--            data-layout="button_count">-->
+<!--          </div>-->
+        <!-- Your share button code end-->
+
+      </article>
+
+    </div>
+  </div>
+</div>
+
+    {% include footer.html %}
+</div>
+
+<script src="{{ '/js/jquery-3.1.1.min.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/evil-icons.min.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/jquery.fitvids.js' | prepend: site.baseurl }}"></script>
+<script src="{{ '/js/app.js' | prepend: site.baseurl }}"></script>
+<!-- Load Facebook SDK for JavaScript -->
+<div id="fb-root"></div>
+<script>(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+</body>
+</html>
