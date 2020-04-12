@@ -36,7 +36,7 @@ categories:
 
 ##### 1.2 빌더(Builder)
 
-##### 1.3 팩토`리 매서드(FactoryMethods)
+##### 1.3 팩토리 매서드(FactoryMethods)
 객체 생성 처리를 서브 클래스로 분리해 처리
 
 ##### 1.4 프로토타입(Prototype)
