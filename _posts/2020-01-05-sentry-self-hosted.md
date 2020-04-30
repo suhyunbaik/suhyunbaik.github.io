@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Sentry를 Ubuntu 18.04(Bionic) 에 self-hosted 형태로 구축하기 - 1 docker로 설치하기
+title: Sentry를 Ubuntu에 self-hosted로 구축하기
 tags: [Sentry, Docker]
 categories: [DevOps]
 image: images/thumbnails/sentry_and_selfhosted.png
@@ -9,7 +9,6 @@ image: images/thumbnails/sentry_and_selfhosted.png
 
 updated: 2020-01-08
 
-![sentry](/images/posts/sentry-logo.png)  
 [Sentry](https://sentry.io/welcome/)는 소스가 github에 공개되어있어서, 직접 구축해 사용할 수 있다. 여기서는 우선 도커를 사용해 구축하는 방법을 정리했다.
 
 1. 도커 설치
@@ -213,8 +212,6 @@ volumes:
 
 #### Reference
 
-https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04
-
-https://medium.com/sentry-with-docker/installing-sentry-with-docker-c1d83dfee577
-
-https://github.com/getsentry/onpremise
+* https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04
+* https://medium.com/sentry-with-docker/installing-sentry-with-docker-c1d83dfee577
+* https://github.com/getsentry/onpremise
