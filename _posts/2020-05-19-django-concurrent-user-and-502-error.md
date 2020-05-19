@@ -7,21 +7,6 @@ categories: [devops]
 
 
 
-1. 문제
-
-2. uwsgi worker 갯수 증가
-
-3. db connection pool 도입
-
-4. mysqlclient 에서 pymysql 로 변경
-
-5. uwsgi 에서 gunicorn 으로 변경
-
-
-
-
-
-
 
 ##### 1. 문제
 
@@ -49,8 +34,6 @@ Sever
 ##### 3. db connection pool 도입
 
 uWSGI 에서 몽키 패치를 해도 디비 커넥션이 병목현상이 디비 커넥션에서 일어난다고 생각했다. 그래서 sqlalchemy 디비 커넥션 풀링을 도입해서 스테이징에서 테스트 했다.
-
-![deploy process](/images/posts/deploy-process.png)  
 
 커넥션 풀링 도입 전과 후과 다르다. 그러나 동시접속자 수가 증가하면 여전히 502가 발생했다.
 
