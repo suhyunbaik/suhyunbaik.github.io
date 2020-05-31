@@ -59,6 +59,5 @@ pymysql 로 라이브러리를 변경 한 뒤에 uWSGI 의 몽키패치가 효�
 
 ##### References 
 
-* https://stackoverflow.com/questions/48977889/avoid-that-all-workers-get-re-spawned-at-the-same-time
-
-* https://wiki.openstack.org/wiki/PyMySQL_evaluation
+*[avoid all workers get respawned](https://stackoverflow.com/questions/48977889/avoid-that-all-workers-get-re-spawned-at-the-same-time)
+*[pymysql evalution](https://wiki.openstack.org/wiki/PyMySQL_evaluation)
