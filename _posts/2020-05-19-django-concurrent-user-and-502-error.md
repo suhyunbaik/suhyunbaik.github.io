@@ -5,7 +5,11 @@ tags: [devops]
 categories: [devops]
 ---
 
-
+1.문제  
+2.uWSGI worker 갯수 증가  
+3.db connection pool 도입  
+4.mysqlclient에서 pymyql 로 변경  
+5.uWSGI 에서 gunicorn 으로 변경  
 
 
 ##### 1. 문제
