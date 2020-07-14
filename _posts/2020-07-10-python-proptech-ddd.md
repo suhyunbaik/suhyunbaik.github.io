@@ -10,7 +10,7 @@ categories: [DDD]
 서비스를 context 로 분리하고 django app으로 구분  
 view, service, repository, model 로 분리  
 IoC Container 구현  
-부분적 경계를 facades 로 구현 
+부분적 경계를 facades 로 구현  
 밸류 오브젝트를 엔티티로 변경  
 후기
 
