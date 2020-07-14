@@ -22,6 +22,8 @@ IoC Container 구현
 
 서비스를 context 로 분리하고 django app으로 구분
 
+![context_map](/images/posts/context_map.png)  
+
 기존 코드는 기능별로 경계가 없어서 마치 큰 진흙덩어리처럼 기능이 서로 단단하게 강결합 된 상태다. 코드를 분리하기 위해서 먼저 서비스를 정리한다. 해당 서비스의 기능은 크게 매물 관리, 고객관리, 공동중개망, 문자 서비스, 공인중개사 관리로 나눌 수 있다. DDD 에서 말하는 bounded context 로 서비스를 나눠보자면 customer(고객), listing(매물), sms(문자), realtor(공인중개사)로 나눌 수 있다. 여기서 매물 관리는 product(공간정보), listing(매물) 이라는 2개의 bounded context 로 나눈다. 그리고 listing(매물) 이라는 context 에는 multiple listing(공동중개망) 이라는 aggregate 을 만든다.  매물관리를 이렇게 나눈 이유는 밑에 나온다.
 
 
