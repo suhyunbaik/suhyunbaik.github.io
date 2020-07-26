@@ -106,13 +106,13 @@ class Realtor(AbstractBaseUser, PermissionsMixin):
     ...
     objects = RealtorManager()
 
-```
+```  
 
 
 
 
 
-* IoC Container 구현
+* IoC Container 구현  
 
 ![container](/images/posts/container.png)  
 
@@ -150,8 +150,34 @@ container.register_all()
 
 
 가끔은 다른 bounded context에 있는 service에 접근할 필요한 경우가 있다. 해당 서비스에서는 customer 앱에서 listing 앱에 접근해 해당 customer가 관심을 보였던 매물정보를 갖고오는 기능이 있다. 클린 아키텍쳐 책 24장에서는 부분적 경계 구현 방법으로 크게 3가지를 제시하고 있는데, 첫번째는 단계를 건너뛰기, 두번째는 일차원 경계(boundary interface 사용), 세번째는 퍼사드 패턴을 이용하는 방법이다. 이 중에서 퍼사드를 사용하는 방법을 선택했다. 
+고객 상세 정보를 들고오는 API 는 고객이 보고 간 매물 정보도 같이 보여준다. 매물 정보는 매물 컨텍스트 안에 있기 때문에 다른 django app 으로 분리되어있다. customer service 에서 listing service 로 직접 접근하지 않고, listing facades 를 만들어서 파사드를 통해 리스팅 컨텍스트에 접근한다. 이런 방법을 쓰면 실수로 다른 개발자가 listing service 의 메소드를 수정했을 경우 다른 api 가 영향 받는 범위를 줄일 수 있고, listing app 을 MSA로 만들 경우 facade 는 다른 서버와 통신하는 부분으로 만든다.  
 
+```python
+# views 
+def get(self, request, customer_id):
+    customer = self.service.get_customer_detail(customer_id)
+    serializer = CustomerDetailResponseSerializer({'customer': customer, 'listings': customer.favorites})
+    return JsonResponse(serializer.data)
 
+# services
+class CustomerService:
+
+    def __init__(self, customer_repository=None, listing_facades=None):
+        self.customer_repository = customer_repository
+        self.listing_facades = listing_facades
+
+    def get_customer_favorites(self, customer_id: int):
+        return self.listing_facades.get_customer_favorites(customer_id)
+    
+# facades 
+class ListingFacades:
+    def __init__(self, listing_service=None):
+        self.listing_service = listing_service
+
+    def get_customer_favorites(self, customer_id: int):
+        return self.listing_service.get_customer_favorites(customer_id)
+
+```
 
 * 밸류 오브젝트에서 엔티티로 변경  
 
