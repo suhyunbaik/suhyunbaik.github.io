@@ -15,8 +15,8 @@ IoC Container 구현
 후기
 
 
-
-몇년전에 프롭테크 서비스를 개발했었다. 사업적인 문제로 서비스를 접었는데 최근에 코드를 다시 살펴보니 개선할 부분이 많았다. 그 당시 서비스를 개발할때는 팀 내에 도메인 전문가가 없었고, 나도 개발을 시작한지 얼마 안됐을 때라 구조에 대한 고민을 미처 못했다. 이번에는 리팩토링을 하면서 DDD를 적용해보기로 했다. 이 서비스는 프롭테크 서비스 이지만 직방, 다방과 타켓층이 다르다. 직방, 다방은 집을 알아보는 임차인이 타켓이지만, 이 서비스는 공인중개사가 타켓이다. 공인중개사의 업무 효율을 높이고 본인이 갖고있는 매물의 특징과 정보를 분석해서 영업에 도움이 되는 게 이 서비스의 목표다. 
+깃허브 https://github.com/suhyunbaik/buba-service  
+몇년전에 프롭테크 서비스를 개발했었다. 사업적인 문제로 서비스를 접었는데 최근에 코드를 다시 살펴보니 개선할 부분이 많았다. 그 당시 서비스를 개발할때는 팀 내에 도메인 전문가가 없었고 구조에 대한 고민을 미처 못했다. 이번에는 리팩토링을 하면서 DDD를 적용해보기로 했다. 이 서비스는 프롭테크 서비스 이지만 직방, 다방과 타켓층이 다르다. 직방, 다방은 집을 알아보는 임차인이 타켓이지만, 이 서비스는 공인중개사가 타켓이다. 공인중개사의 업무 효율을 높이고 본인이 갖고있는 매물의 특징과 정보를 분석해서 영업에 도움이 되는 게 이 서비스의 목표다. 
 
 
 
@@ -34,6 +34,84 @@ IoC Container 구현
 
 
 
+```python
+# views
+class RealtorMyselfView(APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    service = container.get(name='realtor_service')
+
+    def get(self, request):
+        realtor = self.service.get_realtor(request.user.id)
+        serializer = RealtorSerializer(realtor)
+        return JsonResponse({'data': serializer.data})
+
+```
+
+
+
+```python
+# services 
+class RealtorService:
+
+    def __init__(self, realtor_repository=None):
+        self.realtor_repository = realtor_repository
+
+    def get_realtors(self) -> Realtor:
+        return self.realtor_repository.get_all_realtors()
+
+    def get_realtor(self, user_id: int) -> Realtor:
+        return self.realtor_repository.get_realtor_by_realtor_id(user_id)
+
+    def register_realtor(self, data: SignUpRequestSerializer.data) -> NoReturn:
+        self.realtor_repository.create_realtor(username=data['username'], password=data['password'], name=data['name'],
+                                               email=data['email'], phone_number=data['phone_number'])
+
+```
+
+
+
+```python
+# repository
+
+class RealtorRepository:
+    realtor_dao = Realtor.objects
+
+    def get_all_realtors(self) -> Realtor:
+        return self.realtor_dao.all()
+
+    def get_realtor_by_realtor_id(self, user_id: int) -> Realtor:
+        return self.realtor_dao.get(id=user_id)
+
+    def create_realtor(self, data: SignUpRequestSerializer.data) -> NoReturn:
+        self.realtor_dao.create_user(username=data['username'], password=data['password'], name=data['name'],
+                                     email=data['email'], phone_number=data['phone_number'])
+
+```
+
+
+
+```python
+# models
+class Realtor(AbstractBaseUser, PermissionsMixin):
+    REQUIRED_FIELDS = ['phone_number']
+    USERNAME_FIELD = 'username'
+
+    class Meta:
+        verbose_name = verbose_name_plural = '공인중개사'
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    username = models.CharField(max_length=40, unique=True, verbose_name='아이디')
+    name = models.CharField(max_length=50, verbose_name='이름')
+    ...
+    objects = RealtorManager()
+
+```
+
+
+
+
+
 * IoC Container 구현
 
 ![container](/images/posts/container.png)  
@@ -42,6 +120,28 @@ IoC Container 구현
 
 스프링 프레임워크에는 객체의 생성 및 생명주기를 관리하는 IoC 컨테이너가 있다. 스프링으로 프로덕션 개발을 한 경험이 없어서 깊이있게 알지 못하지만, 내가 아는 바로는 앱이 실행될때 컨테이너가 떠서 미리 필요한 객체들을 생성하고 이 객체들은 빈이라고 부르며, 자바 어노테이트를 사용해 미리 생성할 객체를 등록할 수 있다고 알고 있다. 장고에는 컨테이너가 없고 객체 등록용 어노테이트가 없기 때문에 직접 만들어서 써야한다. 각 앱마다 컨테이너를 1개씩 만들고, 컨테이너 클래스가 인스턴스화 되면 해당 앱에서 사용하는 객체들을 생성해서 들고있도록 한다. 의존성 주입 방법은 스프링에서는 setter, method, constructor 3가지 방법이 있는데, 이 프로젝트에서는 constructor 방식만 사용했다.
 
+
+
+```python
+class Container:
+    def __init__(self):
+        self.deps = {}
+
+    def register_all(self):
+        self.deps['realtor_repository'] = RealtorRepository()
+        self.deps['realtor_service'] = RealtorService(self.deps['realtor_repository'])
+
+    def get(self, name):
+        component = self.deps.get(name)
+        if not component:
+            raise ValueError(f'{name} instance does not exists')
+        return component
+
+
+container = Container()
+container.register_all()
+
+```
 
 
 * 부분적 경계를 facades로 구현 
@@ -53,10 +153,12 @@ IoC Container 구현
 
 
 
-* 밸류 오브젝트에서 엔티티로 변경
+* 밸류 오브젝트에서 엔티티로 변경  
+
 서비스를 개발하다가 사용자수가 어느정도 늘어나면서 유저가 본인이 사용하고 싶은 기능을 요구하는 경우도 있었는데, 기존 서비스의 구조와 맞지않거나 기능 개발에 필요한 시간이 많다는 이유로 개발하지 않고 그냥 지나간 경우가 있었다. 코드를 다시 뜯어보고 나니, 잘못된 모델링 때문에 이런저런 이유로 기능을 개발하지 못한 경우가 대부분이다. DDD에서 말하는 엔티티, 밸류 오브젝트에 대한 개념이 잡혀있었다면 저지르지 않았을 실수가 많이 보였다.
 
-* 공간정보과 거래형태를 분리하고 거래형태를 밸류 오브젝트에서 엔티티로 변경
+* 공간정보과 거래형태를 분리하고 거래형태를 밸류 오브젝트에서 엔티티로 변경 
+
 ![product](/images/posts/product.png)  
  가장 큰 실수는 공간에 대한 정보를 매물의 밸류 오브젝트로 모델링한 실수다. 당시에는 매물정보(전월세, 가격 등등 거래형태에 대한 정보)만 필요하다고 생각했고 공간정보(부동산 종류, 위치 등등)는 밸류 오브젝트라고 생각했다. 그런데 당시 서비스 유저가 해당 공간에 대한 내역이 쌓이는 기능을 원한다고 애기했을때 구현하기가 상당히 어려워졌다. 그래서 이번에는 매물과 공간정보를 분리하고 둘다 엔티티로 모델링 헀다. 예를 들어 대성 빌라 202동 101호 20평 전세 4억 매물이 있다면 대성빌라 202동 101호 20평은 product context 의 product entity 가 되고, 전세 3억은 listing context 의 listing entity 가 된다. product entity 는 listing entity 와 파트너 관게를 맺고, listing entity 는 customer 와 realtor entity 와 관계를 맺는다. 
 
@@ -66,7 +168,8 @@ IoC Container 구현
 
 이런 사실을 모르고 개발했을때는 공인중개사를 엔티티, 공인중개사 사무소를 밸류 오브젝트로 간주했다. 이럴 경우 프롭테크 서비스를 사용하는 공인중개사 A가 본인 사무소 A가 아닌 다른 사무소 B 에 가서 서비스를 사용하려고 할 때 문제가 발생한다. 그래서 공인중개사와 공인중개소를 독립된 엔티티로 모델링한다. 
 
-* 고객과 고객의 정체성을 분리하고 정체성을 밸류 오브젝트에서 엔티티로 변경
+* 고객과 고객의 정체성을 분리하고 정체성을 밸류 오브젝트에서 엔티티로 변경  
+
 ![customer](/images/posts/customer.png)  
 이 서비스에는 공인주개사무소를 방문했던 고객 정보를 입력해서 보는 기능이 있다. 당시 개발 할때는 고객 A가 원룸, 월세 매물을 문의하는 임차인일 경우만 상정했기 때문에 고객이라는 엔티티에 고객의 정체성은 밸류 오브젝트가 됐다. 그러나 현실 세계에서 고객은 계속 임차인이거나 임대인으로만 정체성을 유지하지 않는다. 고객B 는 A 공인중개사무소를 방문할때마다 계속 정체성이 계속 바뀐다. 몇 개월 전에는 빌라 매물을 구매할 의향이 있는 매수인이였지만, 지금은 빌라 매물을 전세로 시장에 내놓으려는 임대인이면서 동시에 다른 지역의 아파트 전세 매물을 알아보는 임차인이다. 미래에는 빌라 매물을 매도하고 아파트를 구매하려는 매도인 겸 매수인이 될지도 모른다. 고객의 정체성을 정리하면, 고객A는 시간의 흐름에 따라 매수인, 임대인, 임차인, 매도인, 매수인으로 변한다. 과거의 구조에서는 고객 A는 한개의 정체성만 갖고 있을 수 있어서 매수인A, 임대인 A, 임차인 A, 매도인 A, 매수인 A를 별개의 고객으로 간주했다. 이런 구조는 공인중개사의 업무에도 도움이 안된다. 고객 A의 과거 방문의도 및 내역을 알 수 없기 때문이다.
 
