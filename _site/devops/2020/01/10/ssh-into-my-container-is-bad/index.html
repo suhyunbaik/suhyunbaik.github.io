@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang='en'>
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <meta name="description" content="A pythonist in startup">
+  <meta name="keywords" content="Python, Developer, startup">
+  <meta name="author" content="Suhyun Baik">
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+  <!-- facebook start -->
+  <meta property="og:type"          content="website" />
+  <meta property="og:title"         content="컨테이너에 ssh 하는건 나쁜가?" />
+  <meta property="og:description"   content="컨테이너에 ssh 하는건 나쁜가?" />
+
+  <!-- Twitter start -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="컨테이너에 ssh 하는건 나쁜가?">
+  <meta name="twitter:description" content="컨테이너에 ssh 하는건 나쁜가?">
+
+  <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+  <meta itemprop="name" content="컨테이너에 ssh 하는건 나쁜가?">
+  <meta itemprop="description" content="컨테이너에 ssh 하는건 나쁜가?">
+
+  <title>컨테이너에 ssh 하는건 나쁜가?</title>
+  <meta name='description' content="나는 최근에 도커, ECS 파게이트를 사용해서 이미지를 빌드하고 컨테이너를 띄우는 작업을 했다. 그 당시에는 알 수 없는 이유로 컨테이너가 계속 뜨지 않았고, cloud watch 로그에는 에러 로그가 찍히지 않았다. 그래서 EC2 instance를 사용할 때 처럼 ssh 접속을 ...">
+  <link rel='canonical' href="http://localhost:4000/devops/2020/01/10/ssh-into-my-container-is-bad/">
+  <link rel='alternate' type='application/rss+xml' title='A python developer' href="http://localhost:4000/feed.xml">
+  <!-- css   -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <style>
+    
+
+    html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */html{font-family:sans-serif;line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav,section{display:block}h1{font-size:2em;margin:0.67em 0}figcaption,figure,main{display:block}figure{margin:1em 40px}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace, monospace;font-size:1em}a{background-color:transparent;-webkit-text-decoration-skip:objects}a:active,a:hover{outline-width:0}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:inherit}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace, monospace;font-size:1em}dfn{font-style:italic}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-0.25em}sup{top:-0.5em}audio,video{display:inline-block}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}button,html [type="button"],[type="reset"],[type="submit"]{-webkit-appearance:button}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0}button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{display:inline-block;vertical-align:baseline}textarea{overflow:auto}[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0}[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto}[type="search"]{-webkit-appearance:textfield;outline-offset:-2px}[type="search"]::-webkit-search-cancel-button,[type="search"]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details,menu{display:block}summary{display:list-item}canvas{display:inline-block}template{display:none}[hidden]{display:none}body,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,dd,ol,ul,figure,hr,fieldset,legend{margin:0;padding:0}li>ol,li>ul{margin-bottom:0}table{border-collapse:collapse;border-spacing:0}address,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,ol,ul,figure,hr,table,fieldset{margin-bottom:32px}dd,ol,ul{list-style-position:inside;margin-left:16px}@-webkit-keyframes spin{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes spin{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.icon{position:relative;display:inline-block;width:25px;height:25px;overflow:hidden;fill:currentColor}.icon__cnt{width:100%;height:100%;background:inherit;fill:inherit;pointer-events:none;transform:translateX(0);-ms-transform:translate(0.5px, -0.3px)}.icon--m{width:50px;height:50px}.icon--l{width:100px;height:100px}.icon--xl{width:150px;height:150px}.icon--xxl{width:200px;height:200px}.icon__spinner{position:absolute;top:0;left:0;width:100%;height:100%}.icon--ei-spinner .icon__spinner,.icon--ei-spinner-2 .icon__spinner{-webkit-animation:spin 1s steps(12) infinite;animation:spin 1s steps(12) infinite}.icon--ei-spinner-3 .icon__spinner{-webkit-animation:spin 1.5s linear infinite;animation:spin 1.5s linear infinite}.icon--ei-sc-facebook{fill:#3b5998}.icon--ei-sc-github{fill:#333}.icon--ei-sc-google-plus{fill:#dd4b39}.icon--ei-sc-instagram{fill:#3f729b}.icon--ei-sc-linkedin{fill:#0976b4}.icon--ei-sc-odnoklassniki{fill:#ed812b}.icon--ei-sc-skype{fill:#00aff0}.icon--ei-sc-soundcloud{fill:#f80}.icon--ei-sc-tumblr{fill:#35465c}.icon--ei-sc-twitter{fill:#55acee}.icon--ei-sc-vimeo{fill:#1ab7ea}.icon--ei-sc-vk{fill:#45668e}.icon--ei-sc-youtube{fill:#e52d27}.icon--ei-sc-pinterest{fill:#bd081c}.icon--ei-sc-telegram{fill:#0088cc}.highlight{margin:0;background:#fff}.highlighter-rouge .highlight{border-radius:5px;background:#FAFAFA;font-family:'Noto Sans KR', sans-serif;font-size:14px}.highlight .c{color:#998;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#998;font-style:italic}.highlight .cp{color:#999;font-weight:bold}.highlight .c1{color:#998;font-style:italic}.highlight .cs{color:#999;font-weight:bold;font-style:italic}.highlight .gd{color:#000;background-color:#fdd}.highlight .gd .x{color:#000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000;background-color:#dfd}.highlight .gi .x{color:#000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaa}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#458;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:#008080}.highlight .nb{color:#0086B3}.highlight .nc{color:#458;font-weight:bold}.highlight .no{color:#008080}.highlight .ni{color:#800080}.highlight .ne{color:#900;font-weight:bold}.highlight .nf{color:#900;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:#000080}.highlight .nv{color:#008080}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#d14}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#990073}.highlight .bp{color:#999}.highlight .vc{color:#008080}.highlight .vg{color:#008080}.highlight .vi{color:#008080}.highlight .il{color:#099}body{color:#323232;font-size:19px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-weight:300;line-height:32px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}*::selection{color:#fff;background:#00A0FF}a{text-decoration:none;color:#323232;transition:.4s}a:hover,a:active,a:focus{text-decoration:underline}img{display:block;max-width:100%;font-style:italic}hr{height:1px;margin:32px 0;border:0;background-color:#E9EFF3}h1,h2,h3,h4,h5,h6{font-weight:inherit;line-height:initial;font-weight:600;font-family:'Noto Sans KR', sans-serif}h1{font-size:36px}h2{font-size:28px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}p,span{font-family:'Noto Sans KR', sans-serif}code{font-size:14px}blockquote{padding-left:16px;border-left:3px solid #2B5F72;font-style:italic;font-size:"Noto Serif KR",sans-serif}pre,code{font-family:Courier,monospace;background-color:#FAFAFA}pre{overflow:auto;padding:32px;margin-bottom:16px;font-size:16px;line-height:25px;white-space:pre-wrap;word-wrap:break-word}li code,p code{padding:4px 8px}input[type='text'],input[type='tel'],input[type='number'],input[type='email'],select,textarea{width:100%;padding:16px;border:1px solid #E9EFF3;border-radius:0;outline:none;background-color:#fff;font-size:14px;appearance:none;transition:.4s}input[type='text']:hover,input[type='text']:active,input[type='text']:focus,input[type='tel']:hover,input[type='tel']:active,input[type='tel']:focus,input[type='number']:hover,input[type='number']:active,input[type='number']:focus,input[type='email']:hover,input[type='email']:active,input[type='email']:focus,select:hover,select:active,select:focus,textarea:hover,textarea:active,textarea:focus{border:1px solid #323232}.o-grid{margin:0 auto;max-width:700px}.o-grid:after{content:'';display:table;clear:both}.o-grid .o-grid{margin-right:-16px;margin-left:-16px;padding:0}.o-grid--full{max-width:100vw}.o-grid__col{float:left;padding-right:16px;padding-left:16px}.o-grid__col--1-4-s{width:25%}.o-grid__col--1-3-s{width:33.3333333333%}.o-grid__col--2-4-s{width:50%}.o-grid__col--3-4-s{width:75%}.o-grid__col--4-4-s{width:100%}@media (min-width: 40em){.o-grid__col--1-4-m{width:25%}.o-grid__col--1-3-m{width:33.3333333333%}.o-grid__col--2-4-m{width:50%}.o-grid__col--3-4-m{width:75%}}@media (min-width: 64em){.o-grid__col--1-4-l{width:25%}.o-grid__col--1-3-l{width:33.3333333333%}.o-grid__col--2-4-l{width:50%}.o-grid__col--3-4-l{width:75%}}.o-grid__col--full{width:100%}.o-grid__col--center{margin:0 auto}.o-grid__col--end{margin-left:auto}.o-wrapper{padding:32px 0}.c-off-canvas-container{display:flex;min-height:100vh;flex-direction:column}.c-off-canvas-container .o-wrapper{flex:1 0 auto}.o-plain-list{margin:0;padding:0;list-style:none}.c-header__inner{padding:16px 0;border-bottom:1px solid #E9EFF3}.c-header__icon{vertical-align:middle}.c-logo__link{font-size:19px;font-weight:900;transition:.4s}.c-logo__link:hover,.c-logo__link:active,.c-logo__link:focus{color:#00A0FF;text-decoration:none}.c-nav__item{font-size:16px}.c-nav__link{display:block;transition:.4s}.c-nav__link--current{color:#00A0FF}.home-template .c-nav__link--current:not(:hover){color:#323232}.c-nav__link:hover,.c-nav__link:active,.c-nav__link:focus{color:#00A0FF;text-decoration:none}.c-off-canvas-toggle{float:right;position:relative;top:8px;z-index:10;height:19px;width:25px;cursor:pointer}.c-off-canvas-toggle__icon{position:absolute;left:0;height:1px;width:25px;background:#323232;cursor:pointer}.c-off-canvas-toggle__icon:before,.c-off-canvas-toggle__icon:after{content:'';display:block;height:100%;background-color:inherit;transition:.4s}.c-off-canvas-toggle__icon:before{transform:translateY(16px)}.c-off-canvas-toggle__icon:after{transform:translateY(7px)}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon{height:2px;background-color:transparent}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:before,.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:after{position:relative;visibility:visible;background:#323232}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:before{top:11px;transform:rotate(-45deg)}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:after{top:9px;transform:rotate(45deg)}.c-off-canvas-toggle--close{top:0;float:none;display:block;margin-left:auto}html,body{overflow-x:hidden}.c-off-canvas-content{position:fixed;top:0;right:0;width:300px;height:100%;padding:24px 32px;background-color:#fff;transform:translate3d(300px, 0, 0)}.c-off-canvas-container{transform:translate3d(0, 0, 0);transition:transform .4s cubic-bezier(0.16, 0.68, 0.43, 0.99)}.c-off-canvas-container.is-active{transform:translate3d(-300px, 0, 0)}.c-off-canvas-container.is-active:after{position:fixed;top:0;right:0;bottom:0;left:0;content:'';background-color:rgba(0,0,0,0.2)}.c-tags a{display:inline-block;padding:4px 16px;margin:0 8px 4px 0;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";line-height:25px;background-color:#FAFAFA;transition:.4s}.c-tags a:hover,.c-tags a:active,.c-tags a:focus{text-decoration:none;background-color:#FAFAFA}@media (max-width: 39.99em){.c-tags{margin-bottom:22px}}.c-btn{display:inline-block;padding:8px 32px;cursor:pointer;transition:.4s;text-align:center;vertical-align:middle;white-space:nowrap;line-height:inherit;border:0;border-radius:0;color:#fff;background-color:#207cdf;font-size:16px}.c-btn:hover,.c-btn:active,.c-btn:focus{text-decoration:none;background-color:#238cf6}.c-btn--full{width:100%}.c-btn--small{padding:4px 16px}.c-post-card{display:block;padding:32px 0;word-break:break-word;border-bottom:1px solid #E9EFF3}.c-post-card--first{padding-top:0}.c-post-card--last{padding-bottom:0;border-bottom:0}.c-post-card__title{margin-bottom:10px;font-size:19px;font-weight:600;transition:.4s}.c-post-card__excerpt{margin-bottom:10px}.c-post-card__date{display:block;color:#2B5F72;direction:ltr;font-size:12px;line-height:22px;text-transform:uppercase}.c-post-card:hover{color:#323232;text-decoration:none}.c-post-card:hover .c-post-card__title{color:#00A0FF}.c-pagination{text-transform:uppercase;transition:.4s}.c-pagination:hover,.c-pagination:active,.c-pagination:focus{color:#00A0FF;text-decoration:none}.c-pagination__text{position:relative;font-size:14px;letter-spacing:2px}.c-pagination__text--prev{left:-16px}.c-pagination__text--next{right:-16px}.c-pagination__icon{vertical-align:text-top}.c-pagination__icon--prev{left:-8px}.c-pagination__icon--next{right:-8px}.c-post{margin:0 auto;max-width:740px}.c-post__title{font-size:24px;margin-bottom:16px}@media (min-width: 40em){.c-post__title{font-size:28px;line-height:50px}}.c-post__date{position:relative;padding-top:16px;display:block;text-align:center;margin-bottom:16px;font-size:14px;line-height:22px;color:#2B5F72}.c-post__date:after{position:absolute;content:'';top:0;left:50%;height:1px;width:64px;background:#FAFAFA;transform:translateX(-50%)}.c-post__image{margin:0 auto 16px}.c-content{font-size:14px;font-family:"Noto Serif KR",sans-serif}.c-content a:not(.c-btn){text-decoration-skip:ink}.c-content a:not(.c-btn):hover,.c-content a:not(.c-btn):active,.c-content a:not(.c-btn):focus{color:#00A0FF}.twitter-tweet,.fluid-width-video-wrapper{margin-bottom:16px !important}.c-social-nav__item{display:inline-block}.c-social-nav__icon{fill:#323232;vertical-align:middle;transition:.4s}.c-social-nav__icon:hover,.c-social-nav__icon:active,.c-social-nav__icon:focus{fill:#00A0FF}.c-footer{padding:32px 0;background-color:#FAFAFA}.u-hidden{display:none}.u-hidden-visually{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.u-font-medium{font-size:16px;line-height:25px}.u-font-small{font-size:14px;line-height:22px}.noto-font-small{font-family:'Noto Serif KR', sans-serif;font-size:14px;line-height:22px}.u-font-tiny{font-size:12px;line-height:19px}.u-text-left{text-align:left}.u-text-right{text-align:right}.u-text-center{text-align:center}.u-text-justify{text-align:justify}.u-inline{display:inline}.u-block{display:block}.u-inline-block{display:inline-block}.u-left{float:left}.u-right{float:right}.u-clearfix:after{content:'';display:table;clear:both}
+
+    .c-post__image {display: none}
+  </style>
+</head>
+<!-- Global site tag (gtag.js) - Google Analytics start -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-153773360-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'UA-153773360-1');
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics end -->
+<body>
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>-->
+<div class='js-off-canvas-container c-off-canvas-container'>
+    <header class='c-header'>
+
+    <div class='o-grid'>
+        <div class='o-grid__col o-grid__col--full'>
+            <div class='c-header__inner'>
+
+                <div class='o-grid'>
+                    <div class='o-grid__col o-grid__col--3-4-s'>
+                        <div class='c-logo u-text-left'>
+                            <!--              <a class='c-logo__link' href='/'>A python developer</a>-->
+                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">🔥</a>
+<!--                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">😈</a>-->
+<!--                            <a class='c-logo__link' href='https://docs.google.com/document/d/e/2PACX-1vRdClPBFE-3MOIp5wyACP41XoQIW35QC2x6js9nk4B2FbCM42bazcNXrQBrbm1VAclDoob8KFm-S8JU/pub' style="font-weight: bold; margin-left: 20px; font-size: 1rem">😈</a>-->
+                        </div>
+                    </div>
+
+                    <!--          <div class='o-grid__col o-grid__col&#45;&#45;1-4-s'>-->
+                    <!--            <label class='js-off-canvas-toggle c-off-canvas-toggle' aria-label='Toggle navigation'>-->
+                    <!--              <span class='c-off-canvas-toggle__icon'></span>-->
+                    <!--            </label>-->
+                    <!--          </div>-->
+
+                    <div class='o-grid__col o-grid__col--1-4-s'>
+                        <div class='c-off-canvas-content'>
+                            <label class='js-off-canvas-toggle c-off-canvas-toggle c-off-canvas-toggle--close'>
+                                <span class='c-off-canvas-toggle__icon'></span>
+                            </label>
+
+                            <ul class='c-nav o-plain-list '>
+                                
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/about.html'>About</a>
+      </li>
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/categories.html'>Categories</a>
+      </li>
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<!--    <p>나는 최근에 도커, ECS 파게이트를 사용해서 이미지를 빌드하고 컨테이너를 띄우는 작업을 했다. 그 당시에는 알 수 없는 이유로 컨테이너가 계속 뜨지 않았고, <code class="highlighter-rouge">cloud watch</code> 로그에는 에러 로그가 찍히지 않았다. 그래서 EC2 instance를 사용할 때 처럼 <code class="highlighter-rouge">ssh</code> 접속을 하고 싶었고, 접속을 하려고 stack overflow 와 AWS 공식문서를 읽다가 상당히 많은 개발자들이 <code class="highlighter-rouge">컨테이너에 ssh 접속을 한다는 건 정말 이상한 일</code>, <code class="highlighter-rouge">production 서버에 ssh 하고싶은 상황이 발생하다는 것 자체가 문제</code>라고 한 코멘트를 읽었다. 컨테이너에 ssh 접속을 하는게 왜 나쁜지에 대해 설명한 글을 아래 부분 번역했다.</p>
+
+<h5 id="도커-컨테이너에서-ssh-서버를-돌린다면-잘못하고-있는것이다">도커 컨테이너에서 SSH 서버를 돌린다면, 잘못하고 있는것이다.</h5>
+
+<p>사람들이 도커를 처음 사용할때 자주 하는 질문이 있다. ‘컨테이너 안에 어떻게 들어가나요?’ 그리고 다른 사람들의 대답은 이렇다. ‘컨테이너에서 ssh 돌려요.’ 이건 나쁜 방법이다. 이제 이 글에서는 컨테이너에서 ssh 돌리기가 왜 잘못됐는지 이유를 알아보고, ssh 대신 뭘 해야하는지에 대해 알아본다.</p>
+
+<p>ssh 서버를 돌리는건 너무 좋아보인다. 컨테이너 안에 쉽게 들어갈 수 있게 해주기 때문이다. 대부분의 개발자들이 ssh를 매일 사용하고, 퍼블릭과 프라이빗 키, 패스워드리스 로그인, 키 에이전트, 포트 포워딩등에 친숙하다.</p>
+
+<p>레디스 서버나 자바 웹서비스용 도커 이미지를 만드는 중이라고 가정하자. 다음은 몇가지 생각해볼만한 질문들이다.</p>
+
+<ul>
+  <li>
+    <p>SSH를 무엇 때문에 사용하려 하는가?</p>
+
+    <p>보통 <code class="highlighter-rouge">ssh</code> 를 하려 하는 이유는, 백업, 로그 확인, 프로세스 재시작, 환경설정 바꾸기, gdb 또는 strace 와 같은 툴로 서버 디버깅 등이다. ssh 없이도 이런 활동을 할 수 있다.</p>
+  </li>
+  <li>
+    <p>키와 패스워드 관리는 어떻게 할 것인가?</p>
+
+    <p>대부분의 개발자들이 키와 패스워드를 이미지에 추가해서 굽거나, 볼륨에 넣는다. 키나 패스워드를 업데이트 해야 하는 상황에서는 어떻게 할건가? 이미지 안에 이들을 같이 넣고 구워버리면, 업데이트가 필요한 상황에서는 이미지를 재빌드하고, 재배포하고, 컨테이너를 재시작하는 일련의 과정을 거쳐야 한다.</p>
+
+    <p>더 나은 방법은 키, 패스워드를 볼륨에 넣고 볼륨을 관리하는 것이다. 꽤 괜찮은 방법이지만 현격한 단점 몇가지가 있다. 해당 방법을 사용할 경우 컨테이너가 절대 볼륨에 write를 하지 않도록 해야 한다. 관리를 잘 못하면, 키와 패스워드가 오염되서 사용불가 상태가 될 수 있다. 만약 여러대의 컨테이너가 해당 키, 패스워드를 동시에 공유하는 상태라면 사태는 더 심각해진다.</p>
+  </li>
+  <li>
+    <p>보안 업그레이드 관리는 어떻게 할 것인가?</p>
+
+    <p>ssh 서버는 꽤 안전하다. 그러나, 여전히 몇가지 보안 이슈가 있다. 그래서 ssh 를 사용해서 컨테이너를 업그레이드 해야 할 필요성을 느끼게 될 것이다. 업그레이드를 하려면 이미지를 다시 재빌드 하고, 모든 컨테이너를 재시작 해야한다.</p>
+  </li>
+  <li>
+    <p>그냥 <code class="highlighter-rouge">ssh</code> 서버를 붙여야 한다면?</p>
+
+    <p>안됀다. <code class="highlighter-rouge">ssh</code> 서버만 붙이는게 아니라, Monit 이나 Supervisor같은 프로세스 매니저도 추가해야 한다. 도커는 1개의 프로세스만 관리하기 때문이다. 프로세스가 여러개 필요하다면, 더 상위레벨에서 프로세스들을 관리하는 무언가를 추가해야 하고, 그말은 즉슨 아주 가볍고 간단한 컨테이너를 그냥 복잡한 무언가로 바꾸는 것과 같다. 어플리케이션이 중지한다면, 도커에서 정보를 얻는게 아니고 프로세스 매니저에서 정보를 찾아야 하게 된다.</p>
+  </li>
+  <li>
+    <p>앱을 컨테이너 안에 넣는 일을 하면서 동시에 정책과 보안 담당이라면?</p>
+
+    <p>작은 기업에서는 이게 큰 문제가 되지 않는다. 하지만 큰 기업에서, 앱을 컨테이너에 넣는 역할을 담당하고 있다면 아마 원격 접근 정책을 관리는 다른 사람이 하고 있을 것이다. 큰 기업은 누가 접근을 할 수 있고, 어떤 종류의 관리 감독이 필요한지에 대한 빡빡한 정책을 갖고 있을 가능성이 높다. 이런 경우라면, 컨테이너에 <code class="highlighter-rouge">ssh</code> 하고 싶은 생각이 없을 것이다.</p>
+  </li>
+</ul>
+
+<p>그런데 <code class="highlighter-rouge">ssh</code> 를 안하고 어떻게 백업, 로그 확인, 서비스 재시작 등등을 할 수 있을까?</p>
+
+<ul>
+  <li>
+    <p>백업</p>
+
+    <p>데이터는 볼륨에 있어야 한다. 다른 컨테이너를 실행할때, <code class="highlighter-rouge">-- volumes-from</code> 옵션을 주면 첫번째 컨테이너와 볼륨을 공유한다. 새 컨테이너는 백업을 수행하고, 필요한 데이터에 대한 접근도 할 수 있다.</p>
+  </li>
+  <li>
+    <p>로그 확인</p>
+
+    <p>볼륨을 사용하자. 만약 특정 디렉토리 안에 로그를 남기길 원한다면, 그리고 디렉토리가 볼륨이라면 로그 검사용 컨테이너를 돌릴 수 있다. (<code class="highlighter-rouge">--volumes-from</code>)그리고 로그를 확인할 수 있다.</p>
+  </li>
+  <li>
+    <p>서비스 재시작</p>
+
+    <p>모든 서비스는 시그널로 재시작하는게 좋다. 만약 <code class="highlighter-rouge">/etc/ini.d/foo restart</code> 또는 <code class="highlighter-rouge">service foo restart</code> 를 한다면, 프로세스에 특정 시그널을 보내게 된다. <code class="highlighter-rouge">docker kill -s &lt;signal&gt;</code> 시그널을 보낼 수 있다.</p>
+
+    <p>어떤 서비스들은 시그널을 받지 않지만, 소켓으로 커맨드를 받는다. 만약 TCP 소켓이라면, 네트워크에 연결하면 된다. 만약 UNIX소켓이라면, 볼륨을 사용하면 된다. 컨테이너와 서비스를 세팅하고 특정 디렉토리안에 있는 소켓을 컨트롤하면, 그 디렉토리가 볼륨이다. 그러면 볼륨, 소켓을 사용할 수 있는 새 컨테이너를 실행할 수 있다.</p>
+
+    <p>이 과정은 복잡하지 않다. 서비스가 <code class="highlighter-rouge">foo</code>  라는 소켓을 <code class="highlighter-rouge">/var/run/foo.sock</code> 이라는 소켓을 생성했고, 서비스를 깨끗하게 재시작하기 위해서 <code class="highlighter-rouge">fooctl restart</code>  라는 명령어를 실행해야 한다고 하자. 재시작을 하고 싶을 때는, 정확히 똑같은 이미지를 실행하지만, <code class="highlighter-rouge">--volumes-from</code> 옵션을 함께 사용해서 명령어를 오버라이드 한다. 예를 들면 다음과 같다.</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Starting the service</span>
+<span class="nv">CID</span><span class="o">=</span><span class="si">$(</span>docker run <span class="nt">-d</span> <span class="nt">-v</span> /var/run fooservice<span class="si">)</span>
+<span class="c"># Restarting the service with a sidekick container</span>
+docker run <span class="nt">--volumes-from</span> <span class="nv">$CID</span> fooservice fooctl restart
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>환경설정 수정</p>
+
+    <p>환경설정을 바꿔야 한다면 이미지 안에서 해야한다. 왜냐면 새 컨테이널르 시작하면 옛날 설정들이 안에 또 있을 거고, 변경사항을 모두 잃어버리게 되니까 말이다.</p>
+
+    <p>만약 새 버추얼 호스트를 추가하는 등의 변경을 해야 한다면, 볼륨을 사용하면 된다. 이런 환경설정들은 볼륨 안에 있어야 하고, 볼륨은 특수 목적인 ‘설정 변경’ 용 컨테이너와 공유되어야 한다. 이 컨테이너 안에서는 뭐든지 사용할 수 있다. <code class="highlighter-rouge">ssh</code> 와 제일 좋아하는 에디터, 또는 <code class="highlighter-rouge">API</code> 콜을 받는 웹 서비스, 또는 외부 소스로 부터 정보를 갖고오는 크론탭 등등.</p>
+
+    <p>걱정하는 사항은 서비스를 돌리는 컨테이너, 환경설정 업데이트용 컨테이너 두개로 분리해야 한다.</p>
+  </li>
+  <li>
+    <p>서비스 디버깅</p>
+
+    <p>이런 상황이 정말로 컨테이너에 접속하고 싶은 상황이다. 왜냐면 <code class="highlighter-rouge">gdb</code>, <code class="highlighter-rouge">strace</code>, 등등을 실행해야 하니까 말이다. 이럴때는, <code class="highlighter-rouge">nsenter</code>를 사용하면 된다.</p>
+  </li>
+</ul>
+
+<h3 id="결론">결론</h3>
+
+<p>컨테이너에 ssh 접속하는건 그렇게 까지 나쁘지 않다. 도커 호스트에 접속하지 않아도 되어서 편하다.</p>
+
+<p>하지만 ssh를 안할 이유도 많은 걸 알았고, 그리고 ssh를 사용하지 않고도 더 깨끗한 구조에서 원하는 모든 기능을 사용할 수 있다.</p>
+
+<h5 id="reference">Reference</h5>
+
+<ul>
+  <li>
+    <p>https://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/</p>
+  </li>
+  <li>
+    <p>https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance-connect.html</p>
+  </li>
+</ul>
+-->
+
+
+
+
+  <meta property="og:image" content="http://localhost:4000/images/thumbnails/container_and_ssh.png" />
+  <meta itemprop="og:image" content="http://localhost:4000/images/thumbnails/container_and_ssh.png">
+  <meta name="twitter:image" content="http://localhost:4000/images/thumbnails/container_and_ssh.png" />
+
+
+
+<div class='o-wrapper'>
+
+  <div class='o-grid'>
+    <div class='o-grid__col'>
+      <article class='c-post' itemscope itemtype='http://schema.org/BlogPosting'>
+
+        <h1 class='c-post__title'>컨테이너에 ssh 하는건 나쁜가?</h1>
+
+        <time class='c-post__date' datetime='2020-01-10T00:00:00+09:00' itemprop='datePublished'>10 Jan 2020</time>
+
+        <div class='c-content' itemprop='articleBody'>
+          
+  <img src='images/thumbnails/container_and_ssh.png' class='c-post__image' alt='컨테이너에 ssh 하는건 나쁜가?'>
+
+
+          <p>나는 최근에 도커, ECS 파게이트를 사용해서 이미지를 빌드하고 컨테이너를 띄우는 작업을 했다. 그 당시에는 알 수 없는 이유로 컨테이너가 계속 뜨지 않았고, <code class="highlighter-rouge">cloud watch</code> 로그에는 에러 로그가 찍히지 않았다. 그래서 EC2 instance를 사용할 때 처럼 <code class="highlighter-rouge">ssh</code> 접속을 하고 싶었고, 접속을 하려고 stack overflow 와 AWS 공식문서를 읽다가 상당히 많은 개발자들이 <code class="highlighter-rouge">컨테이너에 ssh 접속을 한다는 건 정말 이상한 일</code>, <code class="highlighter-rouge">production 서버에 ssh 하고싶은 상황이 발생하다는 것 자체가 문제</code>라고 한 코멘트를 읽었다. 컨테이너에 ssh 접속을 하는게 왜 나쁜지에 대해 설명한 글을 아래 부분 번역했다.</p>
+
+<h5 id="도커-컨테이너에서-ssh-서버를-돌린다면-잘못하고-있는것이다">도커 컨테이너에서 SSH 서버를 돌린다면, 잘못하고 있는것이다.</h5>
+
+<p>사람들이 도커를 처음 사용할때 자주 하는 질문이 있다. ‘컨테이너 안에 어떻게 들어가나요?’ 그리고 다른 사람들의 대답은 이렇다. ‘컨테이너에서 ssh 돌려요.’ 이건 나쁜 방법이다. 이제 이 글에서는 컨테이너에서 ssh 돌리기가 왜 잘못됐는지 이유를 알아보고, ssh 대신 뭘 해야하는지에 대해 알아본다.</p>
+
+<p>ssh 서버를 돌리는건 너무 좋아보인다. 컨테이너 안에 쉽게 들어갈 수 있게 해주기 때문이다. 대부분의 개발자들이 ssh를 매일 사용하고, 퍼블릭과 프라이빗 키, 패스워드리스 로그인, 키 에이전트, 포트 포워딩등에 친숙하다.</p>
+
+<p>레디스 서버나 자바 웹서비스용 도커 이미지를 만드는 중이라고 가정하자. 다음은 몇가지 생각해볼만한 질문들이다.</p>
+
+<ul>
+  <li>
+    <p>SSH를 무엇 때문에 사용하려 하는가?</p>
+
+    <p>보통 <code class="highlighter-rouge">ssh</code> 를 하려 하는 이유는, 백업, 로그 확인, 프로세스 재시작, 환경설정 바꾸기, gdb 또는 strace 와 같은 툴로 서버 디버깅 등이다. ssh 없이도 이런 활동을 할 수 있다.</p>
+  </li>
+  <li>
+    <p>키와 패스워드 관리는 어떻게 할 것인가?</p>
+
+    <p>대부분의 개발자들이 키와 패스워드를 이미지에 추가해서 굽거나, 볼륨에 넣는다. 키나 패스워드를 업데이트 해야 하는 상황에서는 어떻게 할건가? 이미지 안에 이들을 같이 넣고 구워버리면, 업데이트가 필요한 상황에서는 이미지를 재빌드하고, 재배포하고, 컨테이너를 재시작하는 일련의 과정을 거쳐야 한다.</p>
+
+    <p>더 나은 방법은 키, 패스워드를 볼륨에 넣고 볼륨을 관리하는 것이다. 꽤 괜찮은 방법이지만 현격한 단점 몇가지가 있다. 해당 방법을 사용할 경우 컨테이너가 절대 볼륨에 write를 하지 않도록 해야 한다. 관리를 잘 못하면, 키와 패스워드가 오염되서 사용불가 상태가 될 수 있다. 만약 여러대의 컨테이너가 해당 키, 패스워드를 동시에 공유하는 상태라면 사태는 더 심각해진다.</p>
+  </li>
+  <li>
+    <p>보안 업그레이드 관리는 어떻게 할 것인가?</p>
+
+    <p>ssh 서버는 꽤 안전하다. 그러나, 여전히 몇가지 보안 이슈가 있다. 그래서 ssh 를 사용해서 컨테이너를 업그레이드 해야 할 필요성을 느끼게 될 것이다. 업그레이드를 하려면 이미지를 다시 재빌드 하고, 모든 컨테이너를 재시작 해야한다.</p>
+  </li>
+  <li>
+    <p>그냥 <code class="highlighter-rouge">ssh</code> 서버를 붙여야 한다면?</p>
+
+    <p>안됀다. <code class="highlighter-rouge">ssh</code> 서버만 붙이는게 아니라, Monit 이나 Supervisor같은 프로세스 매니저도 추가해야 한다. 도커는 1개의 프로세스만 관리하기 때문이다. 프로세스가 여러개 필요하다면, 더 상위레벨에서 프로세스들을 관리하는 무언가를 추가해야 하고, 그말은 즉슨 아주 가볍고 간단한 컨테이너를 그냥 복잡한 무언가로 바꾸는 것과 같다. 어플리케이션이 중지한다면, 도커에서 정보를 얻는게 아니고 프로세스 매니저에서 정보를 찾아야 하게 된다.</p>
+  </li>
+  <li>
+    <p>앱을 컨테이너 안에 넣는 일을 하면서 동시에 정책과 보안 담당이라면?</p>
+
+    <p>작은 기업에서는 이게 큰 문제가 되지 않는다. 하지만 큰 기업에서, 앱을 컨테이너에 넣는 역할을 담당하고 있다면 아마 원격 접근 정책을 관리는 다른 사람이 하고 있을 것이다. 큰 기업은 누가 접근을 할 수 있고, 어떤 종류의 관리 감독이 필요한지에 대한 빡빡한 정책을 갖고 있을 가능성이 높다. 이런 경우라면, 컨테이너에 <code class="highlighter-rouge">ssh</code> 하고 싶은 생각이 없을 것이다.</p>
+  </li>
+</ul>
+
+<p>그런데 <code class="highlighter-rouge">ssh</code> 를 안하고 어떻게 백업, 로그 확인, 서비스 재시작 등등을 할 수 있을까?</p>
+
+<ul>
+  <li>
+    <p>백업</p>
+
+    <p>데이터는 볼륨에 있어야 한다. 다른 컨테이너를 실행할때, <code class="highlighter-rouge">-- volumes-from</code> 옵션을 주면 첫번째 컨테이너와 볼륨을 공유한다. 새 컨테이너는 백업을 수행하고, 필요한 데이터에 대한 접근도 할 수 있다.</p>
+  </li>
+  <li>
+    <p>로그 확인</p>
+
+    <p>볼륨을 사용하자. 만약 특정 디렉토리 안에 로그를 남기길 원한다면, 그리고 디렉토리가 볼륨이라면 로그 검사용 컨테이너를 돌릴 수 있다. (<code class="highlighter-rouge">--volumes-from</code>)그리고 로그를 확인할 수 있다.</p>
+  </li>
+  <li>
+    <p>서비스 재시작</p>
+
+    <p>모든 서비스는 시그널로 재시작하는게 좋다. 만약 <code class="highlighter-rouge">/etc/ini.d/foo restart</code> 또는 <code class="highlighter-rouge">service foo restart</code> 를 한다면, 프로세스에 특정 시그널을 보내게 된다. <code class="highlighter-rouge">docker kill -s &lt;signal&gt;</code> 시그널을 보낼 수 있다.</p>
+
+    <p>어떤 서비스들은 시그널을 받지 않지만, 소켓으로 커맨드를 받는다. 만약 TCP 소켓이라면, 네트워크에 연결하면 된다. 만약 UNIX소켓이라면, 볼륨을 사용하면 된다. 컨테이너와 서비스를 세팅하고 특정 디렉토리안에 있는 소켓을 컨트롤하면, 그 디렉토리가 볼륨이다. 그러면 볼륨, 소켓을 사용할 수 있는 새 컨테이너를 실행할 수 있다.</p>
+
+    <p>이 과정은 복잡하지 않다. 서비스가 <code class="highlighter-rouge">foo</code>  라는 소켓을 <code class="highlighter-rouge">/var/run/foo.sock</code> 이라는 소켓을 생성했고, 서비스를 깨끗하게 재시작하기 위해서 <code class="highlighter-rouge">fooctl restart</code>  라는 명령어를 실행해야 한다고 하자. 재시작을 하고 싶을 때는, 정확히 똑같은 이미지를 실행하지만, <code class="highlighter-rouge">--volumes-from</code> 옵션을 함께 사용해서 명령어를 오버라이드 한다. 예를 들면 다음과 같다.</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Starting the service</span>
+<span class="nv">CID</span><span class="o">=</span><span class="si">$(</span>docker run <span class="nt">-d</span> <span class="nt">-v</span> /var/run fooservice<span class="si">)</span>
+<span class="c"># Restarting the service with a sidekick container</span>
+docker run <span class="nt">--volumes-from</span> <span class="nv">$CID</span> fooservice fooctl restart
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>환경설정 수정</p>
+
+    <p>환경설정을 바꿔야 한다면 이미지 안에서 해야한다. 왜냐면 새 컨테이널르 시작하면 옛날 설정들이 안에 또 있을 거고, 변경사항을 모두 잃어버리게 되니까 말이다.</p>
+
+    <p>만약 새 버추얼 호스트를 추가하는 등의 변경을 해야 한다면, 볼륨을 사용하면 된다. 이런 환경설정들은 볼륨 안에 있어야 하고, 볼륨은 특수 목적인 ‘설정 변경’ 용 컨테이너와 공유되어야 한다. 이 컨테이너 안에서는 뭐든지 사용할 수 있다. <code class="highlighter-rouge">ssh</code> 와 제일 좋아하는 에디터, 또는 <code class="highlighter-rouge">API</code> 콜을 받는 웹 서비스, 또는 외부 소스로 부터 정보를 갖고오는 크론탭 등등.</p>
+
+    <p>걱정하는 사항은 서비스를 돌리는 컨테이너, 환경설정 업데이트용 컨테이너 두개로 분리해야 한다.</p>
+  </li>
+  <li>
+    <p>서비스 디버깅</p>
+
+    <p>이런 상황이 정말로 컨테이너에 접속하고 싶은 상황이다. 왜냐면 <code class="highlighter-rouge">gdb</code>, <code class="highlighter-rouge">strace</code>, 등등을 실행해야 하니까 말이다. 이럴때는, <code class="highlighter-rouge">nsenter</code>를 사용하면 된다.</p>
+  </li>
+</ul>
+
+<h3 id="결론">결론</h3>
+
+<p>컨테이너에 ssh 접속하는건 그렇게 까지 나쁘지 않다. 도커 호스트에 접속하지 않아도 되어서 편하다.</p>
+
+<p>하지만 ssh를 안할 이유도 많은 걸 알았고, 그리고 ssh를 사용하지 않고도 더 깨끗한 구조에서 원하는 모든 기능을 사용할 수 있다.</p>
+
+<h5 id="reference">Reference</h5>
+
+<ul>
+  <li>
+    <p>https://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/</p>
+  </li>
+  <li>
+    <p>https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance-connect.html</p>
+  </li>
+</ul>
+
+        </div>
+
+        <div class='c-tags'>
+          
+            <a href='/tag/Docker'>Docker</a>
+          
+        </div>
+        <hr/>
+         <!-- Your share button code start-->
+<!--          <div class="fb-share-button"-->
+<!--            data-href="http://localhost:4000"-->
+<!--            data-layout="button_count">-->
+<!--          </div>-->
+        <!-- Your share button code end-->
+
+      </article>
+
+    </div>
+  </div>
+</div>
+
+    <!--<footer class='c-footer' style="background-color: #fff; border-top:1px solid gainsboro">-->
+<!--  <div class='o-grid'>-->
+<!--    <div class='o-grid__col o-grid__col&#45;&#45;full' style="font-size: 12px;-->
+<!--    color: gray;">-->
+<!--      Suhyun Baik-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</footer>-->
+</div>
+
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/evil-icons.min.js"></script>
+<script src="/js/jquery.fitvids.js"></script>
+<script src="/js/app.js"></script>
+<!-- Load Facebook SDK for JavaScript -->
+<div id="fb-root"></div>
+<script>(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+</body>
+</html>

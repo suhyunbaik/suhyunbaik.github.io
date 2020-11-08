@@ -1,0 +1,1537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>A python developer</title>
+    <description>A pythonist in startup</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Thu, 30 Apr 2020 18:04:23 +0900</pubDate>
+    <lastBuildDate>Thu, 30 Apr 2020 18:04:23 +0900</lastBuildDate>
+    <generator>Jekyll v4.0.0</generator>
+
+    
+      <item>
+        <title>2020년 독서목록</title>
+        <description>&lt;h5 id=&quot;1월&quot;&gt;1월&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;객체지향의 오해와 진실&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;3월&quot;&gt;3월&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;도메인 주도 설계 핵심&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;4월&quot;&gt;4월&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;개발 7년차, 매니저 1일차&lt;/li&gt;
+  &lt;li&gt;소프트웨어 장인&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;5월&quot;&gt;5월&lt;/h4&gt;
+
+</description>
+        <pubDate>Wed, 29 Apr 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/archive/2020/04/29/2020-book-list/</link>
+        <guid isPermaLink="true">http://localhost:4000/archive/2020/04/29/2020-book-list/</guid>
+      </item>
+    
+      <item>
+        <title>개발 조직의 문화와 제품의 개발 속도</title>
+        <description>&lt;p&gt;나는 개발자로서 첫 커리어를 작은 스타트업에서 시작했다. 지금은 이직해서 다른 회사를 다니고 있고 시간도 많이 흘렀지만 아직도 기억에 남는 에피소드가 몇개 있다. 그 중 한가지는 서비스 장애에 대처하는 개발 문화와 관련된 이야기다.&lt;/p&gt;
+
+&lt;p&gt;문제의 그날, 오후에 갑자기 서버가 에러를 내뿜으면서 죽었고 앱에 접속할 수 없는 심각한 장애가 터졌다. 약 20분 뒤에 갑자기 서비스가 복구됐고, CTO가 모든 개발자들을 회의실에 소집했다. 그리고 누가 먼저 서비스가 안된다는 사실을 알았냐고 질문했다. 그런데 다들 서로 얼굴만 쳐다보고 말하기를 주저했다.&lt;/p&gt;
+
+&lt;p&gt;CTO 가 이렇게 말했다. ‘우리가 장애를 어떻게 복구했는지 알아보기 위해서 모였습니다.’ 그러자 다들 한마디씩 말하기 시작했다. CTO는 누가 무엇을 발견해서 누구에게 전달했는지 화이트 보드에 적었다. 장애발생시 부터 복구때까지 무슨일이 있었는지, 한 눈에 볼 수 있도록 정리가 됐다. 안드로이드 개발자가 제일 먼저 앱이 문제가 있다는 사실을 알았고, 서버 개발자 a 에게 확인을 요청했다. 개발자 a는 에러 로그를 보고 db 에 문제가 있다는 사실을 알았지만 혼자 해결할 수 없어서 다른 서버 개발자 b에게 해당 내용을 공유하면서 같이 해결하자고 했다. 동시에 다른 팀에 있었던 서버 개발자 c, d 는 서비스에 문제가 있다는 사실을 알아차렸고 문제의 원인도 파악했다. 그래서 바로 CTO에게 전달헀고 CTO가 장애 대응을 했다.&lt;/p&gt;
+
+&lt;p&gt;CTO는 다음에 만약 비슷한 상황이 벌어진다면 더 빨리 복구하기 위해서 어떤 부분을 개선할 수 있겠냐고 물어봤다. 개발자들은 화이트 보드에 적힌 타임라인에서 군더더기처럼 보이는 부분을 제거했다. 그러자 타임라인이 짧아졌고, 다음번 장애 상황에서는 누가 무엇을 해야 하는지가 명확해졌다. 이제 장애를 일으킨 사람은 더이상 그 회의의 관심사가 아니였다. 그 후에도 장애는 발생했다. 다행히 앱에 접속을 할 수 없을 정도의 치명적인 장애는 아니였다. 대응도 빨랐다.&lt;/p&gt;
+
+&lt;p&gt;이 조직은 이러한 과정을 거쳐서 장애를 더 빨리 극복하게 됐다. 이런 장애는 다른 회사도 경험할텐데, 다들 어떻게 풀어나가고 있을까? 그 이후 나는 몇개의 회사를 거치면서 궁금증을 해소했다. 많은 조직들이 다양한 방식으로 장애에 대응한다. 그 중 다른 의미로 인상깊었던 조직은 이렇게 문제를 해결 했다. 에러가 난 기능을 개발한 개발자를 색출해서 회의실에 몰아놓고 월급을 깎겠다고 했다. 해당 개발자의 이름을 전사원이 들어가있는 채팅방에서 장애의 원인으로 언급했다. 해당 조직은 내가 경험한 조직중에 제품 개발, 개선이 가장 느렸고 개발자 이탈률이 높은 조직이였다.&lt;/p&gt;
+
+&lt;p&gt;장애는 유저 이탈률에 큰 영향을 미친다. 비개발자로 구성된 경영진은 장애를 낸 개발자를 문제의 원인으로 본다. 그래서 해당 개발자에게 책임을 묻는다. 그러나 이러한 해결책은 위에 언급한 사례처럼, 무중단 서비스를 만드는 게 아니고 오히려 조직을 보수화해 기능 개발과 개선만 느려진다. 생각해보면 장애를 절대 일으키지 않는 방법은 개발을 안하는 것이기 때문이다. 개발자들 대부분은 기능 개발 및 배포를 두려워 하게 되고, 결국 기능 개발이 느린 조직이 된다. 대부분의 회사에서 개발 조직의 문화는 사업과 무관한 부분처럼 여기지만 사실은 아니다.&lt;/p&gt;
+
+&lt;h6 id=&quot;references&quot;&gt;References&lt;/h6&gt;
+&lt;p&gt;https://developers.google.com/web/fundamentals/performance/why-performance-matters&lt;/p&gt;
+</description>
+        <pubDate>Wed, 01 Apr 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2020/04/01/dev-culture-and-speed/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2020/04/01/dev-culture-and-speed/</guid>
+      </item>
+    
+      <item>
+        <title>레거시 프로젝트에 강결합된 배포&amp;운영 서비스 교체 -1</title>
+        <description>&lt;p&gt;문제의 레거시 프로젝트는 대략 2012년부터 시작해, 문서 한장 없이 구전을 통해 스펙이 전해졌다. 이 프로젝트는 서버 모니터링을 할때 AWS OpsWorks 라는 서비스를 사용하고, Django Fabric 패키지를 사용해 짠 코드를 사용해 배포한다.&lt;/p&gt;
+
+&lt;p&gt;OpsWorks 와 Fabric 을 사용하는 배포 방식은 옛날에는 아무 문제가 없었을테지만, 내가 맡게 된 2019년에는 이미 여러가지 문제점이 있었다.&lt;/p&gt;
+
+&lt;p&gt;문제점들&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Fabric 코드와 OpsWorls 서비스는 강하게 결합 되어있어, 다른 서비스(예를 들지만 code deploy)를 사용할 수 없다. 만약 다른 서비스를 사용하고 싶다면 Fabric을 사용하는 코드 부분을 전부 바꾸거나, 덜어내야한다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;OpsWorks 내에 인스턴스를 등록할때 인스턴스에 이름을 줄 수 있다. 만약 레디스 용 인스턴스를 런칭한 후 OpsWorks에 등록해 Redis1이라는 이름을 줬다면, 다른 인스턴스 설정에는 레디스 인스턴스의 IP 대신 Redis1이라고 적어도 바로 연결된다. 편리해 보이지만 지금처럼 OpsWorks를 제거하려고 하면 모든 설정파일에서 Ip 주소 대신 이름이 적힌 부분을 찾아서 다 바꿔줘야 한다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;OpsWorks로 런칭한 인스턴스에는 OpsWorks agent 가 자동으로 설치된다. AMI를 뜬 후 해당 AMI 를 사용해서 인스턴스를 런칭하면 agent 프로세스가 계속 실행되면 인스턴스의 상태를 AWS 쪽에 쏘게되고. 해당 agent 를 제거하는 방법이 안쉽다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;OpsWorks에서 배포할때는 chef 라는 걸 사용하는데, 해당 프로그램은 루비로 프로그래밍한다. 만약 cronjob이나 virtualenv, python, package 등등 의 버전이 변경될 경우 chef 를 수정해줘야 한다. (그리고 이팀에는 루비 개발자가 없다)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;로드밸런서가 elb 가 아니고, OpsWorks classic 로드밸런서를 사용한다. OpsWorks classic 로드밸런서는 elb에 비해서 기능이 제한적이다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;트래픽이 몰려서 로드밸런싱할때, AMI에서 인스턴스를 런칭하는 방식이 아니다. OpsWorks 에 미리 등록된 인스턴스를 부팅 한 후, 쉐프가 처음부터(virtualenv 패키지 설치 부터 완전히 새로) 세팅을 한다. 이 작업이 끝난 후에야 로드밸런서에 연결되기 때문에 느리다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;OpsWorks를 이제 많이 사용하지 않는 추세이기 때문에 문제점이 발생했을 때 찾아보기가 힘들고, 공식문서도 더이상 유지보수 되지 않는다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;이 외에도 다양한 문제점이 있어서 OpsWorks 서비스를 더이상 사용하지 않기로 결정헀다. 가장 많이 사용하는 기능이 배포 기능이라, 배포를 다른 서비스로 바꿔야 했다. 그런데 Ec2 Instance를 버리고 컨테이너 기반 Fargate 로 가기로 결정이 됐다. OpsWorks를 다른서비스로 교체하는 결정도 기술적인 큰 변화인데, 교체와 동시에 Fargate를 사용하는 것도 큰 기술 변화라 걱정이 앞섰다.&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 21 Mar 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2020/03/21/legacy-and-opsworks/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2020/03/21/legacy-and-opsworks/</guid>
+      </item>
+    
+      <item>
+        <title>장고, EC2 Fargate 사용시 ALLOWED HOST 문제 + 조언은 어떻게 하는게 가장 효율적일까?</title>
+        <description>&lt;p&gt;목차&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;문제&lt;/li&gt;
+  &lt;li&gt;원인 추측&lt;/li&gt;
+  &lt;li&gt;해결&lt;/li&gt;
+  &lt;li&gt;개선&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h5 id=&quot;1-문제&quot;&gt;1. 문제&lt;/h5&gt;
+
+&lt;p&gt;과거 스테이징 서버는 EC2 Instance 를 사용하고, OpsWorks 로 배포한다. 이걸 Fargate 로 바꾸자는 요구가 있어서 서버를 새로 구성하게 됐다. 도커파일을 작성해 ECR에 이미지를 올리고, Fargate에 배포하는건 빠르게 끝냈다. 새로 구성한 ELB 주소도 ALLOWED HOST 에 추가했다. 그런데 리퀘스트를 보내면 ALLOWED HOST 에서 막히는 문제가 발생헀다.&lt;/p&gt;
+
+&lt;h5 id=&quot;2-원인추측&quot;&gt;2. 원인추측&lt;/h5&gt;
+
+&lt;p&gt;프로젝트는 nginx, uwsgi, django 로 구성되어 있다. 그런데 도커 파일에는 uwsgi 만 사용한다. 그래서 리퀘스트를 바로 uwsgi 가 받아서 컨테이너 내부 도커에 전달할때, 해당 리퀘스트가 어디에서 왔는지 (ELB) 정보가 없어서 막히는것이라고 생각헀다. 이때까지만 해도 리퀘스트 출발 정보를 보존해서 uwsgi 에 전달하는게 nginx 에만 있는 기능이라고 생각헀다.&lt;/p&gt;
+
+&lt;p&gt;-&amp;gt; nginx 를 추가했지만 동일한 문제가 발생헀다.&lt;/p&gt;
+
+&lt;p&gt;nginx 를 추가했지만 동일문제가 계속 발생했다. 그래서 두번째로 한건 nginx - uwsgi 가 서로 소켓 통신하도록 바꿔준것이다.&lt;/p&gt;
+
+&lt;p&gt;-&amp;gt; 물론 문제와 전혀 상관없는 부분이였기 때문에 동일 문제는 계속 발생했다. 그 전에는 http 통신을 하도록 되어있었으니 만약 계속 소켓 통신하도록 했다면 속도는 아주 조금 빨라졌지 않았을까? 다시 생각해보니 별로 티도 안났을것 같다. 결국 다른 사람이 http 통신하게 바꾸라고 해서 바꿨다.&lt;/p&gt;
+
+&lt;p&gt;파게이트의 ip를 주소를 직접 넣어줘야 겠다는 생각을 했다. 그런데 파게이트 컨테이너는 aws vpc 네트워크 모드에서 돌아가고 있고, 컨테이너가 새로 뜰 때 마다 ip 주소가 바뀐다. 그렇다면 django ALLOWED HOST에서 가능한 대역폭을 전부 넣어줘야한다. 그런데 장고에 대역폭을 허용하는 기능이 있는지 모르겠다. 그래서 stack overflow를 뒤졌다. 알게된건 사람들이 가능한 ip 주소를 전부 생성해서 ALLOWED HOST 리스트에 추가하는 방법으로 해결하고 있다는 사실을 알게됐다. 이 방법을 선택할 수 도 있지만 사실 필요한 ip 주소는 한개인데, 모든 ip 주소를 생성해서 넣어주는 부분이 내키지 않았다.&lt;/p&gt;
+
+&lt;h5 id=&quot;3해결&quot;&gt;3.해결&lt;/h5&gt;
+
+&lt;p&gt;stack overflow에서 발견한 해결책은 이렇다. ECS 컨테이너는 환경변수에 해당 컨테이너의 IPv4 address를 추가하기 때문에 그걸 갖고와서 ALLOWED HOST에 추가해주면 된다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;requests&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;EC2_PRIVATE_IP&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;METADATA_URI&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ECS_CONTAINER_METADATA_URI'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'http://169.254.170.2/v2/metadata'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;resp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;METADATA_URI&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# print(data)
+&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;container_meta&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Containers'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;EC2_PRIVATE_IP&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;container_meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Networks'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'IPv4Addresses'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;except&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# silently fail as we may not be in an ECS environment
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EC2_PRIVATE_IP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# Be sure your ALLOWED_HOSTS is a list NOT a tuple
+&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;# or .append() will fail
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;ALLOWED_HOSTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EC2_PRIVATE_IP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;왜 컨테이너를 사용할떄는 ALLOWED HOST에 IP 주소를 추가해야 할까? ECS 에이전트는 작업정의의 컨테이너에서 각 작업을 위한 ‘정지’ 상태의 컨테이너를 만든다. 그러고 난 후 ‘정지’ 컨테이너를 위해서 네트워크 네임스페이스를 세팅하고, 작업 내 다른 컨테이너도 시작해 정지된 컨테이너와 같은 네트워크를 공유하게 만든다. 그래서 컨테이너에 IPv4 주소를 추가만 해주면 문제가 해결되는 것이다.&lt;/p&gt;
+
+&lt;h5 id=&quot;4-개선&quot;&gt;4. 개선&lt;/h5&gt;
+
+&lt;p&gt;내가 문제를 발견했을 때 먼저 stack overflow 를 뒤졌다면, 문제를 빠르게 해결했을 것이다. 나는 검색을 하기 전에 먼저 조언을 구했는데, 내가 받은 조언은 ‘..해당 문제의 원인은  당신의 http 네트워크에 대한 이해가 부족해서 발생하는 문제..’ 였다. 이 말을 들은 순간부터 웹에 검색을 해 볼 생각을 못했고, 급한 마음에 책이나 뒤지면서 시간을 다 흘려보냈다. 이렇게 해서 꽤 많은 시간을 이 문제 해결에 버렸다.&lt;/p&gt;
+
+&lt;p&gt;서버 개발자는 네트워크 지식은 기본적으로 갖고 있어야 하고, 계속 공부하는 게 맞다. 하지만 문제 상황에서 해결을 위한 조언으로는 적절하지 못했다. 왜냐면 해당 문제를 해결하는데만 많은 시간을 써버렸고 그만큼 피쳐 개발에 시간을 덜 쓸 수 밖에 없었기 때문이다. 만약 다른 팀원이 같은 문제를 맞닥트렸다면, 어떤 방법이 가장 좋은 방법인가? 내가 생각하는 가장 좋은 방법은 우선 먼저 문제해결을 하고, 그 후에 회고나 복기를 통해서 문제 해결 방법을 짚어보면서 네트워크 지식을 쌓자고 얘기하는 방법이다. 이렇게 하면 문제 해결을 빠르게 할 수 있으니 버리는 시간 없이 바로 다른 것들을 개발할 수 있고(회사 입장에서는 좋다), 또한 문제 해결방법을 복기함으로서 자연스럽게 본인의 부족한 부분도 알 수 있기 때문이다.&lt;/p&gt;
+
+&lt;h5 id=&quot;references&quot;&gt;References&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://stackoverflow.com/questions/49828259/when-deploying-django-into-aws-fargate-how-do-you-add-the-local-ip-into-allowed&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 08 Mar 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2020/03/08/django-fargate-allowed-host/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2020/03/08/django-fargate-allowed-host/</guid>
+      </item>
+    
+      <item>
+        <title>컨테이너에 ssh 하는건 나쁜가?</title>
+        <description>&lt;p&gt;나는 최근에 도커, ECS 파게이트를 사용해서 이미지를 빌드하고 컨테이너를 띄우는 작업을 했다. 그 당시에는 알 수 없는 이유로 컨테이너가 계속 뜨지 않았고, &lt;code class=&quot;highlighter-rouge&quot;&gt;cloud watch&lt;/code&gt; 로그에는 에러 로그가 찍히지 않았다. 그래서 EC2 instance를 사용할 때 처럼 &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; 접속을 하고 싶었고, 접속을 하려고 stack overflow 와 AWS 공식문서를 읽다가 상당히 많은 개발자들이 &lt;code class=&quot;highlighter-rouge&quot;&gt;컨테이너에 ssh 접속을 한다는 건 정말 이상한 일&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;production 서버에 ssh 하고싶은 상황이 발생하다는 것 자체가 문제&lt;/code&gt;라고 한 코멘트를 읽었다. 컨테이너에 ssh 접속을 하는게 왜 나쁜지에 대해 설명한 글을 아래 부분 번역했다.&lt;/p&gt;
+
+&lt;h5 id=&quot;도커-컨테이너에서-ssh-서버를-돌린다면-잘못하고-있는것이다&quot;&gt;도커 컨테이너에서 SSH 서버를 돌린다면, 잘못하고 있는것이다.&lt;/h5&gt;
+
+&lt;p&gt;사람들이 도커를 처음 사용할때 자주 하는 질문이 있다. ‘컨테이너 안에 어떻게 들어가나요?’ 그리고 다른 사람들의 대답은 이렇다. ‘컨테이너에서 ssh 돌려요.’ 이건 나쁜 방법이다. 이제 이 글에서는 컨테이너에서 ssh 돌리기가 왜 잘못됐는지 이유를 알아보고, ssh 대신 뭘 해야하는지에 대해 알아본다.&lt;/p&gt;
+
+&lt;p&gt;ssh 서버를 돌리는건 너무 좋아보인다. 컨테이너 안에 쉽게 들어갈 수 있게 해주기 때문이다. 대부분의 개발자들이 ssh를 매일 사용하고, 퍼블릭과 프라이빗 키, 패스워드리스 로그인, 키 에이전트, 포트 포워딩등에 친숙하다.&lt;/p&gt;
+
+&lt;p&gt;레디스 서버나 자바 웹서비스용 도커 이미지를 만드는 중이라고 가정하자. 다음은 몇가지 생각해볼만한 질문들이다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;SSH를 무엇 때문에 사용하려 하는가?&lt;/p&gt;
+
+    &lt;p&gt;보통 &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; 를 하려 하는 이유는, 백업, 로그 확인, 프로세스 재시작, 환경설정 바꾸기, gdb 또는 strace 와 같은 툴로 서버 디버깅 등이다. ssh 없이도 이런 활동을 할 수 있다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;키와 패스워드 관리는 어떻게 할 것인가?&lt;/p&gt;
+
+    &lt;p&gt;대부분의 개발자들이 키와 패스워드를 이미지에 추가해서 굽거나, 볼륨에 넣는다. 키나 패스워드를 업데이트 해야 하는 상황에서는 어떻게 할건가? 이미지 안에 이들을 같이 넣고 구워버리면, 업데이트가 필요한 상황에서는 이미지를 재빌드하고, 재배포하고, 컨테이너를 재시작하는 일련의 과정을 거쳐야 한다.&lt;/p&gt;
+
+    &lt;p&gt;더 나은 방법은 키, 패스워드를 볼륨에 넣고 볼륨을 관리하는 것이다. 꽤 괜찮은 방법이지만 현격한 단점 몇가지가 있다. 해당 방법을 사용할 경우 컨테이너가 절대 볼륨에 write를 하지 않도록 해야 한다. 관리를 잘 못하면, 키와 패스워드가 오염되서 사용불가 상태가 될 수 있다. 만약 여러대의 컨테이너가 해당 키, 패스워드를 동시에 공유하는 상태라면 사태는 더 심각해진다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;보안 업그레이드 관리는 어떻게 할 것인가?&lt;/p&gt;
+
+    &lt;p&gt;ssh 서버는 꽤 안전하다. 그러나, 여전히 몇가지 보안 이슈가 있다. 그래서 ssh 를 사용해서 컨테이너를 업그레이드 해야 할 필요성을 느끼게 될 것이다. 업그레이드를 하려면 이미지를 다시 재빌드 하고, 모든 컨테이너를 재시작 해야한다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;그냥 &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; 서버를 붙여야 한다면?&lt;/p&gt;
+
+    &lt;p&gt;안됀다. &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; 서버만 붙이는게 아니라, Monit 이나 Supervisor같은 프로세스 매니저도 추가해야 한다. 도커는 1개의 프로세스만 관리하기 때문이다. 프로세스가 여러개 필요하다면, 더 상위레벨에서 프로세스들을 관리하는 무언가를 추가해야 하고, 그말은 즉슨 아주 가볍고 간단한 컨테이너를 그냥 복잡한 무언가로 바꾸는 것과 같다. 어플리케이션이 중지한다면, 도커에서 정보를 얻는게 아니고 프로세스 매니저에서 정보를 찾아야 하게 된다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;앱을 컨테이너 안에 넣는 일을 하면서 동시에 정책과 보안 담당이라면?&lt;/p&gt;
+
+    &lt;p&gt;작은 기업에서는 이게 큰 문제가 되지 않는다. 하지만 큰 기업에서, 앱을 컨테이너에 넣는 역할을 담당하고 있다면 아마 원격 접근 정책을 관리는 다른 사람이 하고 있을 것이다. 큰 기업은 누가 접근을 할 수 있고, 어떤 종류의 관리 감독이 필요한지에 대한 빡빡한 정책을 갖고 있을 가능성이 높다. 이런 경우라면, 컨테이너에 &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; 하고 싶은 생각이 없을 것이다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;그런데 &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; 를 안하고 어떻게 백업, 로그 확인, 서비스 재시작 등등을 할 수 있을까?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;백업&lt;/p&gt;
+
+    &lt;p&gt;데이터는 볼륨에 있어야 한다. 다른 컨테이너를 실행할때, &lt;code class=&quot;highlighter-rouge&quot;&gt;-- volumes-from&lt;/code&gt; 옵션을 주면 첫번째 컨테이너와 볼륨을 공유한다. 새 컨테이너는 백업을 수행하고, 필요한 데이터에 대한 접근도 할 수 있다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;로그 확인&lt;/p&gt;
+
+    &lt;p&gt;볼륨을 사용하자. 만약 특정 디렉토리 안에 로그를 남기길 원한다면, 그리고 디렉토리가 볼륨이라면 로그 검사용 컨테이너를 돌릴 수 있다. (&lt;code class=&quot;highlighter-rouge&quot;&gt;--volumes-from&lt;/code&gt;)그리고 로그를 확인할 수 있다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;서비스 재시작&lt;/p&gt;
+
+    &lt;p&gt;모든 서비스는 시그널로 재시작하는게 좋다. 만약 &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/ini.d/foo restart&lt;/code&gt; 또는 &lt;code class=&quot;highlighter-rouge&quot;&gt;service foo restart&lt;/code&gt; 를 한다면, 프로세스에 특정 시그널을 보내게 된다. &lt;code class=&quot;highlighter-rouge&quot;&gt;docker kill -s &amp;lt;signal&amp;gt;&lt;/code&gt; 시그널을 보낼 수 있다.&lt;/p&gt;
+
+    &lt;p&gt;어떤 서비스들은 시그널을 받지 않지만, 소켓으로 커맨드를 받는다. 만약 TCP 소켓이라면, 네트워크에 연결하면 된다. 만약 UNIX소켓이라면, 볼륨을 사용하면 된다. 컨테이너와 서비스를 세팅하고 특정 디렉토리안에 있는 소켓을 컨트롤하면, 그 디렉토리가 볼륨이다. 그러면 볼륨, 소켓을 사용할 수 있는 새 컨테이너를 실행할 수 있다.&lt;/p&gt;
+
+    &lt;p&gt;이 과정은 복잡하지 않다. 서비스가 &lt;code class=&quot;highlighter-rouge&quot;&gt;foo&lt;/code&gt;  라는 소켓을 &lt;code class=&quot;highlighter-rouge&quot;&gt;/var/run/foo.sock&lt;/code&gt; 이라는 소켓을 생성했고, 서비스를 깨끗하게 재시작하기 위해서 &lt;code class=&quot;highlighter-rouge&quot;&gt;fooctl restart&lt;/code&gt;  라는 명령어를 실행해야 한다고 하자. 재시작을 하고 싶을 때는, 정확히 똑같은 이미지를 실행하지만, &lt;code class=&quot;highlighter-rouge&quot;&gt;--volumes-from&lt;/code&gt; 옵션을 함께 사용해서 명령어를 오버라이드 한다. 예를 들면 다음과 같다.&lt;/p&gt;
+
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Starting the service&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;CID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /var/run fooservice&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Restarting the service with a sidekick container&lt;/span&gt;
+docker run &lt;span class=&quot;nt&quot;&gt;--volumes-from&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$CID&lt;/span&gt; fooservice fooctl restart
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;환경설정 수정&lt;/p&gt;
+
+    &lt;p&gt;환경설정을 바꿔야 한다면 이미지 안에서 해야한다. 왜냐면 새 컨테이널르 시작하면 옛날 설정들이 안에 또 있을 거고, 변경사항을 모두 잃어버리게 되니까 말이다.&lt;/p&gt;
+
+    &lt;p&gt;만약 새 버추얼 호스트를 추가하는 등의 변경을 해야 한다면, 볼륨을 사용하면 된다. 이런 환경설정들은 볼륨 안에 있어야 하고, 볼륨은 특수 목적인 ‘설정 변경’ 용 컨테이너와 공유되어야 한다. 이 컨테이너 안에서는 뭐든지 사용할 수 있다. &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; 와 제일 좋아하는 에디터, 또는 &lt;code class=&quot;highlighter-rouge&quot;&gt;API&lt;/code&gt; 콜을 받는 웹 서비스, 또는 외부 소스로 부터 정보를 갖고오는 크론탭 등등.&lt;/p&gt;
+
+    &lt;p&gt;걱정하는 사항은 서비스를 돌리는 컨테이너, 환경설정 업데이트용 컨테이너 두개로 분리해야 한다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;서비스 디버깅&lt;/p&gt;
+
+    &lt;p&gt;이런 상황이 정말로 컨테이너에 접속하고 싶은 상황이다. 왜냐면 &lt;code class=&quot;highlighter-rouge&quot;&gt;gdb&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;strace&lt;/code&gt;, 등등을 실행해야 하니까 말이다. 이럴때는, &lt;code class=&quot;highlighter-rouge&quot;&gt;nsenter&lt;/code&gt;를 사용하면 된다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;결론&quot;&gt;결론&lt;/h3&gt;
+
+&lt;p&gt;컨테이너에 ssh 접속하는건 그렇게 까지 나쁘지 않다. 도커 호스트에 접속하지 않아도 되어서 편하다.&lt;/p&gt;
+
+&lt;p&gt;하지만 ssh를 안할 이유도 많은 걸 알았고, 그리고 ssh를 사용하지 않고도 더 깨끗한 구조에서 원하는 모든 기능을 사용할 수 있다.&lt;/p&gt;
+
+&lt;h5 id=&quot;reference&quot;&gt;Reference&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;https://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance-connect.html&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Fri, 10 Jan 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2020/01/10/ssh-into-my-container-is-bad/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2020/01/10/ssh-into-my-container-is-bad/</guid>
+      </item>
+    
+      <item>
+        <title>Sentry를 Ubuntu에 self-hosted로 구축하기</title>
+        <description>&lt;p&gt;updated: 2020-01-08&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://sentry.io/welcome/&quot;&gt;Sentry&lt;/a&gt;는 소스가 github에 공개되어있어서, 직접 구축해 사용할 수 있다. 여기서는 우선 도커를 사용해 구축하는 방법을 정리했다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;도커 설치&lt;/li&gt;
+  &lt;li&gt;도커 컴포즈 설치&lt;/li&gt;
+  &lt;li&gt;센트리 도커 프로젝트 받기&lt;/li&gt;
+  &lt;li&gt;GeoIp 설정&lt;/li&gt;
+  &lt;li&gt;install.sh 로 센트리 실행&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h5 id=&quot;1-도커-설치&quot;&gt;1. 도커 설치&lt;/h5&gt;
+
+&lt;p&gt;AWS EC2 ubuntu instance를 런칭한 후 접속한다.&lt;/p&gt;
+
+&lt;p&gt;먼저 기존의 패키지들을 업데이트 해준다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt update
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;apt&lt;/code&gt; 패키지를 HTTPS로 설치할 수 있게 도와주는 패키지들을 설치한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;apt-transport-https ca-certificates curl software-properties-common
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;공식 도커 리포지토리에 GPG Key 를 등록한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl &lt;span class=&quot;nt&quot;&gt;-fsSL&lt;/span&gt; https://download.docker.com/linux/ubuntu/gpg | &lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt-key add -
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;APT 소스에  도커 리포지토리를 추가한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;add-apt-repository &lt;span class=&quot;s2&quot;&gt;&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;도커를 설치한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;docker-ce
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;도커가 설치됐는지 실행해본다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;systemctl status docker
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Output&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;● docker.service - Docker Application Container Engine
+   Loaded: loaded &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;/lib/systemd/system/docker.service&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; enabled&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; vendor preset: enabled&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+   Active: active &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;running&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; since Fri 2020-01-03 08:02:17 UTC&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 45min ago
+     Docs: https://docs.docker.com
+ Main PID: 3360 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;dockerd&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    Tasks: 8
+   CGroup: /system.slice/docker.service
+           └─3360 /usr/bin/dockerd &lt;span class=&quot;nt&quot;&gt;-H&lt;/span&gt; fd:// &lt;span class=&quot;nt&quot;&gt;--containerd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/run/containerd/containerd.sock
+
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2020-01-03T08:02:17.090217516Z&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;warning &lt;span class=&quot;nv&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Yo
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: time=&quot;&lt;/span&gt;2020-01-03T08:02:17.090478324Z&lt;span class=&quot;s2&quot;&gt;&quot; level=warning msg=&quot;&lt;/span&gt;Yo
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2020-01-03T08:02:17.090621788Z&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;warning &lt;span class=&quot;nv&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Yo
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: time=&quot;&lt;/span&gt;2020-01-03T08:02:17.090940760Z&lt;span class=&quot;s2&quot;&gt;&quot; level=info msg=&quot;&lt;/span&gt;Loadi
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2020-01-03T08:02:17.339110960Z&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info &lt;span class=&quot;nv&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Defau
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: time=&quot;&lt;/span&gt;2020-01-03T08:02:17.475207558Z&lt;span class=&quot;s2&quot;&gt;&quot; level=info msg=&quot;&lt;/span&gt;Loadi
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2020-01-03T08:02:17.516353882Z&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;level&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;info &lt;span class=&quot;nv&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Docke
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: time=&quot;&lt;/span&gt;2020-01-03T08:02:17.516788243Z&lt;span class=&quot;s2&quot;&gt;&quot; level=info msg=&quot;&lt;/span&gt;Daemo
+Jan 03 08:02:17 ip-192-168-0-55 systemd[1]: Started Docker Application Container Engine.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;2-도커-컴포즈-설치&quot;&gt;2. 도커 컴포즈 설치&lt;/h5&gt;
+
+&lt;p&gt;도커 컴포즈를 설치한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt  &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;docker-compose
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;도커 컴포즈가 정상적으로 설치됐는지 확인하기 위해 버전을 확인한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker-compose version
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;3-센트리-도커-프로젝트-받기&quot;&gt;3. 센트리 도커 프로젝트 받기&lt;/h5&gt;
+
+&lt;p&gt;센트리 도커 프로젝트를 받아야 한다. 폴더를 생성한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo mkdir &lt;/span&gt;sentry
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;해당 폴더 내에서 프로젝트를 클론한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;sentry
+git clone https://github.com/getsentry/onpremise &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;4-geoip-설정&quot;&gt;4. GeoIP 설정&lt;/h5&gt;
+
+&lt;p&gt;센트리를 사용하려면 &lt;a href=&quot;https://www.maxmind.com/en/geoip-demo&quot;&gt;GeoIp&lt;/a&gt;가 필요하다. 만약 GeoIp 데이터베이스가 이미 있다면 센트리 설정 파일에서 패스를 잡아주면 된다.  나는 센트리 프로젝트 폴더에 GeoIP 데이터베이스를 넣어주고 거기로 패스를 잡았다. &lt;code class=&quot;highlighter-rouge&quot;&gt;sentry.conf.py&lt;/code&gt;  에서 &lt;code class=&quot;highlighter-rouge&quot;&gt;GEOIP_PATH_MMDB = '../GeoIP.dat'&lt;/code&gt; 를 추가한다.&lt;/p&gt;
+
+&lt;h5 id=&quot;5-installsh-로-센트리-실행&quot;&gt;5. Install.sh 로 센트리 실행&lt;/h5&gt;
+
+&lt;p&gt;센트리를 사용하려면 다음과 같은 서비스가 필요하다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Redis&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;postgresql&quot;&gt;Postgresql&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;zookeeper&quot;&gt;Zookeeper&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://getsentry.github.io/symbolicator/&quot;&gt;Kafka&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://clickhouse.yandex&quot;&gt;Clickhouse&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://getsentry.github.io/symbolicator/&quot;&gt;Symbolicator&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;도커 컴포즈로 프로젝트를 실행하면, 해당 서비스들을 external로 연결하기 때문에 먼저 데이터볼륨을 생성하라는 에러 메세지를 준다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;docker-compose up &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Output&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ERROR: Volume sentry-symbolicator declared as external, but could not be found. Please create the volume manually using &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;docker volume create &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;sentry-symbolicator&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; and try again.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;external로 연결하는 데이터 볼륨들은 &lt;code class=&quot;highlighter-rouge&quot;&gt;docker-compose.yml&lt;/code&gt;에 명시되어 있는데, 명령어를 쳐서 만드는 것보다 가장 빠른 방법을 선택한다. 센트리 프로젝트 내의 설치 스크립트를 실행시킨다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;./install.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;스트립트를 실행하면 자동으로 db 마이그레이션까지 진행한다. 진행 중에 admin 계정 생성을 위해서 아이디와 이메일, 비밀번호를 입력해야 하는 과정이 있다.&lt;/p&gt;
+
+&lt;p&gt;모든 과정이 끝나면 도커 컴포즈 명령어로 실행한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;docker-compose up &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ctop&lt;/code&gt; 또는 &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo docker ps&lt;/code&gt;  로 컨테이너가 떠있는지 확인한다. 센트리를 실행하는 데 문제가 없다면, 인터넷 브라우저 창에서 &lt;code class=&quot;highlighter-rouge&quot;&gt;127.0.0.1:9000&lt;/code&gt; 을 입력해 센트리로 접속할 수 있다. 아까 생성했던 admin 계정으로 로그인을 한다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;데이터 볼륨&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;docker-compose.yml 을 보면 데이터 볼륨들이 명시되어있다.&lt;/p&gt;
+
+&lt;p&gt;docker-compose.yml&lt;/p&gt;
+
+&lt;div class=&quot;language-docker highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;volumes:
+  sentry-data:
+    external: true
+  sentry-postgres:
+    external: true
+  sentry-redis:
+    external: true
+  sentry-zookeeper:
+    external: true
+  sentry-kafka:
+    external: true
+  sentry-clickhouse:
+    external: true
+  sentry-symbolicator:
+    external: true
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;데이터 볼륨이란?&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Docker 데이터 볼륨은 데이터를 컨테이너가 아닌 호스트에 저장하는 방식입니다. 따라서 데이터볼륨은 컨테이너끼리 데이터를 공유할 때 활용할 수 있습니다.&lt;/p&gt;
+
+  &lt;p&gt;Docker 컨테이너 안의 파일 변경 사항은 Union File System에 의해 관리됩니다. 하지만 데이터 볼륨은 Union File System을 통하지 않고 바로 호스트에 저장됩니다. 따라서 &lt;code class=&quot;highlighter-rouge&quot;&gt;docker commit&lt;/code&gt; 명령을 통해 이미지로 생성해도 데이터 볼륨의 변경 사항은 이미지에 포함되지 않습니다.&lt;/p&gt;
+
+  &lt;p&gt;http://pyrasis.com/book/DockerForTheReallyImpatient/Chapter06/04&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;reference&quot;&gt;Reference&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04&lt;/li&gt;
+  &lt;li&gt;https://medium.com/sentry-with-docker/installing-sentry-with-docker-c1d83dfee577&lt;/li&gt;
+  &lt;li&gt;https://github.com/getsentry/onpremise&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 05 Jan 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2020/01/05/sentry-self-hosted/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2020/01/05/sentry-self-hosted/</guid>
+      </item>
+    
+      <item>
+        <title>AWS Lambda를 사용해 스테이징 서버 start, stop을 자동화하기</title>
+        <description>&lt;p&gt;서버 비용 절감을 위해서 스테이징 서버를 근무시간에만 띄우기로 결정했다. db도 최근 스냅샷을 갖고와서 런칭해 사용하기로 했다. 스테이징 서버는 웹서버용 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS fargate&lt;/code&gt;와, &lt;code class=&quot;highlighter-rouge&quot;&gt;Redis&lt;/code&gt;용 &lt;code class=&quot;highlighter-rouge&quot;&gt;EC2 instance&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Rabbitmq&lt;/code&gt; 용 &lt;code class=&quot;highlighter-rouge&quot;&gt;EC2 instance&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;RDS  instance&lt;/code&gt; 1개로 구성된다. &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS Console&lt;/code&gt;에 들어가서 마우스 클릭으로도 충분히 서버를 실행하고 끌 수 있지만, 다른 instance 를 실수로 중지할 수 있는 위험이 있다. 그리고 현재 사용하고 있는 스테이징 용 db와 새 스테이징의 vpc가 다르다. 스냅샷으로 인스턴스를 런칭할 때 다른 vpc에서 instance 를 런칭해야 하는데, 이렇게 하려면  &lt;code class=&quot;highlighter-rouge&quot;&gt;aws console&lt;/code&gt; 의 &lt;code class=&quot;highlighter-rouge&quot;&gt;vpc&lt;/code&gt; 섹션에서 수동으로 매번 지정해줘야 한다. 그리고 서버 사용이 끝나면 &lt;code class=&quot;highlighter-rouge&quot;&gt;rds instance&lt;/code&gt;를 삭제해야 하는데 이 작업 역시 수동으로 하고 싶지 않는 작업이다.&lt;/p&gt;
+
+&lt;p&gt;이런 반복 작업에 버리는 시간이 아까워서 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS Lambda&lt;/code&gt; 에 &lt;code class=&quot;highlighter-rouge&quot;&gt;boto3&lt;/code&gt; 라이브러리를 사용해 자동으로 서버를 띄우고 내리는 기능을 만들었다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/automated_server.png&quot; alt=&quot;automated server create and destroy&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;스테이징 서버를 중지하는 스크립트.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# stop staging server
+&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;boto3&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;REDIS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'REDIS'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;RABBITMQ&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'RABBITMQ'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;DB&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DB'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;TASK&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'TASK'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;lambda_handler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# stop redis, rabbitmq
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ec2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'us-east-1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stop_instances&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InstanceIds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REDIS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RABBITMQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# delete rds
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'rds'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'us-east-1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;delete_db_instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DBInstanceIdentifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                                                    &lt;span class=&quot;n&quot;&gt;SkipFinalSnapshot&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                                                    &lt;span class=&quot;n&quot;&gt;DeleteAutomatedBackups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# stop ecs task
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ecs'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'us-east-1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stop_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cluster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'cluster'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                  &lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                  &lt;span class=&quot;n&quot;&gt;reason&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;스테이징 서버를 시작하는 스크립트.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# start staging server
+&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;boto3&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;REGION&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'us-east-1'&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;REDIS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'REDIS'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;RABBITMQ&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'RABBITMQ'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;STAGING_IDENTIFIER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'STAGING_IDENTIFIER'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;MASTER_IDENTIFIER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'MASTER_IDENTIFIER'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;DB_CLASS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DB_CLASS'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;VPC_ID&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;lambda_handler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# rds 시작
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;start_db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# redis, rabbitmq 시작
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ec2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REGION&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start_instances&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InstanceIds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REDIS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RABBITMQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;start_db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;rds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'rds'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REGION&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;snapshot&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_latest_snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;restore_db_instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_latest_snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+  	&lt;span class=&quot;c1&quot;&gt;# 가장 최근 스냅샷을 갖고온다.
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;snapshots&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;describe_db_snapshots&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;DBInstanceIdentifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MASTER_IDENTIFIER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;SnapshotType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'automated'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;MaxRecords&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DBSnapshots'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;ordered_snapshots&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sorted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;snapshots&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SnapshotCreateTime&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reverse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ordered_snapshots&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot_db_identifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+  	&lt;span class=&quot;c1&quot;&gt;# db 인스턴스 세팅을 갖고온다.
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;db_instance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;describe_db_instances&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;DBInstanceIdentifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;snapshot_db_identifier&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DBInstances'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;db_instance&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;restore_db_instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+  	&lt;span class=&quot;c1&quot;&gt;# 스냅샷과 db 인스턴스 세팅으로 새 instance를 다른 vpc에 런칭한다.
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;snapshot_db_identifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DBInstanceIdentifier'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;snapshot_identifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DBSnapshotIdentifier'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;current_db_instance_settings&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot_db_identifier&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;availability_zone&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'AvailabilityZone'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;db_subnet_group_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;engine&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Engine&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;storage_type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'StorageType'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;vpc_security_group_ids&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'vpc_security_group_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;db_parameter_group_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;'DBParameterGroups'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DBParameterGroupName'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;restore_db_instance_from_db_snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;DBInstanceIdentifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STAGING_IDENTIFIER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;DBSnapshotIdentifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;snapshot_identifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;DBInstanceClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DB_CLASS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;AvailabilityZone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;availability_zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;DBSubnetGroupName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_subnet_group_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;MultiAZ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;PubliclyAccessible&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;AutoMinorVersionUpgrade&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;Engine&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;engine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;StorageType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;storage_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;VpcSecurityGroupIds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vpc_security_group_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;DBParameterGroupName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_parameter_group_name&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;인스턴스를 런칭 또는 중지 하는 액션을 할때는 람다에 서브넷을 설정해 줄 필요가 없다. 해당 스크립트를 람다 콘솔에 작성한 후 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS cloud watch&lt;/code&gt; 트리거를 설정해준다. 
+&lt;img src=&quot;/images/posts/lambda-trigger.png&quot; alt=&quot;deploy process&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;크론탭을 사용해봤던 사람이라면 쉽게 트리거를 작성할 수 있다. 나는 근무시간에만 스테이징 서버를 띄울 계획이기 때문에, 월요일 부터 금욜일 까지 9-6를 cron expression으로 작성해 추가해준다.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 27 Dec 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2019/12/27/automatically-start-and-stop-staging-server-using-lambda/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2019/12/27/automatically-start-and-stop-staging-server-using-lambda/</guid>
+      </item>
+    
+      <item>
+        <title>DevOps의 주요 업무와 도구</title>
+        <description>&lt;p&gt;updated: 2020-02-10&lt;/p&gt;
+
+&lt;p&gt;DevOps의 주요 업무와 도구&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;주요 업무&lt;/li&gt;
+  &lt;li&gt;도구&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h5 id=&quot;1-주요-업무&quot;&gt;1. 주요 업무&lt;/h5&gt;
+
+&lt;p&gt;DevOps 의 주요업무를 간략하게 정리해보면 다음과 같다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;CI/CD(Continuous integration and continuous delivery)&lt;/li&gt;
+  &lt;li&gt;IaC(Infrastructure as code)&lt;/li&gt;
+  &lt;li&gt;마이크로서비스&lt;/li&gt;
+  &lt;li&gt;CM(Configuration management)&lt;/li&gt;
+  &lt;li&gt;모니터링, 로깅&lt;/li&gt;
+  &lt;li&gt;자동화&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;2-도구&quot;&gt;2. 도구&lt;/h5&gt;
+
+&lt;p&gt;최근 DevOps 들이 많이 사용하는 툴들을 정리했다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Docker (Containerization)&lt;/li&gt;
+  &lt;li&gt;Jenkins (CI/CD)&lt;/li&gt;
+  &lt;li&gt;Circle CI (CI/CD)&lt;/li&gt;
+  &lt;li&gt;Sentry (Error tracking)&lt;/li&gt;
+  &lt;li&gt;Terraform (IaC)&lt;/li&gt;
+  &lt;li&gt;Ansible (IaC)&lt;/li&gt;
+  &lt;li&gt;Nagios (Monitoring)&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;New Relic (Monitoring)&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Docker
+  -&lt;a href=&quot;https://suhyunbaik.github.io/devops/2019/12/20/ctop/&quot;&gt;ctop으로 도커 컨테이너 모니터링 하기&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Jenkins
+  -&lt;a href=&quot;https://suhyunbaik.github.io/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-1/&quot;&gt;자동화된 배포 1&lt;/a&gt;
+  -&lt;a href=&quot;https://suhyunbaik.github.io/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-2/&quot;&gt;자동화된 배포 2&lt;/a&gt;
+  -&lt;a href=&quot;https://suhyunbaik.github.io/devops/3019/13/31/automated-deploy-using-docker-and-jenkins-3/&quot;&gt;자동화된 배포 3&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Sentry
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;https://suhyunbaik.github.io/devops/2020/01/05/sentry-self-hosted-01/&quot;&gt;Sentry를 Ubuntu 18.04(Bionic) 에 self-hosted 형태로 구축하기 - 1 docker로 설치하기&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sat, 21 Dec 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2019/12/21/devops-main-and-tools/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2019/12/21/devops-main-and-tools/</guid>
+      </item>
+    
+      <item>
+        <title>도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 3 AWS ECS</title>
+        <description>&lt;p&gt;이제 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS&lt;/code&gt;를 설정해서 파게이트를 띄워야 한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS&lt;/code&gt;를 쓰려면 알아야 할 것들을 정리했다.&lt;/p&gt;
+
+&lt;h4 id=&quot;클러스터cluster&quot;&gt;클러스터(cluster)&lt;/h4&gt;
+&lt;p&gt;ECS의 기본단위로, 컨테이너를 실행하는 가상의 공간이다.&lt;/p&gt;
+
+&lt;h4 id=&quot;컨테이너-인스턴스container-instance&quot;&gt;컨테이너 인스턴스(container instance)&lt;/h4&gt;
+&lt;p&gt;클러스터에 속한 인스턴스다. EC2 또는 파게이트를 선택할 수 있다.&lt;/p&gt;
+
+&lt;h4 id=&quot;태스크-디피니션task-definition&quot;&gt;태스크 디피니션(task definition)&lt;/h4&gt;
+&lt;p&gt;태스크를 실행하기 전에 만드는 스펙이다. 여기에는 컨테이너 네트워크 모드, 역할, 이미지, 실행 명령어 등등 설정을 할 수 있다. 태스크 디피니션을 아마존 콘솔에서 만들어 놓고, &lt;code class=&quot;highlighter-rouge&quot;&gt;task definition.json&lt;/code&gt; 을 프로젝트에 포함시켜 배포할 때 마다 다르게 설정 할 수 도 있다.&lt;/p&gt;
+
+&lt;h4 id=&quot;태스크task&quot;&gt;태스크(task)&lt;/h4&gt;
+&lt;p&gt;컨테이너를 실행하는 단위.&lt;/p&gt;
+
+&lt;h4 id=&quot;서비스service&quot;&gt;서비스(service)&lt;/h4&gt;
+&lt;p&gt;태스크를 관리하는 단위.&lt;/p&gt;
+
+&lt;p&gt;요약하자면 클러스터 안에는 컨테이너 인스턴스가 있고, 컨테이너 인스턴스를 실행하려면 태스크가 필요하다. 태스크 디피니션을 만들어서 태스크를 어떻게 실행할 것인지 결정한다. 한번 만들어진 태스크 디피니션의 설정값은 디폴트 값처럼 적용된다. 태스크 디피니션은 컨테이너를 배포할 때 마다 변경할 수 있다.&lt;/p&gt;
+
+&lt;h4 id=&quot;1-클러스터-생성&quot;&gt;1. 클러스터 생성&lt;/h4&gt;
+&lt;p&gt;먼저 클러스터를 만든다. 파게이트를 선택하고, 이름을 정한다. VPC는 원한다면 새로 만들고, 기존 것을 사용할거면 그대로 둔다. 컨테이너 인사이트는 클러스터, 컨테이너, 서비스 레벨에서 지표를 수집하는 기능이다. 나중에 aws-cli로도 활성화 시킬 수 있다.
+&lt;img src=&quot;/images/posts/ecs-01.png&quot; alt=&quot;ECS 1&quot; /&gt;
+&lt;img src=&quot;/images/posts/ecs-02.png&quot; alt=&quot;ECS 2&quot; /&gt;
+create 버튼만 누르면 ECS 클러스터가 바로 생성된다.&lt;/p&gt;
+
+&lt;h4 id=&quot;2-태스크-디피니션-생성&quot;&gt;2. 태스크 디피니션 생성&lt;/h4&gt;
+&lt;p&gt;이제 태스크 디피니션을 생성한다. 
+&lt;img src=&quot;/images/posts/taskdefinition-01.png&quot; alt=&quot;task definition&quot; /&gt;&lt;br /&gt;
+create 을 선택하면 첫 화면에서 파게이트/EC2 둘 중에 하나를 선택할 수 있다. 이번에는 파게이트를 선택한다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/taskdefinition-02.png&quot; alt=&quot;task definition&quot; /&gt;&lt;br /&gt;
+태스크 디피니션의 이름을 정한다. 그리고 IAM Role 도 선택해야 한. ECS와 클라우드 워치 관련 권한을 가 role 을 만들어서 추가한다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/taskdefinition-03.png&quot; alt=&quot;task definition&quot; /&gt;&lt;br /&gt;
+다음은 태스크 사이즈를 정해햐 한다. 일단은 가장 작은 사이즈로 한다. 사이즈를 정한 뒤에 컨테이너를 추가할 수 있다. &lt;code class=&quot;highlighter-rouge&quot;&gt;Add container&lt;/code&gt;를 선택하면 컨테이너의 세부사항을 설정할 수 있는 창이 따로 열린다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/taskdefinition-04.png&quot; alt=&quot;task definition&quot; /&gt;&lt;br /&gt;
+컨테이너 이름을 정한다. 만약 컨테이널르 띄울때 쓸 이미지가 있다면 입력해준다. &lt;code class=&quot;highlighter-rouge&quot;&gt;port mapping&lt;/code&gt;에서 열어줄 포트를 정한다. 나는 &lt;code class=&quot;highlighter-rouge&quot;&gt;80&lt;/code&gt; 번 포트만 열었다. 보통 &lt;code class=&quot;highlighter-rouge&quot;&gt;EC2&lt;/code&gt; 인스턴스에 &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; 접속을 많이 한다면 22번 포트도 추가로 열어준다. 
+Advanced container configuration에서 health check, environment 등등을 설정해 줄 수 있다. 나는 다른 설정은 필요하지 않아서 다 넘겼다. 한번쯤은 보고 넘겨야 하는 부분은 logging 이다. 파게이트로 컨테이너를 띄우 디버깅이 굉장히 힘들어 질 수 도 있다. 파게이트는 기본적으로 cloudwatch로 로그를 보낸다. loggging 섹션에서 어디에 로깅을 쌓는지 확인할 수 있다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/taskdefinition-05.png&quot; alt=&quot;task definition&quot; /&gt;&lt;br /&gt;
+컨테이너를 띄울때 실패했던 이유 중에 logging 부분 설정이 잘못되있는 경우도 있고, 띄우는데 성공했지만 cloudwatch 로그에 아무것도 찍히지 않는 경우도 있다. cloudwatch에는 console log만 보이고 syslog는 보이지 않기 때문에, 로그에 내용이 없다면 로깅 부분을 살펴봐야 한다.&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 21 Dec 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-3/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-3/</guid>
+      </item>
+    
+      <item>
+        <title>도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성</title>
+        <description>&lt;p&gt;updated: 2019-12-27&lt;br /&gt;
+이번에는 젠킨스 파일을 작성한다.&lt;/p&gt;
+
+&lt;p&gt;젠킨스는 2가지 문법을 지원한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;Scripted&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Declarative&lt;/code&gt; 2가지가 있다. &lt;code class=&quot;highlighter-rouge&quot;&gt;Scripted&lt;/code&gt; 문법은 쉘 스크립트처럼 작성해서 파이프라인을 구성할 수 있다. &lt;code class=&quot;highlighter-rouge&quot;&gt;Groovy&lt;/code&gt; 를 써봤으면 쉽게 쓸 수 있다. 그래서 이번에는 &lt;code class=&quot;highlighter-rouge&quot;&gt;Scripted&lt;/code&gt; 문법을 사용했다.&lt;/p&gt;
+
+&lt;p&gt;다음은 &lt;code class=&quot;highlighter-rouge&quot;&gt;Scripted&lt;/code&gt; 문법 전용 &lt;code class=&quot;highlighter-rouge&quot;&gt;Directive&lt;/code&gt; 다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stage&lt;/code&gt;  : 파이프라인의 각 단계&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git&lt;/code&gt; : git 에서 프로젝트 clone&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sh&lt;/code&gt; : unix 환경에서 실행할 명령어 실행&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;def&lt;/code&gt;: 변수 또는 함수 선언&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dir&lt;/code&gt;: 명령을 수행할 디렉토리/ 폴더 정의&lt;/p&gt;
+
+&lt;p&gt;나는 스테이지를 3개로 나눴다.&lt;/p&gt;
+
+&lt;p&gt;첫번째 스테이지는 도커 이미지를 빌드한다. 내가 작성한 도커 파일은 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 있는 베이스 이미지를 갖고 오기 위해 AWS에 로그인 한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;region&lt;/code&gt;은 명시하지 않아도 된다. 젠킨스에서는 &lt;code class=&quot;highlighter-rouge&quot;&gt;aws&lt;/code&gt;에서 로그인 할 때 &lt;code class=&quot;highlighter-rouge&quot;&gt;aws cli&lt;/code&gt; 를 사용한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;aws cli&lt;/code&gt;를 사용해봤던 개발자들은 알고 있겠지만, &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS configuration&lt;/code&gt;을 해야 &lt;code class=&quot;highlighter-rouge&quot;&gt;aws cli&lt;/code&gt;를 사용할 수 있다. 내가 사용하는 사내 젠킨스는 서버내 &lt;code class=&quot;highlighter-rouge&quot;&gt;aws configuration&lt;/code&gt;이 다른 팀에서 사용하는 다른 리전의 계정이 세팅되어 있어서, 리전을 명시해줘야 내가 만든 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 접근 할 수 있었다. 로그인을 하면 캐싱없이 베이스 이미지를 기반으로 빌드한다.&lt;/p&gt;
+
+&lt;p&gt;두번째 스테이지에서는 빌드한 도커 이미지를 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 푸시한다.&lt;/p&gt;
+
+&lt;p&gt;세번째 스테이지에서는 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS&lt;/code&gt; 에 배포한다. 첫번째 스테이지에서 로그인을 해도, 다른 서비스를 사용하려면 &lt;code class=&quot;highlighter-rouge&quot;&gt;region&lt;/code&gt;을 명시해줘야 &lt;code class=&quot;highlighter-rouge&quot;&gt;No basic auth&lt;/code&gt; 라는 &lt;code class=&quot;highlighter-rouge&quot;&gt;authorization&lt;/code&gt;  관련 에러를 피할 수 있다. ECS에 배포하기 전에 ECS container의 spec이 적힌 task definition의 파일의 내용을 적절하게 바꾼다. 파일을 열어서 문자를 치환할때는 &lt;code class=&quot;highlighter-rouge&quot;&gt;sed&lt;/code&gt; 명령어가 유용하므로 그것을 써서 치환한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pipeline &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    agent any
+    environment &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        imageUrl &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ecsRegistry&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$BUILD_NUMBER&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    stages &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        stage&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Docker Build&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            steps &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                withAWS&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;credentials: &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$awsCredentials&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, region: &lt;span class=&quot;s2&quot;&gt;&quot;us-east-1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                    script &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                        def login &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; ecrLogin&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+                        sh &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+                    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+                sh &lt;span class=&quot;s2&quot;&gt;&quot;docker pull &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$baseImage&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+                sh &lt;span class=&quot;s2&quot;&gt;&quot;docker build --no-cache -t &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$imageUrl&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; --build-arg SSH_PRIVATE_KEY='&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$privateKey&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;' --build-arg BASE_IMAGE='&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$baseImage&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;' .&quot;&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        stage&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Docker Push&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            steps &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                sh &lt;span class=&quot;s2&quot;&gt;&quot;docker push &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$imageUrl&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        stage&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Deploy ECS&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            steps &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                withAWS&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;credentials: &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$awsCredentials&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, region: &lt;span class=&quot;s2&quot;&gt;&quot;us-east-1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                    script &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                        def safeImageUrl &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; imageUrl.replace&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+                        sh &lt;span class=&quot;s2&quot;&gt;&quot;sed -e &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;s/%memoryUnit%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$memoryUnit&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%cpuUnit%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$cpuUnit&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%imageUrl%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$safeImageUrl&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%taskFamily%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$taskFamily&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%awsLogGroup%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$awsLogGroup&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%awsLogRegion%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$awsLogRegion&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%awsLogPrefix%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$awsLogPrefix&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; taskDefinition &amp;gt; taskDef.json&quot;&lt;/span&gt;
+                        def taskVersion &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; sh&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;script: &lt;span class=&quot;s2&quot;&gt;&quot;aws ecs register-task-definition --cli-input-json file://taskDef.json | jq --raw-output .taskDefinition.revision&quot;&lt;/span&gt;, returnStdout: &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.trim&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; as Integer
+                        sh &lt;span class=&quot;s2&quot;&gt;&quot;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$taskVersion&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+                        sh &lt;span class=&quot;s2&quot;&gt;&quot;aws ecs update-service --cluster &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$clusterName&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; --service &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$serviceName&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; --task-definition &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$taskFamily&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$taskVersion&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+                    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이제 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS&lt;/code&gt;를 설정하고, 배포할때 사용할 &lt;code class=&quot;highlighter-rouge&quot;&gt;task definition.json&lt;/code&gt;파일을 작성해야 한다.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 21 Dec 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-2/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-2/</guid>
+      </item>
+    
+      <item>
+        <title>도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 1 도커파일 작성</title>
+        <description>&lt;p&gt;updated: 2020-02-19
+최근 ECS를 사용해서 컨테이너 기반으로 스테이징 서버를 구축했다. Circle CI를 써보고 싶었는데, 이미 사내에 젠킨스가 구축되어 있어서 젠킨스를 쓰기로 했다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/deploy-process.png&quot; alt=&quot;deploy process&quot; /&gt;&lt;br /&gt;
+먼저 빗버킷 &lt;code class=&quot;highlighter-rouge&quot;&gt;dev&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;staging&lt;/code&gt; 브랜치에 푸시가 되면 젠킨스가 변화를 감지하고 스크립트 실행한다. 젠킨스 스크립트는 브랜치별로 다른 configuration 파일을 s3 버킷에서 다운받는다. 해당 파일을 소스코드에 추가하고 도커 이미지를 생성하, 생성된 도커 이미지는 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 푸시한다. 새 이미지를 가지고 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS&lt;/code&gt; 파게이트에 배포한다.&lt;/p&gt;
+
+&lt;p&gt;먼저 도커파일을 작성해서 로컬에서 띄어보았다. 해당 프로젝트는 빗버킷 프라이빗 리포지토리를 &lt;code class=&quot;highlighter-rouge&quot;&gt;pip install&lt;/code&gt; 로 설치해 라이브러리로 사용하는데, 이때 ssh key 가 필요하다. 그래서 로컬의 ssh key를 카피해서 도커 실행시 argument로 전달하는 방법으로 해결했다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;python 2.7 alpine&lt;/code&gt; 버전을 사용하는 도커 파일을 작성한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# arguments&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ARG&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; SSH_PRIVATE_KEY&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; python:2.7-alpine&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# set envs&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; DJANGO_SETTINGS_MODULE=staging&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; PYTHONIOENCODING=utf-8&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apk add &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
+&lt;/span&gt;	python2-dev&lt;span class=&quot;se&quot;&gt;\
+&lt;/span&gt;	build-base&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# for gcc&lt;/span&gt;
+	mariadb-dev\  # for mysqlclient
+	openssh-client\ # for ssh-keyscan
+	zlib-dev\  # for pillow
+	jpeg-dev\  # for pillow
+	libressl-dev\  # for scipy, numpy
+	libffi-dev\  # for scipy, numpy
+	lapack-dev\  # for scipy, numpy
+	gfortran\  # for scipy, numpy
+	musl-dev\  # for scipy, numpy
+	git\
+	nginx\
+	vim\
+    &amp;amp;&amp;amp; rm -rf /var/cache/apk/* \ #remove cache
+    &amp;amp;&amp;amp; pip install cpython  &lt;span class=&quot;c&quot;&gt;# for scipy, numpy&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; /root/.ssh &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\
+&lt;/span&gt;    &lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;0700 /root/.ssh &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\
+&lt;/span&gt;    ssh-keyscan bitbucket.org &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /root/.ssh/known_hosts
+
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$SSH_PRIVATE_KEY&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /root/.ssh/id_rsa &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\
+&lt;/span&gt;    &lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;400 /root/.ssh/id_rsa
+
+&lt;span class=&quot;c&quot;&gt;# create working directory&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; /app
+
+&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; app /app&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# set working directory&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;WORKDIR&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; /app&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# install dependencies&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;pip &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; requirements.txt
+
+&lt;span class=&quot;c&quot;&gt;# run django project&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CMD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;python&quot;, &quot;manage.py&quot;, &quot;runserver&quot;, &quot;0.0.0.0:80&quot;]&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# open port 80, 5672 for rabbitmq&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;EXPOSE&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; 80 5672&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;도커 이미지를 &lt;code class=&quot;highlighter-rouge&quot;&gt;test&lt;/code&gt; 라는 이름으로 빌드한다.&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker build &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--build-arg&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;SSH_PRIVATE_KEY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; ~/.ssh/id_rsa&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;도커 이미지로 컨테이너를 띄운다.&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;-it&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;:latest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;도커 컨테이너가 떴는지 확인한다.&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker ps
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;만약 컨테이너가 떴다면 터미널 화면 또는 인터넷 브라우저에서 &lt;code class=&quot;highlighter-rouge&quot;&gt;0.0.0.0:8000&lt;/code&gt; 주소로 확인할 수 있다. 만약 문제가 있어서 컨테이너가 안떴다면 다음 명령어로 정지한 컨테이너를 확인할 수 있다.&lt;/p&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker ps &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;도커 컨테이너를 확인하고 컨테이너를 삭제한다. 이 방법은 젠킨스에서 자동배포할때 사용할 수 없다. 그리고 해당 프로젝트가 설치하는 패키지가 많아서 이미지를 빌드하는데 기본적으로 1분이 넘었다. 여러가지 방법이 있을 수 있겠지만 나는 이전에 빌드된 이미지를 베이스 이미지로 사용하는 방법을 선택했다. 해당 프로젝트는 사용하는 라이브러리가 크게 바뀌지 않을 예정이여서 가능했다. 먼저 빌드한 이미지를 &lt;code class=&quot;highlighter-rouge&quot;&gt;base image&lt;/code&gt; 라는 이름으로 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 푸시하고, 이미지를 빌드 할 때 마다 &lt;code class=&quot;highlighter-rouge&quot;&gt;base image&lt;/code&gt; 를 갖고와서 그 이미지를 기반으로 빌드하는 방법이다.&lt;/p&gt;
+
+&lt;p&gt;이 방법은 다음과 같은 스텝을 거쳤다.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;베이스 이미지로 사용할 이미지를 로컬에서 빌드한다.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 푸시한다.&lt;/li&gt;
+  &lt;li&gt;젠킨스에 &lt;code class=&quot;highlighter-rouge&quot;&gt;Build with parameters&lt;/code&gt; 설정에서 Base image의 태그를 추가한다.&lt;/li&gt;
+  &lt;li&gt;테스트 한다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt; 콘솔로 들어가서 &lt;code class=&quot;highlighter-rouge&quot;&gt;create repository&lt;/code&gt; 를 선택한다.
+&lt;img src=&quot;/images/posts/ecr-console.png&quot; alt=&quot;aws ecr console&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;repository 이름만 정하면 바로 생성할 수 있다. 생성된 repository 를 목록에서 클릭하면 &lt;code class=&quot;highlighter-rouge&quot;&gt;view push commands&lt;/code&gt; 에서 이미지를 푸시, 풀하는 데 사용하는 커맨드를 볼 수 있다.
+이미지를 푸시하는 커맨드를 사용해 로컬에 있는 베이스 이미지를 푸시한 뒤, 도커 파일의 윗부분을 수정한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# arguments&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ARG&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; SSH_PRIVATE_KEY&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ARG&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; BASE_IMAGE&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; $BASE_IMAGE&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이제부터 도커 이미지를 빌드할때는 argument로 준 이미지를 기반으로 빌드하게 된다. &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 있는 이미지를 받아오는 부분은 젠킨스가 할 일이다.&lt;br /&gt;
+2편에서는 젠킨스를 설정한 방법을 정리했다.&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 21 Dec 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-1/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-1/</guid>
+      </item>
+    
+      <item>
+        <title>파이선 GC(Garbege Collector)의 작동방식</title>
+        <description>&lt;p&gt;파이선 GC는 &lt;a href=&quot;[https://ko.wikipedia.org/wiki/%EC%B0%B8%EC%A1%B0_%ED%9A%9F%EC%88%98_%EA%B3%84%EC%82%B0_%EB%B0%A9%EC%8B%9D](https://ko.wikipedia.org/wiki/참조_횟수_계산_방식)&quot;&gt;참조횟수 계산방식(reference counting)&lt;/a&gt;으로 작동한다. 참조횟수 계산방식에 대한 위키피디아의 설명은 다음과 같다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;참조 횟수 계산 방식&lt;/strong&gt;(reference counting)은 메모리를 제어하는 방법 중 하나로, &lt;a href=&quot;https://ko.wikipedia.org/wiki/쓰레기_수집_(컴퓨터_과학)&quot;&gt;쓰레기 수집&lt;/a&gt;의 한 방식이다. 구성 방식은 단순하다. 어떤 한 동적 단위(객체, Object)가 참조값을 가지고 이 단위 객체가 참조(참조 복사)되면 참조값을 늘리고 참조한 다음 더이상 사용하지 않게 되면 참조값을 줄이면 된다. 보통 참조값이 0이 되면 더이상 유효한 단위 객체로 보지 않아 메모리에서 제거한다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;간단하게 말하자면 모든 객체는 참조값을 가진다. 해당 객체가 참조되면 참조값을 늘어난다. 객체가 더이상 사용하지 않으면 참조값을 줄어든다. 참조값이 0이되면 메모리에서 제거한다.&lt;/p&gt;
+
+&lt;p&gt;단점은 참조할 때 마다 참조값을 검사해야 하기 때문에, 검사 부하가 커진다. 참조하는 단위 객체들이 서로 참조하면 순환 참조 오류가 발생해, 잘못된 참조 파괴가 생기거나 단위객체가 고아(orphaned)가 될 수 있다. 순환 참조일 경우 이미 참조가 끝났더라도 참조값은 계속 1이다.&lt;/p&gt;
+
+&lt;p&gt;이 문제를 해결하기 위해서 파이선은 추가적인 GC 방식을 도입했다. &lt;code class=&quot;highlighter-rouge&quot;&gt;gcmodule.c&lt;/code&gt;의 &lt;code class=&quot;highlighter-rouge&quot;&gt;gc.collect()&lt;/code&gt;가 참조횟수 방식을 사용해서는 접근과 해제가 불가능한 객체를 해제한다. 이 방식은 &lt;a href=&quot;https://www.geeksforgeeks.org/mark-and-sweep-garbage-collection-algorithm/&quot;&gt;Mark and sweep algorithm(표시하고 쓸기)&lt;/a&gt;, 방식이다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;표시하고 쓸기 기법은 포인터 추적 기법 가운데 가장 단순한 기법이다. 먼저 각 메모리 할당 영역에 표시를 위해 1 &lt;a href=&quot;https://ko.wikipedia.org/wiki/비트_(단위)&quot;&gt;비트&lt;/a&gt;의 메모리를 남겨 둔다. 표시 단계에서, 모든 변수가 가리키는 영역을 “사용 중”으로 표시하고, 그 영역에서 가리키는 또다른 영역 또한 “사용 중”으로 표시한다. 이와 같이 모든 메모리 영역을 표시하고 나면, 표시되지 않은 영역을 접근 불가능한 메모리 영역이 된다. 접근 불가능한 메모리 영역들을 쓸기 단계에서 모두 해제한다.&lt;/p&gt;
+
+  &lt;p&gt;이 기법의 단점은, 표시 단계에서 메모리 내용이 변경되지 않아야 하기 때문에 전체 시스템의 실행이 정지된다는 것이다. 또한 전체 메모리 영역을 검사해야 하므로 메모리 &lt;a href=&quot;https://ko.wikipedia.org/wiki/페이징&quot;&gt;페이징&lt;/a&gt;을 사용하는 운영체제에서 프로그램의 성능이 저하될 수 있다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+</description>
+        <pubDate>Fri, 20 Dec 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/python/2019/12/20/python-gc/</link>
+        <guid isPermaLink="true">http://localhost:4000/python/2019/12/20/python-gc/</guid>
+      </item>
+    
+      <item>
+        <title>HTTP1.1와 HTTP2.0 차이점</title>
+        <description>&lt;p&gt;Http 는 request에 대한 response를 받아야만 다음 request를 처리할 수 있다.&lt;/p&gt;
+
+&lt;h3 id=&quot;http11&quot;&gt;HTTP/1.1&lt;/h3&gt;
+&lt;p&gt;Http 1.0은 &lt;code class=&quot;highlighter-rouge&quot;&gt;connection&lt;/code&gt;을 매번 생성했다. 그래서 요청한 리소스 개수에 비례해서 &lt;code class=&quot;highlighter-rouge&quot;&gt;latency&lt;/code&gt;가 길어진다. 이러한 문제를 해결하기 위해 1.1부터 &lt;code class=&quot;highlighter-rouge&quot;&gt;persistent connection(connection 재사용)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;pipelining(여러개의 request 를 미리 날림)&lt;/code&gt; 등의 기술이 등장했다. 하지만 다음과 같은 문제가 있었다.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. HOL Blocking(Head Of Line Blocking)  
+pipelining을 사용해 여러개의 request를 미리 날리더라도, 첫번째 리소스를 요청하고 응답이 지연되면 당연히 두번쨰, 세번째 리소스는 첫번째 리소스의 응답처리가 완료되기까지 지연된다.
+
+2. RTT(Round Trip Time) 증가  
+ 매요청별로 connection을 생성하기 때문에 3-way handshake가 반복적으로 발생해 성능 저하를 초래한다.
+ 
+3.무거운 Header  
+ 매 요청시마다 중복된 헤더값을 전송한다.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;요약: HTTP/1.1은 동시전송이 불가능하다. 요청과 응답이 순차로 이뤄진다. header가 무겁다. 1.1 은 plain text 를 리턴한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;http20&quot;&gt;HTTP/2.0&lt;/h3&gt;
+&lt;p&gt;HTTP 2.0은 한 &lt;code class=&quot;highlighter-rouge&quot;&gt;connection&lt;/code&gt;으로 여러개의 메세지를 주고 받는다. &lt;code class=&quot;highlighter-rouge&quot;&gt;from&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;message&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;stream&lt;/code&gt;개념이 도입됐고 응답은 순서에 상관없이 &lt;code class=&quot;highlighter-rouge&quot;&gt;stream&lt;/code&gt;으로 주고 받는다.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. Stream Prioritization  
+ 리소스의 의존관계(우선순위)를 설정해 렌더링이 늦어지는 문제를 해결한다.
+
+2. Server Push 
+요청을 하지 않아도 클라이언트에게 리소스를 보내줄 수 있다. 클라이언트 요청을 최소화해 성능이 향상된다. push_promise를 통해 서버가 전송한 리소스에 대해서는 클라이언트는 요청하지 않는다.
+
+3. Header Compression
+ Header Table, Huffman encoding 기법으로 Header 정보를 압축한다. 중복이 아닌 header 는 인코딩 해 전송한다.  Header 압축 명세: [RFC 7531](https://http2.github.io/http2-spec/compression.html)  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;요약: HTTP/2.0은 한 &lt;code class=&quot;highlighter-rouge&quot;&gt;connection&lt;/code&gt;으로 여러개의 메세지를 주고 받는다. 응답의 순서를 기다리지 않고 처리한다. 클라이언트가 요청하지 않은 리소스를 미리 보내주고 header를 압축한다. 2.0은 response를 binary로 인코딩해 리턴한다.&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 08 Sep 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/network/2019/09/08/HTTP1-and-HTTP2/</link>
+        <guid isPermaLink="true">http://localhost:4000/network/2019/09/08/HTTP1-and-HTTP2/</guid>
+      </item>
+    
+      <item>
+        <title>파이선의 덕타이핑(Duck Typing)</title>
+        <description>&lt;p&gt;새처럼 생긴 동물이 있다. 정확하게 무슨 동물인지 알아보기 전에,&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;오리처럼 걷고&lt;/li&gt;
+  &lt;li&gt;오리처럼 꽥꽥거리면&lt;/li&gt;
+  &lt;li&gt;이 동물은 오리다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;다음과 같은 논증을 거쳐 ‘이 동물은 오리다’ 라는 판단을 내리는 방법을 덕 테스트(Duck Test)라고 한다. 이 논증법은 프로그래밍 분야에 전파돼 Duck Typingg(덕 타이핑)이라는 개념이 됐다. 이 개념에 따라 파이썬은 본질적으로 다른 클래스라도 객체의 실제 유형이 아니라 특정 메소드와 속성의 존재 유무에 따라 결정한다.&lt;/p&gt;
+
+&lt;p&gt;예제코드 출처 https://en.wikipedia.org/wiki/Duck_typing&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Duck flying&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Airplane&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Airplane flying&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Whale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;swim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Whale swimming&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;animal&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Airplane&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Whale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;animal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;output:
+    Duck flying
+    Airplane flying
+    AttributeError: 'Whale' object has no attribute 'fly'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Duck, Airplane은 서로 관계가 없는 클래스이지만 내부에 fly()라는 메소드가 있다는 공통점이 있이 때문에 같은 타입으로 본다. 만약 Java 였다면 Duck이라는 클래스를 상속받았다고 명시해야만 같은 타입이 될 수 있다.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 06 Sep 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/python/2019/09/06/python-duck-typing/</link>
+        <guid isPermaLink="true">http://localhost:4000/python/2019/09/06/python-duck-typing/</guid>
+      </item>
+    
+      <item>
+        <title>대기업에 익스트림 프로그래밍 적용하기</title>
+        <description>&lt;p&gt;익스트림 프로그램은 애자일 개발 방법론의 한 방법이다. 최근 핫해진 스크럼과는 달리 많이 사용되지 않는다. 한번은 내가 어느 자리에서 방법론에 대한 발표를 할 기회가 있었다. 내가 주제를 XP(익스트림 프로그래밍) 선정했다고 하자 처음 들어본다는 말도 들었다. 
+내가 XP에 관심을 둔 이유는 현재 소속된 조직에서 XP 실천방법 중 여러 방법을 사용하고 있기 때문이다. XP를 실천하려는 의도가 있는 건 아니다. 프로젝트 개발을 도와줄 요소를 리서치하고 채택한 결과가 XP의 실천방법 중 몇가지를 적용하는 것이였다. 밑에서 12가지 방법을 모두 소개할건데, 현재 조직에서는 페어 프로그래밍, 단위테스트, 코드 공동 소유권등을 채택해 적용하고 있다.
+XP의 목표는 ‘고객이 원하는 양질의 소프트웨어를 빠르게 전달’ 하는 것이고, 비즈니스 상의 요구 변동이 심할 때 적합한 방법으로 알려져 있다. 그래서 XP의 장점은 고객의 요구사항이 개발 단계와 상관없이 계속 변경될 때 드러난다. 전통적인 워터폴에서는 소프트웨어가 개발이 진행되면서 변경비용이 증가한다.  XP 방법을 사용하면 소프트웨어 개발 진행 여부와 상관없이 변경 비용이 적게 든다. 예를 들어 전통적인 워터폴 방법 조직에서 어떤 프로젝트가 기획 단계를 통과하고 디자인이 이미 끝났다고 하자. 기획이 다시 변경된다면, 변경사항이 반영된 기획이 기획 단계를 다시 통과해야 하고 디자이너들이 다시 디자인을 변경해야 한다. XP 방법 조직에서는 일이 다르게 흘러간다. 프로젝트는 작은 단위로 쪼개지고, 하루에도 매번 지속적인 통합 작업이 이뤄진다. 그래서 기획이 변경되어도 변경 비용이 적게 된다. 
+지속적인 통합, 작은 단위의 배포, 현장에서 팀원과 소통하는 고객 등 12개의 XP 실천요소가 이를 가능하게 한다. 이런 강력한 장점이 있지만 많이 사용되지 않는 이유가 있다. XP는 대규모 프로젝트에 적용하기 어렵다.&lt;/p&gt;
+
+&lt;p&gt;켄트 벡(Kent Beck) 은 이렇게 말했다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“You probably couldn’t run an XP project with a hundred programmers. Nor fifty. Nor twenty, probably. Ten is definitely doable.” &lt;br /&gt;
+“프로그래머 100으로는 XP 프로젝트 실행이 아마 힘들겁니다. 50명도, 아마 20명도 안될겁니다. 그러나 10명은 확실히 가능합니다.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;또다른 예를 들자면, 마틴 파울러(Fowler)는 25명의 개발자로 구성된 한 팀을 XP를 적용하려고 2팀으로 나눈 적이 있다.&lt;/p&gt;
+
+&lt;p&gt;XP가 이런 단점을 갖고 있는 이유는 그 태생 때문이다. XP는 단일 고객이 사용할 커스터마이즈된 소프트웨어를 빠르게 개발하기 위해 태어난 방법론이다. 켄트 벡은 다임러 크라이슬러 회사에서 프로젝트를 진행할 때 XP 를 탄생시켰다. 그리고 그 프로젝트는 크라이슬러 사내에서 사용할 투표 소프트웨어였다. 사내 소프트웨어를 사용할 고객은 단일 고객이라고 보아도 무방하다. 항상 현장에 있으면서 실시간으로 피드백을 줄것이고, 개발된 소프트웨어의 많은 부분을 검증하고 싶어 할 것이다. 그래서 XP 개발 방법론이 적합하다. 
+XP의 실천 방법중에는 어느것도 대규모 조직 적용을 제한하는 기술적 한계는 없다. 그러나 팀원의 수, 지리적인 위치등 비기술적인 이유들이 XP를 대규모 조직에 적용하기 어렵게 만든다. 그런데 이런 XP를 대규모의 프로젝트에 적용한 연구가 있었다.&lt;/p&gt;
+
+&lt;h3 id=&quot;a-study-of-extreme-programming-in-a-large-company&quot;&gt;A Study of Extreme Programming in a Large Company&lt;/h3&gt;
+&lt;h3 id=&quot;대기업의-익스트림-프로그래밍에-대한-연구&quot;&gt;대기업의 익스트림 프로그래밍에 대한 연구&lt;/h3&gt;
+
+&lt;p&gt;이 논문은 대기업의 프로젝트에 XP를 적용하고, XP를 경험한 개발자들을 인터뷰 했다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;ABSTRACT&lt;br /&gt;
+Agile software development is an approach to software that focuses on lightweight processes and adaptability to change. The best-known agile methodology is called Extreme Programming. It suggests twelve practices that include iterative development practices, automated unit testing, and pair programming. Extreme Programming is designed for small projects, but has been picked up through grassroots efforts in some large projects in large companies, including Avaya. We studied six such projects in Avaya. We were interested to learn how projects adapted Extreme Programming to their needs, and which of the twelve practices they used. Projects adopted iterative development practices, along with dynamic prioritization of work. Although Extreme Programming downplays architecture, every project retained focus on software architecture. They had mixed success moving to automated unit testing, and most used some form of pair programming. These practices appear to be both beneficial and practical for projects of various sizes in large companies, and we recommend them for those wishing to use agile development practices in large companies.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;초록&lt;br /&gt;
+애자일 소프트웨어 개발은 경량 프로세스와 변화 적응성에 중점을 둔 소프트웨어 접근 방식이다. 가장 잘 알려진 애자일 방법론은 익스트림 프로그래밍(Extreme Programming, 이하 XP)이다. 익스트림 프로그래밍은 반복적인 개발, 자동화된 단위 테스트 및 페어 프로그래밍을 포함한 12가지 실천방법을 제안한다. 익스트림 프로그래밍은 소규모 프로젝트를 위해 설계됐다. 그러나 Avaya(Avaya)를 포함한 대기업의 일부 대규모 프로젝트에서 프로젝트 소속원들이  XP를 프로젝트 개발 방법으로 선택했다. 우리는 Avaya에서 6개의 프로젝트를 연구했다. 프로젝트가 익스트림 프로그래밍을 그들의 요구에 맞게 어떻게 조정하는지, 12 가지 실천방법 중 어떤 것을 사용하는지에 대해 관심이 있었다. 프로젝트는 역동적인 작업 우선 순위와 반복적인 개발 방법을 채택했다. 익스트림 프로그래밍은 아키텍처를 과소평가 하는 경향이 있지만, Avaya의 각 프로젝트는 소프트웨어 아키텍처에 주의 집중했다. 그들은 자동화 된 단위 테스트로 성공적으로 전환했고, 대부분이 어떤 형태이든 페어 프로그래밍을 사용했다. 이러한 실천방법은 대기업 내 다양한 규모의 프로젝트에 유리하고 실용적이다. 우리는 대기업에서 애자일 개발 방법을 실천하려는 사람들에게 이러한 실천방법들을 추천한다.&lt;/p&gt;
+
+&lt;p&gt;참고로 &lt;a href=&quot;https://g.co/kgs/Jhanen&quot;&gt;Avaya&lt;/a&gt;는 미국에 본사를 둔 다국적 통신기업이다.&lt;/p&gt;
+
+&lt;p&gt;다음은 익스트림 프로그래밍을 프로젝트에 적용할 때 실천해야 할 사항들이다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;• The Planning Game – Quickly determine the scope of the next release by combining business priorities and technical estimates. As reality overtakes the plan, update the plan.&lt;br /&gt;
+• Small Releases – Put a simple system into production quickly, then release new versions on a very short cycle.&lt;br /&gt;
+• Metaphor – guide all development with a simple shared story of how the whole system works. &lt;br /&gt;
+• Simple design – The system should be designed as simply as possible at any given moment. Extra complexity is removed as soon as it is discovered.&lt;br /&gt;
+• Testing – Programmers continually write unit tests, which must run flawlessly for development to continue. Customers write tests demonstrating that features are finished. &lt;br /&gt;
+• Refactoring – Programmers restructure the system without changing its behavior to remove duplication, improve communication, simplify, or add flexibility. &lt;br /&gt;
+• Pair programming – All production code is written with two programmers at one machine. &lt;br /&gt;
+• Collective ownership – Anyone can change any code anywhere in the system at any time. &lt;br /&gt;
+• Continuous integration – Integrate and build the system many times a day, every time a task in completed. &lt;br /&gt;
+• 40-hour week – Work no more than 40 hours a week as a rule. Never work overtime a second week in a row. &lt;br /&gt;
+• On-site customer – Include a real, live user on the team, available full-time to answer questions.&lt;br /&gt;
+• Coding standards – Programmers write all code in accordance with rules emphasizing communication through the code.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;• 계획 게임 – 비즈니스 우선 순위와 기술 견적을 결합해 다음 배포 범위를 신속하게 결정한다. 개발 상황이 계획보다 앞서가면 계획을 업데이트한다.&lt;br /&gt;
+• 작은 배포 – 간단한 시스템을 빠르게 생산 한 다음 새 버전을 매우 짧은 주기로 배포한다.&lt;br /&gt;
+• 메타포(은유) – 전체 시스템 작동 방식에 대한 간단한 공유 스토리를 통해 모든 개발을 안내한다.&lt;br /&gt;
+• 단순한 설계 – 시스템은 주어진 순간에 가능한 한 간단하게 설계한다. 추가적인 복잡도는 발견 즉시 없앤다.&lt;br /&gt;
+• 테스트 – 프로그래머는 지속적으로 단위 테스트를 작성하며, 개발을 계속하려면 테스트가 완벽하게 실행돼야 한다. 고객은 기능이 개발  완료되었음을 나타내는 테스트를 작성한다.&lt;br /&gt;
+• 리팩토링 – 프로그래머는 동작을 변경하지 않고 시스템을 재구성해 반복을 제거하고, 의사 소통을 개선하거나, 유연성을 추가한다.&lt;br /&gt;
+• 페어 프로그래밍 – 모든 생산 코드는 한 머신에서 두 명의 프로그래머로 작성한다.&lt;br /&gt;
+• 공동 소유권 – 누구나 언제 어디서나 시스템의 모든 코드를 변경할 수 있다.&lt;br /&gt;
+• 지속적인 통합 – 작업이 완료 될 때마다 하루에 여러 번 시스템을 통합하고 구축한다. &lt;br /&gt;
+• 주당 40 시간 – 일반적으로 주당 40 시간을 넘기면 안된다.&lt;br /&gt;
+• 현장 고객 – 팀에 실제 사용자를 포함시켜 실시간 질문에 답변 할 수 있다.&lt;br /&gt;
+• 코딩 표준 – 프로그래머는 코드를 통한 소통을 중요시 여기는 규칙에 따라 모든 코드를 작성한다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;FINDINGS OF THE STUDY &lt;br /&gt;
+There was fairly strong agreement among the projects on which practices they followed, and which they felt were important. The following is a list of the findings from the study.
+As expected, no project followed XP exactly. A major reason for this was that most of the projects studied were small parts of larger projects. Therefore, they could not implement all the practices of XP; they did what they could in their own situation. It was not clear from the study which other XP practices they would have implemented if they had had the chance. However, since a large part what we wanted to learn was which practices work in our culture, we were interested in the empirical rather than the hypothetical, anyway. 
+Because of the position in the schedule, as well as the fact that they were in larger projects, it was impossible to collect reliable quality and productivity metrics. However, it appeared that their productivity compared favorably to standard development methodologies in the company. It was significant to note that every person interviewed was enthusiastic about the methodology. All intended to continue their practices, and expand them where possible. 
+The following list describes the teams followed each of the twelve XP practices: 
+• The Planning Game – No project implemented the Planning Game fully. While planning was flexible, it was required to be within the boundaries of the larger product plan. This had two major ramifications. First, an overall project plan was established. This was necessary not only for the project as a whole, but also for other teams, in particular documentation, sales, marketing, and product support. Second, others’ needs often constrained prioritization somewhat. 
+• Small Releases – All projects used small releases in some form. The size of the development intervals was from two to four weeks. Where the XP development was part of a larger project, the development intervals culminated in deliveries into the official code base of the project. 
+One team punctuated each interval with a demo to themselves and others on the project. They reported that this was a strong morale booster on the team. 
+One project’s data showed that they had not made substantial improvement in the accuracy of their development estimates over several iterations. They admitted, however, that they had not re-estimated after each iteration, but plan to do so in the future. 
+• Metaphor – No project had a metaphor. This is consistent with reports from Kent Beck , who stated that people tell him that they do XP, “..except metaphor, of course.”[18]. Others have also noted that people have difficulty understanding Metaphor [19]. This is certainly one major reason that no project used metaphor. 
+• Simple design – Projects did not highlight simple design as an important part of their XP process. This should not be construed to imply that they did not have simple designs, but rather that it was not an important difference from their traditional processes. 
+• Testing – All projects intended to require that tests be submitted along with code, creating a body of automated regression tests. One project followed this rigorously. Other projects followed it partially. The major reason for this was schedule pressure with focus on delivered functionality. A related reason was the time and effort were not available to set up an automated regression testing system, particularly where the XP project was part of a larger project. All projects were for software to be sold to multiple customers, so it was not realistic to have a customer write and execute acceptance tests. However, every project did have an extensive system verification program. In this model, the system testers functioned as “surrogate customers”, writing and executing acceptance tests.
+• Refactoring – Refactoring did not figure prominently in the projects. The only project to refactor frequently was a forward looking work project with three people on the team. The other projects indicated that they were not opposed to refactoring, but there really hadn’t been a need to do so. This may be a reflection of more up-front design than is typically done in an XP project
+• Pair programming – All projects did some form of pair programming, but each did it a little differently. No project required it for every line of code; in fact in every project, pair programming was voluntary. In one project, developers began by doing all programming as pairs, but found it was too inefficient. So they programmed the simple code individually, but paired up on the difficult code. Another project had two developers, located 2000 miles apart. They tended to write code individually, but debugged their code together, using a shared desktop. One developer pointed out that this was actually more convenient, because they weren’t crowded against each other. 
+ • Code inspections are standard practice in Avaya. In one instance, pair programming was allowed to replace code inspections. The project did not have data to indicate whether one was more effective than the other in finding errors. 
+ • Collective ownership – Code ownership practices varied from project to project, due in part to constraints of the surrounding projects. Where collective ownership was practiced, there was a practice of de facto code ownership: people gained natural expertise in certain parts of the system, and made the bulk of changes there. One project codified this practice into a 4 “lightweight ownership” policy: one could change any of the code, but needed to check with the owner of the code for advice. 
+ • Continuous integration – In most cases, projects worked within the larger project methodology of integration. This was generally weekly integrations into the main software base, although the XP sub-projects were able to integrate more often. In one standalone case, the team members integrated continuously. 
+ • 40-hour week – One or two projects made this a policy. However, no project appeared to have suffered extended periods of long hours. 
+ • On-site customer – No project had an on-site customer. As stated above, this model is not practical where one has many customers or potential customers. In addition, it is usually not desirable; the project gets only a single view among many customers. Projects continued to use a surrogate customer model, where an aggregate view of customer needs is created. 
+ • Coding standards – Avaya has had a tradition of coding standards. The XP projects followed their pre-existing coding standards
+In brief summary, projects followed XP most closely in the coding activities. As expected, where the projects touched other organizations in the company, XP practices were weak, or not followed at all.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;연구 결과
+그들이 실천한 실천사항과, 그들이 중요하다고 느낀 실천사항 사이에는 상당히 강력한 합의가 있었다. 연구를 통해 알게 된 사실은 다음과 같다.
+우리의 예상대로 XP를 정확히 따르는 프로젝트는 없었다. 이러한 현상의 발생한 주요한 이유는 연구한 대부분의 프로젝트가 더 큰 프로젝트의 작은 일부분이였기 때문이다. 따라서 XP의 모든 관행을 적용할 수 없었다. 대신, 프로젝트 참여자들은 자신의 상황에서 행할 수 있는 일을 했다. 그들에게 기회가 있었다면 어떤 XP 실천사항을 구현했는지는 명확하게 알 수 없다. 그러나 우리가 배우고 싶었던 부분은 바로 어떤 실행 요소가 우리 문화에서 작동하는 지에 관한 것이였고, 우리는 가설보다 경험에 더 관심이 많았기 때문에 상관이 없었다.
+근로자의 근무시간이 및 근무요일이 고정이였고(scheduled position), 그들이 큰 프로젝트에 포함돼 있었기 때문에, 신뢰할 수있는 품질 및 생산성 지표를 수집하는 게 불가능했다. 하지만 그들의 생산성을 회사의 기본 개발 방법에 비교하는 일은 순조로웠다. 인터뷰를 했던 모두가 개발 방법에 열정적이였다는 점을 잊지말자. XP의 12개 실천사항과, 해당 실천사항을 실천했던 팀의 모습을 아래에 정리했다.&lt;/p&gt;
+
+&lt;p&gt;• 계획 게임 - 계획 게임을 완전히 구현한 프로젝트가 없었다. 계획은 융통성이 있었지만
+더 큰 제품 계획의 경계 내에서만 변경할 수 있었다. 이것은 두 가지 큰 파급효과가 있었다. 첫째, 전체 프로젝트 계획이 설립됐다. 이것은 프로젝트 전체뿐만 아니라 다른 팀, 특히 문서, 영업, 마케팅 및 제품 지원등을 위해서라도 필요하다. 둘째, 다른 사람들의 요구는 종종 우선 순위가 다소 제한됐다.&lt;/p&gt;
+
+&lt;p&gt;• 작은 배포 - 모든 프로젝트가 어떤 형태로든 작은 단위의 배포를 했다. 개발 주기는 2주에서 4주였다. XP개발이 큰 프로젝의 일부분일 경우, 개발 단위는 프로젝트의 공식적인 코드 베이스로 전달하는데 절정을 이뤘다.
+한 팀은 프로젝트 개발 주기마다 해당 팀원과 다른 사람들에게 데모를 제공했다. 그들은 이것이 팀의 사기를 강하게 증진했다고 보고했다.
+• 메타포(은유) - 메타포가 있는 프로젝트는 없었다. 이러한 현상은 사람들이 켄트 벡(Kent Beck)의 보고서와 일치한다. 사람들은 그에게 XP를 한다고 할때 이렇게 말했다. “..당연히 메타포 빼고요.”[18]. 다른 이들은 사람들이 메타포를 이해하는 걸 어려워 했다고 보고했다[19] 그 어려움이 메타포를 적용한 프로젝트가 없는 주요 이유 중 하나다.&lt;/p&gt;
+
+&lt;p&gt;• 단순한 디자인 - 프로젝트는 XP를 적용해 개발하는 과정에서 단순한 디자인을 중요한 요소로 여기지 않았다. 단순한 디자인이 없었다는 뜻이 아니다. 그들이 하던 전통적인 개발 과정에서 크게 다른 요소가 아니었기 때문이었다.&lt;/p&gt;
+
+&lt;p&gt;• 테스트 - 모든 프로젝트는 코드와 함께 테스트를 제출하여 일련의 자동화 된 회귀 테스트를 작성해야 했다. 한 프로젝트는 이 규칙을 엄격하게 따랐다. 다른 프로젝트는 부분적으로 적용했다. 주요 이유는 제공되는 기능에 중점을 둔 일정 압력 때문이었다. 연관된 이유는 자동화된 회귀 테스트를 작성할 수 있는 시간과 노력 때문이었다. 특별하게는 XP 프로젝트가 더 큰 프로젝트의 부분이였기 때문이다. 모든 프로젝트가 다수의 고객에게 판매될 소프트웨어였다. 그래서 고객이 승인 테스트를 작성하고 실행하도록 하는 건 현실성이 없었다. 그러나, 개별 프로젝트는 프로그램을 검증할 확장된 시스템이 없었다. 이 모델에서, 시스템 테스터들은 “대리 고객”으로 일했다. “대리고객”들은 승인 테스트를 작성하고 실행했다.&lt;/p&gt;
+
+&lt;p&gt;• 리팩토링 - 이 프로젝트에서는 리팩토링이 눈에띄게 나타나지 않았다. 3 명의 팀원으로 구성된 미래 지향적인 프로젝트만이 유일하게 리팩토링을 자주 했다. 다른 프로젝트는 리팩토링에 반대하지 않았지만 실제로는 할 필요가 없었다. 이것은 XP 프로젝트에서 보통 작업하는 것보다 더 미래적인 디자인의 반영일 수 있다.&lt;/p&gt;
+
+&lt;p&gt;• 페어 프로그래밍 - 모든 프로젝트가 페어 프로그래밍을 어떤 형태로든 수행했는데, 각각 조금씩 달랐다. 모든 코드의 라인에 페어 프로그래밍이 필요한 건 아니였다. 사실 프로젝트마다 페어 프로그래밍은 자발적인 참여로 이뤄졌다. 한 프로젝트에서는, 개발자들이 모든 프로그래밍을 페어 프로그래밍으로 진행했다. 하지만 그게 비효율적이라는 걸 알았다. 그래서 간단한 코드는 각자 프로그래밍 하는 대신, 어려운 코드는 페어 프로그래밍을 했다. 또 다른 프로젝트는 2명의 개발자가 있었다. 그들 사이에는 2000 마일이라는 물리적 거리가 있었다. 그들은 주로 각자 코딩을 했는데, 디버깅을 할때는 한 데스크탑을 두고 함께 했다. 개발자 한명이 이것이 더 편리하다고 했다. 왜냐면 서로를 번잡스럽게 하지 않았기 때문이다. 
+코드 검사는 Avaya의 표준 관행 이었다. 페어 프로그래밍은 코드 검사를 대체 할 수 있었다. 이 프로젝트에서는 오류를 찾는 데 다른 것보다 더 효과적인지 여부를 나타내는 데이터가 없었다.&lt;/p&gt;
+
+&lt;p&gt;• 공동 소유권 – 코드 소유권은 주변 프로젝트의 제약으로 인해 프로젝트마다 달랐다. 공동 소유권이 실행된 곳에서는 사실 코드 소유의 관행이 있었다. 사람들은 시스템의 특정 부분에 대해 자연스런 전문 지식을 얻었고, 거기서 많은 부분을 변경했다. 한 프로젝트는 이 관행을 4 가지“경량 소유”정책으로 체계화했다. 개인은 어떤 코드든지 변경할 수 있지만, 코드 소유자에게 조언을 구해야 했다.&lt;/p&gt;
+
+&lt;p&gt;• 지속적인 통합 – 대부분의 경우 프로젝트는 더 큰 통합 프로젝트의 통합 방법 안에서 통합됐다. XP 하위 프로젝트가 더 자주 통합 될 수 있었지만, 일반적으로는 메인 소프트웨어를 기준으로 매주 통합했다. 한 독립적인 사례에서는 팀 구성원들이 지속적으로 시스템을 통합했다.&lt;/p&gt;
+
+&lt;p&gt;• 주 40 시간 – 한두 개의 프로젝트가 이것을 정책으로 만들었다. 그러나 장시간 추가 근무때문에 고통받은 프로젝트는 없었다.&lt;/p&gt;
+
+&lt;p&gt;• 현장의 고객 – 현장에 고객이 있었던 프로젝트는 없었다. 위에서 언급했듯이, 이 모델은 많은 고객 또는 잠재 고객을 가진 곳에서는 실용적이지도, 바람직하지도 않다. 이 프로젝트는 많은 고객들에게서 한가지 관점만 얻기 때문이였다. 프로젝트는 대리 고객 모델을 계속 활용해 고객의 요구에 대한 종합적인 관점을 작성했다.&lt;/p&gt;
+
+&lt;p&gt;• 코딩 표준 – Avaya는 전통적으로 코딩 표준을 가지고 있었다. XP 프로젝트는 그들이 기존에 갖고있던 코딩 표준을 따랐다.&lt;/p&gt;
+
+&lt;p&gt;간략하게 요약하자면, 프로젝트가 코딩 활동을 할때 XP의 실천요소들을 가장 원래 형태와 근접하게 따랐다. 예상한대로 프로젝트가 회사의 다른 조직과 연관되면 XP가 약하거나 실천요소들을 아예 따르지 않았다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;CONCLUSIONS&lt;br /&gt;
+Much of XP is proving to be useful to projects within Avaya. No project follows all of XP. There were two major reasons for deviance from all the XP practices. The first was that certain XP practices were not appropriate for large software projects. The second was that some practices did not fit with other practices in the existing projects. For the most part, the projects benefited
+from the practices they did adopt.
+Large projects in other companies may benefit from adapting the practices that the Avaya projects found useful.
+Those projects may wish to explore agile methodologies in general, rather than focus on XP, which is most appropriate for small projects.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;결론&lt;br /&gt;
+XP의 많은 부분이 Avaya 사내 프로젝트에 유용한 것으로 입증했다. XP의 모든 실천사항을 따르는 프로젝트는 없었다. XP의 모든 실천방법이 실천되지 않은 데에는 두 가지 중요한 이유가 있었다.
+첫 번째는 특정 XP 실천방법이 대규모 소프트웨어 프로젝트에 적합하지 않다는 것이다. 
+두 번째는 일부 실천방법이 기존 프로젝트의 다른 실천방법과 안맞다는 것이다. 대부분 프로젝트는 그들이 채택한 실천방법의 혜택을 봤다. 
+다른 회사의 대규모 프로젝트는 Avaya의 프로젝트가 유용하다고 생각한 관행을 채택함으로써 이익을 얻을 수 있습니다. 이러한 프로젝트는 소규모 프로젝트에 적합한  XP에 중점을 두는 것 보다, 일반적인 애자일 방법론을 탐색하는 것을 원할 수도 있다.&lt;/p&gt;
+
+&lt;p&gt;우선 해당 논문을 통해 알 수 있었던 것은 다음과 같다. XP를 대규모 프로젝트 전체에 적용하는 건 어렵다. 대규모 프로젝트의 작은 부분은 XP를 적용하기도 쉽고 혜택도 볼 수 있다. XP의 12가지 실천방법은 규모와 상관없이 현실에 전부 적용하기 힘들다. 현장 고객(on-site customer)은 소규모 프로젝트이더라도 실현하기 어렵다. 그리고 아이템에 따라 필요없을 수도 있다. 
+반면에 지속적인 통합, 테스트, 배포, 코딩 표준, 페어프로그래밍, 코드 공동소유는 프로젝트의 규모나 소프트웨어의 특징과 상관없이 유용하다. XP의 모든 실천방법을 실천하려고 하기 보다, 상황과 소프트웨어의 특징에 맞게 취사선택해 적용하는 방법이 프로젝트에 도움이 될 것이다.&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 19 Aug 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/agile/2019/08/19/XP-in-large-company/</link>
+        <guid isPermaLink="true">http://localhost:4000/agile/2019/08/19/XP-in-large-company/</guid>
+      </item>
+    
+      <item>
+        <title>애자일과 생산성측정</title>
+        <description>&lt;p&gt;&lt;a href=&quot;https://www.msn.com/ko-kr/money/topstories/%EB%8B%A8%EB%8F%85-%EB%B9%A8%EB%9D%BC%EC%95%BC-%EC%82%B4%EC%95%84%EB%82%A8%EB%8A%94%EB%8B%A4%E2%80%A6%EC%8B%A0%ED%95%9C%EA%B8%88%EC%9C%B5-%EC%95%A0%EC%9E%90%EC%9D%BC%EC%A1%B0%EC%A7%81-%EB%8F%84%EC%9E%85%ED%95%9C%EB%8B%A4/ar-AAzyXzC&quot;&gt;단독 “빨라야 살아남는다”…신한금융, 애자일조직 도입한다&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;http://www.fntimes.com/html/view.php?ud=201902282135037701dd55077bc2_18&quot;&gt;금융 빅5, 조직·인력 탈바꿈…신한 ‘사내벤처’ KB ‘애자일’&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;기사에 따르면 신한은행은 애자일 조직체계에 도입해 직급과 관계없이 일에 적합한 사람을 팀장으로 임명해, 민첩한 의사결정을 통해서 빠른 실행력을 얻을 것이라 기대한다고 전한다. 많은 IT 관련 회사와 조직이 애자일을 도입하는데, 과연 애자일을 실행해서 생산성이 향상됐을까?&lt;/p&gt;
+
+&lt;h3 id=&quot;measuring-productivity-in-agile-software-development-process-a-scoping-study&quot;&gt;Measuring Productivity in Agile Software Development Process: A Scoping Study&lt;/h3&gt;
+&lt;p&gt;애자일 소프트웨어 개발 과정에서 생산성 측정하기: 주제범위 스터디&lt;/p&gt;
+
+&lt;p&gt;이 논문은 직접 애자일을 실행하고 생산성을 측정하는 대신, 애자일 방법론대로 소프트웨어를 만들고 생산성을 측정한 12개의 논문을 모아서 각 논문에서 정의한 생산성에 대해 정리했다. 그리고 각 연구에서 생산성을 측정하는데 사용한 방법도 연구했다. 논문에서 몇가지 부분을 번역해봤다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;ABSTRACT&lt;br /&gt;
+An agile software development process is often claimed to increase productivity. However, productivity measurement in agile software development is little researched. Measures are not explicitly defined nor commonly agreed upon. In this paper, we highlight the agile productivity measures reported in literature by means of a research method called scoping study. We were able to identify 12 papers reporting the productivity measures in agile software development processes. We found that finding, understanding and putting into use agile productivity definitions is not an easy task. From the perspective of common roles in agile software development process and existing knowledge workers’ productivity dimensions, we also emphasize that none of the productivity measures satisfy these fully. We recommend that future effort should be focused on defining agile productivity in measurable, practicable and meaningful form.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;초록
+애자일 소프트웨어 개발 방법론은 생산성을 향상시킨다고 알려져있다. 그러나 애자일 소프트웨어 개발 방법론에서 생산성 측정 방법에 대해서는 연구가 거의 이뤄지지 않았다. 측정 방법은 명시적으로 정의되거나, 공통적으로 합의되지 않았다. 본 논문에서는, 범위 연구(scoping study)라는 연구 방법을 사용해 논문에 보고된 애자일 생산성 측정 방법을 알아본다. 애자일 소프트웨어 개발 방법 과정에서 생산성을 측정한 12개의 논문을 연구했고, 애자일 개발 과정에서 생산성의 정의를 찾고 이해하고 활용하는 것이 어려운 일이라는 것을 알았다. 애자일 소프트웨어 개발 방법론에서의 역할과 기존 지식 근로자의 생산성 관점은 생산성 측정 방법을 완전히 만족시킬 수 없었다.
+미래에는 측정 가능하고 실행 가능하며 의미있는 형식으로 애자일 생산성을 정의하는 데 중점을 두도록 노력해야 한다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;3.3 Stage 3: Study Selection&lt;br /&gt;
+We scanned all downloaded papers to find evidence in literature of measuring productivity in agile software development processes.
+This led to a selection of 12 papers in total, out of 124. The inclusion and exclusion criteria employed is defined below.
+Inclusion Criteria: The inclusion criteria were applied at three subsequent levels. First, the titles were screened. They were selected if the title contained ‘agile’ and ‘productivity’. Second, we analyzed the abstracts of the papers where it had to demonstrate some experience in agile software development concerning productivity compared to other factors, such as quality, cost and schedule. As a third step, we thoroughly read the papers and included only those studies which described/discusses at least one of the following:
+agile software development process
+productivity
+method to calculate productivity, or productivity metrics
+Exclusion Criteria: The studies that did not satisfy any of the inclusion criteria were excluded.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;3.3 3 단계 : 연구 선택&lt;br /&gt;
+애자일 소프트웨어 개발 방법에서 생산성을 측정에 대한 부분을 찾기 위해 다운로드 받은 모든 문서를 읽었다.
+이렇게 해서 124개 중 총 12개의 논문을 선택했다. 채택 및 제외 기준은 아래에 정의했다.
+포함 기준 : 포함 기준은 세 가지로 적용했다. 먼저 제목에 애자일과 생산성이 포함되면 선정했다. 둘째, 품질, 비용 및 일정과 같은 다른 요소와 비교하여 생산성에 관한 애자일 소프트웨어 개발 경험을 보여 주는 논문의 초록을 분석했다. 세 번째, 우리는 논문을 처음부터 끝까지 읽고 다음 중 하나 이상을 설명 / 토론 한 연구만 포함했다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;애자일 소프트웨어 개발 프로세스&lt;/li&gt;
+  &lt;li&gt;생산성&lt;/li&gt;
+  &lt;li&gt;생산성 계산 방법 또는 생산성 메트릭&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;배제 기준 : 포함 기준을 충족시키지 못한 연구는 제외했다.&lt;/p&gt;
+
+&lt;p&gt;채택된 연구들&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;ID&lt;/th&gt;
+      &lt;th&gt;정보&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J1&lt;/td&gt;
+      &lt;td&gt;Layman, L.; Williams, L.; Cunningham, L., Motivations and measurements in an agile case study, Journal of Systems Architecture, Volume 52, Issue 11, November 2006, Pages 654-667, ISSN 1383-7621&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J2&lt;/td&gt;
+      &lt;td&gt;Tarhan, A.; Yilmaz, S. G., Systematic analyses andcomparison of development performance and productquality of Incremental Process and Agile Process,Information and Software Technology, Volume 56, Issue5, May 2014, Pages 477-494, ISSN 0950-5849,&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J3&lt;/td&gt;
+      &lt;td&gt;Moser, R.; Abrahamsson, P., Pedrycz, W., Sillitti, A., and Succi, G., “A Case Study on the Impact of Refactoring on Quality and Productivity in an Agile Team,” inBalancing Agility and Formalism in Software Engineering, vol. 5082, B. Meyer, J. Nawrocki, and B.Walter, Eds. Springer Berlin Heidelberg, 2008, pp. 252–266.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J4&lt;/td&gt;
+      &lt;td&gt;Parrish, A.; Smith, R.; Hale, D.; Hale, J., “A field study of developer pairs: productivity impacts and implications,” Software, IEEE , vol.21, no.5, pp.76,79, Sept.-Oct. 2004&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J5&lt;/td&gt;
+      &lt;td&gt;Athanasiou, D.; Nugroho, A.; Visser, J.; Zaidman, A.,”Test Code Quality and Its Relation to Issue HandlingPerformance,” Software Engineering, IEEE Transactions on , vol.40, no.11, pp.1100,1125, Nov. 1 2014&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C1&lt;/td&gt;
+      &lt;td&gt;Ramasubbu, N.; Balan, R. K., 2009. The impact of process choice in high maturity environments: An empirical analysis. In Proceedings of the 31st International Conference on Software Engineering (ICSE ‘09). IEEE Computer Society, Washington, DC, USA, 529-539.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C2&lt;/td&gt;
+      &lt;td&gt;Abrahamsson, P.; Koskela, J., “Extreme programming: a survey of empirical data from a controlled case study,” Empirical Software Engineering, 2004. ISESE ‘04. Proceedings. 2004 International Symposium on , vol., no., pp.73,82, 19-20 Aug. 2004&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C3&lt;/td&gt;
+      &lt;td&gt;Hu Guang-yong, “Study and practice of import Scrum agile software development,” Communication Software and Networks (ICCSN), 2011 IEEE 3rd International Conference on , vol., no., pp.217,220, 27-29 May 2011&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C4&lt;/td&gt;
+      &lt;td&gt;Williams, L.; Brown, G.; Meltzer, A.; Nagappan, N., “Scrum + Engineering Practices: Experiences of Three Microsoft Teams,” Empirical Software Engineering and Measurement (ESEM), 2011 International Symposium on , vol., no., pp.463,471, 22-23 Sept. 2011&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C5&lt;/td&gt;
+      &lt;td&gt;Abrahamsson, P., “Extreme programming: first results from a controlled case study,” Euromicro Conference, 2003. Proceedings. 29th , vol., no., pp.259,266, 1-6 Sept. 2003&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C6&lt;/td&gt;
+      &lt;td&gt;de Souza Carvalho, W.C.; Rosa, P.F.; dos Santos Soares, M.; Teixeira da Cunha Junior, M.A.; Buiatte, L.C., “AComparative Analysis of the Agile and Traditional Software Development Processes Productivity,” Computer Science Society (SCCC), 201130th International Conference of the Chilean , vol., no., pp.74,82, 9-11 Nov. 2011&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C7&lt;/td&gt;
+      &lt;td&gt;Sutherland, J.; Viktorov, A.; Blount, J.; Puntikov, N., “Distributed Scrum: Agile Project Management with Outsourced Development Teams,” System Sciences, 2007. HICSS 2007. 40th Annual Hawaii International Conference on , vol., no., pp.274a,274a, Jan. 2007&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;생산성 메트릭&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;연구&lt;/th&gt;
+      &lt;th&gt;생산성측정&lt;/th&gt;
+      &lt;th&gt;지식 근로자 수&lt;/th&gt;
+      &lt;th&gt; &lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J1&lt;/td&gt;
+      &lt;td&gt;실행가능한 코드 라인 수 / 평균 개발자 1일 평균 업무량&lt;/td&gt;
+      &lt;td&gt;팀&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J1&lt;/td&gt;
+      &lt;td&gt;기능 점수 / 평균 개발자 1개월 평균 업무량&lt;/td&gt;
+      &lt;td&gt;팀&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J2&lt;/td&gt;
+      &lt;td&gt;코드 라인 수 / 1인이 1시간 작업 단위&lt;/td&gt;
+      &lt;td&gt;팀&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J3&lt;/td&gt;
+      &lt;td&gt;기능 점수 / 1인&lt;/td&gt;
+      &lt;td&gt;팀&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J4&lt;/td&gt;
+      &lt;td&gt;시간당 완료된 평균 기능 점수&lt;/td&gt;
+      &lt;td&gt;개발자 2명으로 구성된 팀&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;J5&lt;/td&gt;
+      &lt;td&gt;해결된 이슈 수 / 개월&lt;/td&gt;
+      &lt;td&gt;개발자별&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C1&lt;/td&gt;
+      &lt;td&gt;해결된 이슈 수 / 평균 개발자 1일 평균 업무량&lt;/td&gt;
+      &lt;td&gt;팀&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C2&lt;/td&gt;
+      &lt;td&gt;코드 라인 수 / 1인 1시간 업무&lt;/td&gt;
+      &lt;td&gt;팀&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C3&lt;/td&gt;
+      &lt;td&gt;코드 라인 수&lt;/td&gt;
+      &lt;td&gt;팀&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C4&lt;/td&gt;
+      &lt;td&gt;코드 라인 수&lt;/td&gt;
+      &lt;td&gt;팀&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C5&lt;/td&gt;
+      &lt;td&gt;코드 라인 수 / 시간&lt;/td&gt;
+      &lt;td&gt;개발자 4명으로 구성된&lt;/td&gt;
+      &lt;td&gt;팀&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C6&lt;/td&gt;
+      &lt;td&gt;기능크기 / 노력&lt;/td&gt;
+      &lt;td&gt;팀(스크럼)&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;C7&lt;/td&gt;
+      &lt;td&gt;기능점수 / 개월수&lt;/td&gt;
+      &lt;td&gt;개발자별&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;RQ1: How is productivity measured in the agile software development process?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;RQ1 : 애자일 소프트웨어 개발 방법에서는 생산성을 어떻게 측정하는가?&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;SUMMARY&lt;br /&gt;
+In summary, we could state that the present productivity measures are not efficient enough to satisfy the requirements for defining productivity in agile software development. It is clear that defining agile productivity measures must consider the knowledge dimension. In the future, we have a twofold research direction, first we aim at defining measureable productivity metrics for different agile roles that would also satisfy the knowledge worker dimensions and cover all aspects (from requirements to delivery of working product to a customer) of agile development process.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;요약하면, 현재 생산성 측정 방법은 애자일 소프트 웨어 개발의 생산성 정의에 필요한 요구 사항을 충족하지 못한다. 애자일 생산성 측정은 지식 측면을 고려해야 한다. 앞으로는 두가지 연구 방향이 있다. 하나는 애자일에서 다양한 직군과 지식 근로자 또한 만족할만한, 측정가능한 생산성 메트릭을 정의하는 것이다. 그리고 애자일 개발 과정 전 부분(요구사항에서 부터 고객에게 작업물 제공을 전달하는 것 까지)을 포괄하는 것이다.&lt;/p&gt;
+
+&lt;p&gt;이 논문으로 알 수 있는 건 다음과 같다. 우선 애자일 생산성에 관한 연구들이 생산성을 측정하는데 코드 라인수, 기능점수를 많이 활용하고 있다. 하지만 사실 애자일 개발 방법론을 접목한다면 리팩토링이 필수적으로 이뤄저야 하는데, 리팩토링을 하게 되면 대체로 코드 라인 수가 짧아진다. 여기서 알 수 있는 것은 코드가 더 길어질수록 생산성이 더 좋아지는 게 아니라는 것이다. 코드 라인 수는 생산성 측정에 사용하기에 부족하다. 또한, 애자일 개발 방법을 도입하면 사람들은 팀을 구성해서 공동의 목표를 위해 일하게 되기 때문에, 개인의 성과 역시 팀 단위에서 측정해야 한다. 스크럼에서는 팀에 개발자 뿐만 아니라 테스터, 스크럼 마스터 등등 다양한 역할이 있다. 이런 직군들은 코드 라인 수로 생산성을 측정할 수 없다. 현재 애자일 생산성 메트릭으로는 같은 팀의 다른 직군 생산성을 측정할 수 없는 것이다.&lt;br /&gt;
+생산성은 많은 기업이 고민하는 부분이다. 스타트업은 생산성 극대화 효과를 기대하고 애자일을 도입한다. 대부분의 사람들이 애자일이 워터폴보다 더 나은 방법이라고 생각한다. 하지만 애자일을 도입할 경우 생산성이 얼마나 향상되는지에 대해서는 알 수 없다. 각 팀 또는 회사에서는 생산성을 측정 또는 개인의 퍼포먼스 평가를 위해 다른 방법을 도입하는 게 최선인 것 같다.&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 15 Aug 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/agile/2019/08/15/agile-and-productivity-using-scoping-study/</link>
+        <guid isPermaLink="true">http://localhost:4000/agile/2019/08/15/agile-and-productivity-using-scoping-study/</guid>
+      </item>
+    
+      <item>
+        <title>Django, Flask를 사용하는 개발자들이 REST를 생각할때 갖기 쉬운 오해들</title>
+        <description>&lt;ul&gt;
+  &lt;li&gt;제목을 지을때 고민을 많이 했다. Django, Flask를 사용한다고 해서 모두가 이런 오해를 하는게 아니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;최근에 팀에서 플라스크 보일러플레이트와 관련된 이슈가 있었다. 몇가지 이슈중에 가장 인상깊었던 것은 API를 &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt; 로 할것인지, 아니면 &lt;code class=&quot;highlighter-rouge&quot;&gt;def&lt;/code&gt;로 할것인지에 대한 것이였다. 
+나는 결정이 빨리 나길 바랬다. 하지만 나의 바람과는 다른 방향으로 대화가 흘러갔다. &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt;를 지지하는 개발자들은 &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;를 적극 사용하고 싶어했다. &lt;code class=&quot;highlighter-rouge&quot;&gt;def&lt;/code&gt;를 지지하는 개발자들은 &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;가 현실세계를 반영하지 못하기 때문에 사용하기 싫어했다. 
+내 입장은 기본적으로 &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;아키텍쳐를 적극 활용하되, 대신 현실과 타협하는 것이다. 그러나 나는 그자리에서 내 의견을 밝히지 않았다. 왜냐면 &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt;와 &lt;code class=&quot;highlighter-rouge&quot;&gt;def&lt;/code&gt;에 대한 논의가 왜 &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;아키텍쳐 도입 여부로 흘러가는지 이해할 수 없었기 때문이다. 그리고 이 미스터리는 신입 개발자와의 대화로 풀렸다.&lt;/p&gt;
+
+&lt;p&gt;“우리 회사의 프로젝트들 대부분이 &lt;code class=&quot;highlighter-rouge&quot;&gt;flask&lt;/code&gt;를 기반으로 만들어져서 &lt;code class=&quot;highlighter-rouge&quot;&gt;def&lt;/code&gt;로 되어있고 단 몇개의 프로젝트만이 &lt;code class=&quot;highlighter-rouge&quot;&gt;django&lt;/code&gt;로 만들어졌습니다. 그래서 REST로 바꾸는 건 리소스가 많이 드는 일입니다. 그리고 플라스크에서 &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt;를 쓰려면 패키지를 따로 설치해야 합니다.” 
+내가 반문했다. “REST 아키텍쳐를 구현하기 위해서 꼭 class를 사용해야 하는 건 아닙니다. def를 사용해도 충분히 구현할 수 있습니다. 그리고 blueprint에 methodview가 있어요. 패키지 설치가 싫으면 그걸 쓰면 됩니다.”
+“def인데 어떻게 REST를 구현할 수 있죠?”
+“REST의 제약조건에는 무조건 class로 구현하라는 조건이 없습니다.”
+신입 개발자는 &lt;code class=&quot;highlighter-rouge&quot;&gt;django drf&lt;/code&gt;나 &lt;code class=&quot;highlighter-rouge&quot;&gt;flask-restplus&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;flask-restful&lt;/code&gt; 패키지에서 제공하는 &lt;code class=&quot;highlighter-rouge&quot;&gt;classview&lt;/code&gt;를 사용해야 &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;가 된다고 생각하고 있었다.&lt;/p&gt;
+
+&lt;p&gt;나는 그 자리에서 상대방에게 REST에 대해 설명을 하고 싶었지만, 여기서는 밝힐 수 없는 사정으로 그럴 수 없었다. 대신 몇가지 오해들을 글로 정리해야 할 필요성을 느꼈다.
+이 밑에 정리한 몇가지 오해들은 개발자 중에서도 REST에 익숙하지 않은 python 개발자들이 특히 자주 빠지기 쉬운 오해다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1-django-drf-flask-rest-plus-flask-restful을-사용해야-restful-api-이다&quot;&gt;1. &lt;code class=&quot;highlighter-rouge&quot;&gt;django drf&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;flask rest-plus&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;flask-restful&lt;/code&gt;을 사용해야 RESTful api 이다.&lt;/h3&gt;
+&lt;p&gt;위의 패키지들은 RESTful한 API구현을 도와주는 패키지다. 해당 패키지를 사용하더라도 REST의 제약조건들을 충족하지 못하면 RESTful API가 아니다.
+예제를 통해 알아보자. REST는 uri로 자원을 표현하고, 자원에 대한 행위를 method를 통해 구현해야 한다는 제약 조건이 있다. 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;drf&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;flask-restful&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;flask-restplus&lt;/code&gt; 패키지 중 하나를 사용해 회원 계정 삭제 API를 다음과 같이 구현했다고 하자.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; DELETE /new/members/delete/account &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;uri&lt;/code&gt;에 자원에 행할 행위 &lt;code class=&quot;highlighter-rouge&quot;&gt;delete&lt;/code&gt;가 포함됐다. 제약조건에 위배되기 때문에 RESTful 하지 않다.
+참고로 &lt;code class=&quot;highlighter-rouge&quot;&gt;uri&lt;/code&gt;에서 행위를 표현할 수 없기 때문에 &lt;code class=&quot;highlighter-rouge&quot;&gt;uri&lt;/code&gt;에 동사를 사용하면 안된다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; GET /members/account/ &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;uri&lt;/code&gt;에 동사가 없다. 하지만 계정을 삭제(delete) 할 API를 get으로 호출하도록 개발했다. 나중에 client가 착각할 위험이 있다. 계정 정보를 갖고오려다가 계정을 삭제해버리는 불상사가 일어날 것이다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; DELETE /members/1 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;uri와 method가 정확하게 API를 설명한다.&lt;/p&gt;
+
+&lt;p&gt;보통 이런 오해는 REST를 개념이 아닌 패키지, 모듈, 또는 코드로 이해했을 때 발생한다.&lt;/p&gt;
+
+&lt;h3 id=&quot;2-restful-하게-api를-설계하면-status-code를-상황에-따라-다양하게-내려줘야-하기-때문에-비효율적이다&quot;&gt;2. RESTful 하게 API를 설계하면 status code를 상황에 따라 다양하게 내려줘야 하기 때문에 비효율적이다.&lt;/h3&gt;
+&lt;p&gt;status code는 REST 아키텍쳐가 아니라 http와 관련있다. http 통신을 한다면 status code를 반환해줘야 한다. 상황에 따라 다른 상태코드를 내려주는 행위가 불편하고 무의미 하다고 생각한다면 팀의 협의에 따라 사용하지 않을 수 있다.
+하지만 이럴 경우에 API는 어떤 상황에서든 200을 반환하게 될 것이고, 서버가 죽었을때는 500을 반환하니 결과적으로 200 아니면 500 코드만 존재하게 된다.&lt;/p&gt;
+
+&lt;p&gt;참고로 django drf &lt;a href=&quot;https://www.django-rest-framework.org/api-guide/status-codes/&quot;&gt;공식문서&lt;/a&gt;를 읽어보면 status code에 대한 정리가 잘 되어있다. 
+flask 공식문서에는 status code에 대한 설명이 부족하다. 그래서 이런 오해가 발생하는 것 같다.&lt;/p&gt;
+
+&lt;h3 id=&quot;3-rest는-단-4가지-methods-get-post-put-delete만을-허용한다&quot;&gt;3. &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;는 단 4가지 methods, &lt;code class=&quot;highlighter-rouge&quot;&gt;get&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;post&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;delete&lt;/code&gt;만을 허용한다.&lt;/h3&gt;
+&lt;p&gt;REST의 제약조건 중에 method 종류를 제한하는 조건은 없다. &lt;code class=&quot;highlighter-rouge&quot;&gt;patch&lt;/code&gt; 를 사용해도 된다.&lt;/p&gt;
+
+&lt;h3 id=&quot;4-rest를-따르게-되면-method-가-get일때-json을-못보내기-때문에-비효율적이다&quot;&gt;4. REST를 따르게 되면 method 가 get일때 json을 못보내기 때문에 비효율적이다.&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt;통신은 &lt;code class=&quot;highlighter-rouge&quot;&gt;get&lt;/code&gt;을 사용할때 &lt;code class=&quot;highlighter-rouge&quot;&gt;request body&lt;/code&gt;를 보낼 수 있다. 기술적으로 get일때 json을 보내는 것은 가능하다. 하지만 시맨틱하게 바라보면 GET일때 뭔가를 보낸다는 건 안맞다.
+로이필딩이 &lt;code class=&quot;highlighter-rouge&quot;&gt;get&lt;/code&gt;일때 &lt;code class=&quot;highlighter-rouge&quot;&gt;request body&lt;/code&gt;를 추가하는 것에 대해 남긴 코멘트를 첨부한다. 최종 결정은 개발자에게 달려있다.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;Yes. In other words, any HTTP request message is allowed to contain a message body, and thus must parse messages with that in mind. 
+Server semantics for GET, however, are restricted such that a body, if any, has no semantic meaning to the request. The requirements on parsing are separate from the requirements on method semantics.
+So, yes, you can send a body with GET, and no, it is never useful to do so.
+This is part of the layered design of HTTP/1.1 that will become clear again once the spec is partitioned (work in progress).
+….Roy&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;5-rest로는-현실세계의-모든-행위를-표현할-수-없다-표현이-불가능한-행위가-많기-때문에-rest를-도입하는-건-비효율적이다&quot;&gt;5. REST로는 현실세계의 모든 행위를 표현할 수 없다. 표현이 불가능한 행위가 많기 때문에 REST를 도입하는 건 비효율적이다.&lt;/h3&gt;
+&lt;p&gt;현실세계는 복잡하다. 그래서 이 의견에 어느정도 동의한다. 하지만 완전히 동의하는 건 아니다! 
+이 주장을 하는 사람이 생각하는 표현할 수 없는 행위가 무엇이냐에 따라 내 의견은 다르다. 나는 한번 이런 논의를 한 적이 있다.
+예를 들어, 고객이 물건을 구매하려고 한다. 고객은 구매 버튼을 누르고 가상계좌를 발급받는다. 
+돈을 지불하기 전이기 때문에 status 는 &lt;code class=&quot;highlighter-rouge&quot;&gt;ready&lt;/code&gt;로 표현하고 rds 에 저장한다. 
+그 후 고객이 돈을 지불하면 status를 &lt;code class=&quot;highlighter-rouge&quot;&gt;prepared&lt;/code&gt;로 변경해 저장한다. 왜 &lt;code class=&quot;highlighter-rouge&quot;&gt;paid&lt;/code&gt;가 아닐까? 왜냐면 pg사에서 결제 완료를 알리는 callback이 아직 안왔기 때문이다. callback을 받으면 status가 paid로 변한다.
+상대방은 이렇게 주장했다. “status가 paid가 아니고 prepared으로 변하는 현상은 get, post, put, delete 어디에도 맞지 않습니다. 그래서 REST를 도입하는건 비효율적입니다.” 
+REST를 사용하지 않더라도 현재 개발하는 API는 http통신을 하기 때문에 method를 get, post, put, patch, delete중에 선택해야 한다. 자원에 대한 행위에 대해 생각보면, status를 변경하는 행위는 동사 update로 표현할 수 있다. 그래서 put을 사용할 수 있다. 그리고 아키텍쳐를 적용하면 client 와 server가 지켜야 할 규칙이 생기는 것이고, 결국 커뮤니케이션 비용도 줄일 거라고 생각한다.&lt;/p&gt;
+
+&lt;p&gt;이렇게 REST에 대한 오해를 정리해봤다. 개발을 하면서 느낀점인데, REST는 널리 알려졌지만 그만큼 개발자들마다 이해도도 다르다. 이 글이 RESTful API개발을 하려는 개발자들에게 도움이 됐으면 좋겠다.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 11 Aug 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/python/2019/08/11/misunderstandings-about-rest/</link>
+        <guid isPermaLink="true">http://localhost:4000/python/2019/08/11/misunderstandings-about-rest/</guid>
+      </item>
+    
+      <item>
+        <title>SQLAlchemy, Timeit으로 성능 측정하기</title>
+        <description>&lt;p&gt;데이터베이스와 연결하는 코드를 읽어보니, API에서 쿼리를 보낼때 마다 SQLAlchemy &lt;a href=&quot;https://docs.sqlalchemy.org/en/13/core/engines.html&quot;&gt;create_engine&lt;/a&gt; 을 사용해서 디비와 커넥션 부터 만들고 세션을 만든 다음 끊는 방식으로 되어있었다.
+만약 한 API에서 쿼리를 5번 보낸다면 engine을 5번 생성하게 된다. 그런데 engine을 여러번 생성하는게 성능에 큰 차이를 미칠까?
+성능을 측정하기 위해서 &lt;a href=&quot;https://docs.python.org/3/library/timeit.html&quot;&gt;timeit&lt;/a&gt;을 사용했다. timeit은 작은 크기의 파이선 코드의 실행시간을 측정할 때 사용할 수 있는 라이브러리다.&lt;/p&gt;
+
+&lt;p&gt;엔진을 한번만 만드는 경우&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; timeit &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;from sqlalchemy import create_engine&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;engine=create_engine('mysql://root:@localhost:3306/quicket');engine.execute('SELECT 1')&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;result:
+100 loops, best of 3: 5.55 msec per loop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;‌&lt;/p&gt;
+
+&lt;p&gt;엔진을 실행할때마다 매번 생성할 경우&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; timeit &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;from sqlalchemy import create_engine;engine=create_engine('mysql://root@localhost:3306/quicket')&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;engine.execute('SELECT 1')&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;result:
+10000 loops, best of 3: 135 usec per loop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;결과를 봤을때는 &lt;code class=&quot;highlighter-rouge&quot;&gt;app.run()&lt;/code&gt;으로 코드를 메모리에 올렸을 때 최초 한번 실행하는 게 제일 좋은 방법이다.&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 07 Aug 2019 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/python/2019/08/07/sqlalchemy-create-engine/</link>
+        <guid isPermaLink="true">http://localhost:4000/python/2019/08/07/sqlalchemy-create-engine/</guid>
+      </item>
+    
+
+    
+      
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+
+  </channel>
+</rss>

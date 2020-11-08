@@ -1,0 +1,126 @@
+I"o=<p>서버 비용 절감을 위해서 스테이징 서버를 근무시간에만 띄우기로 결정했다. db도 최근 스냅샷을 갖고와서 런칭해 사용하기로 했다. 스테이징 서버는 웹서버용 <code class="highlighter-rouge">AWS ECS fargate</code>와, <code class="highlighter-rouge">Redis</code>용 <code class="highlighter-rouge">EC2 instance</code>, <code class="highlighter-rouge">Rabbitmq</code> 용 <code class="highlighter-rouge">EC2 instance</code>, <code class="highlighter-rouge">RDS  instance</code> 1개로 구성된다. <code class="highlighter-rouge">AWS Console</code>에 들어가서 마우스 클릭으로도 충분히 서버를 실행하고 끌 수 있지만, 다른 instance 를 실수로 중지할 수 있는 위험이 있다. 그리고 현재 사용하고 있는 스테이징 용 db와 새 스테이징의 vpc가 다르다. 스냅샷으로 인스턴스를 런칭할 때 다른 vpc에서 instance 를 런칭해야 하는데, 이렇게 하려면  <code class="highlighter-rouge">aws console</code> 의 <code class="highlighter-rouge">vpc</code> 섹션에서 수동으로 매번 지정해줘야 한다. 그리고 서버 사용이 끝나면 <code class="highlighter-rouge">rds instance</code>를 삭제해야 하는데 이 작업 역시 수동으로 하고 싶지 않는 작업이다.</p>
+
+<p>이런 반복 작업에 버리는 시간이 아까워서 <code class="highlighter-rouge">AWS Lambda</code> 에 <code class="highlighter-rouge">boto3</code> 라이브러리를 사용해 자동으로 서버를 띄우고 내리는 기능을 만들었다.</p>
+
+<p><img src="/images/posts/automated_server.png" alt="automated server create and destroy" /></p>
+
+<p>스테이징 서버를 중지하는 스크립트.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># stop staging server
+</span><span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">REDIS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'REDIS'</span><span class="p">]</span>
+<span class="n">RABBITMQ</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'RABBITMQ'</span><span class="p">]</span>
+<span class="n">DB</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'DB'</span><span class="p">]</span>
+<span class="n">TASK</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'TASK'</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="c1"># stop redis, rabbitmq
+</span>    <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s">'ec2'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s">'us-east-1'</span><span class="p">)</span><span class="o">.</span><span class="n">stop_instances</span><span class="p">(</span><span class="n">InstanceIds</span><span class="o">=</span><span class="p">[</span><span class="n">REDIS</span><span class="p">,</span> <span class="n">RABBITMQ</span><span class="p">])</span>
+
+    <span class="c1"># delete rds
+</span>    <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s">'rds'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s">'us-east-1'</span><span class="p">)</span><span class="o">.</span><span class="n">delete_db_instance</span><span class="p">(</span><span class="n">DBInstanceIdentifier</span><span class="o">=</span><span class="n">DB</span><span class="p">,</span>
+                                                                    <span class="n">SkipFinalSnapshot</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                                                    <span class="n">DeleteAutomatedBackups</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="c1"># stop ecs task
+</span>    <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s">'ecs'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="s">'us-east-1'</span><span class="p">)</span><span class="o">.</span><span class="n">stop_task</span><span class="p">(</span><span class="n">cluster</span><span class="o">=</span><span class="s">'cluster'</span><span class="p">,</span>
+                                  <span class="n">task</span><span class="o">=</span><span class="s">''</span><span class="p">,</span>
+                                  <span class="n">reason</span><span class="o">=</span><span class="s">''</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>스테이징 서버를 시작하는 스크립트.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># start staging server
+</span><span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">REGION</span> <span class="o">=</span> <span class="s">'us-east-1'</span>
+<span class="n">REDIS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'REDIS'</span><span class="p">]</span>
+<span class="n">RABBITMQ</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'RABBITMQ'</span><span class="p">]</span>
+<span class="n">STAGING_IDENTIFIER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'STAGING_IDENTIFIER'</span><span class="p">]</span>
+<span class="n">MASTER_IDENTIFIER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'MASTER_IDENTIFIER'</span><span class="p">]</span>
+<span class="n">DB_CLASS</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'DB_CLASS'</span><span class="p">]</span>
+<span class="n">VPC_ID</span> <span class="o">=</span> <span class="s">''</span>
+
+
+<span class="k">def</span> <span class="nf">lambda_handler</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="c1"># rds 시작
+</span>    <span class="n">start_db</span><span class="p">()</span>
+
+    <span class="c1"># redis, rabbitmq 시작
+</span>    <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s">'ec2'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="n">REGION</span><span class="p">)</span><span class="o">.</span><span class="n">start_instances</span><span class="p">(</span><span class="n">InstanceIds</span><span class="o">=</span><span class="p">[</span><span class="n">REDIS</span><span class="p">,</span> <span class="n">RABBITMQ</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">start_db</span><span class="p">():</span>
+    <span class="n">rds</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s">'rds'</span><span class="p">,</span> <span class="n">region_name</span><span class="o">=</span><span class="n">REGION</span><span class="p">)</span>
+    <span class="n">snapshot</span> <span class="o">=</span> <span class="n">get_latest_snapshot</span><span class="p">(</span><span class="n">rds</span><span class="p">)</span>
+    <span class="n">restore_db_instance</span><span class="p">(</span><span class="n">rds</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_latest_snapshot</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+  	<span class="c1"># 가장 최근 스냅샷을 갖고온다.
+</span>    <span class="n">snapshots</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">describe_db_snapshots</span><span class="p">(</span>
+        <span class="n">DBInstanceIdentifier</span><span class="o">=</span><span class="n">MASTER_IDENTIFIER</span><span class="p">,</span>
+        <span class="n">SnapshotType</span><span class="o">=</span><span class="s">'automated'</span><span class="p">,</span>
+        <span class="n">MaxRecords</span><span class="o">=</span><span class="mi">20</span><span class="p">)[</span><span class="s">'DBSnapshots'</span><span class="p">]</span>
+
+    <span class="n">ordered_snapshots</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="n">snapshots</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">"SnapshotCreateTime"</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span>
+    <span class="p">)</span>
+
+    <span class="n">source</span> <span class="o">=</span> <span class="n">ordered_snapshots</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">source</span>
+
+
+<span class="k">def</span> <span class="nf">get_current_db_instance_settings</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">snapshot_db_identifier</span><span class="p">):</span>
+  	<span class="c1"># db 인스턴스 세팅을 갖고온다.
+</span>    <span class="n">db_instance</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">describe_db_instances</span><span class="p">(</span>
+        <span class="n">DBInstanceIdentifier</span><span class="o">=</span><span class="n">snapshot_db_identifier</span>
+    <span class="p">)[</span><span class="s">'DBInstances'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">db_instance</span>
+
+
+<span class="k">def</span> <span class="nf">restore_db_instance</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">):</span>
+  	<span class="c1"># 스냅샷과 db 인스턴스 세팅으로 새 instance를 다른 vpc에 런칭한다.
+</span>    <span class="n">snapshot_db_identifier</span> <span class="o">=</span> <span class="n">snapshot</span><span class="p">[</span><span class="s">'DBInstanceIdentifier'</span><span class="p">]</span>
+    <span class="n">snapshot_identifier</span> <span class="o">=</span> <span class="n">snapshot</span><span class="p">[</span><span class="s">'DBSnapshotIdentifier'</span><span class="p">]</span>
+
+    <span class="n">current_db_instance_settings</span> <span class="o">=</span> <span class="n">get_current_db_instance_settings</span><span class="p">(</span>
+        <span class="n">client</span><span class="p">,</span> <span class="n">snapshot_db_identifier</span>
+    <span class="p">)</span>
+
+    <span class="n">availability_zone</span> <span class="o">=</span> <span class="n">current_db_instance_settings</span><span class="p">[</span><span class="s">'AvailabilityZone'</span><span class="p">]</span>
+
+    <span class="n">db_subnet_group_name</span> <span class="o">=</span> <span class="s">''</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">current_db_instance_settings</span><span class="p">[</span><span class="s">"Engine"</span><span class="p">]</span>
+    <span class="n">storage_type</span> <span class="o">=</span> <span class="n">current_db_instance_settings</span><span class="p">[</span><span class="s">'StorageType'</span><span class="p">]</span>
+    <span class="n">vpc_security_group_ids</span> <span class="o">=</span> <span class="p">[</span><span class="s">'vpc_security_group_id'</span><span class="p">]</span>
+
+    <span class="n">db_parameter_group_name</span> <span class="o">=</span> <span class="n">current_db_instance_settings</span><span class="p">[</span>
+        <span class="s">'DBParameterGroups'</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s">'DBParameterGroupName'</span><span class="p">]</span>
+
+    <span class="n">client</span><span class="o">.</span><span class="n">restore_db_instance_from_db_snapshot</span><span class="p">(</span>
+        <span class="n">DBInstanceIdentifier</span><span class="o">=</span><span class="n">STAGING_IDENTIFIER</span><span class="p">,</span>
+        <span class="n">DBSnapshotIdentifier</span><span class="o">=</span><span class="n">snapshot_identifier</span><span class="p">,</span>
+        <span class="n">DBInstanceClass</span><span class="o">=</span><span class="n">DB_CLASS</span><span class="p">,</span>
+        <span class="n">AvailabilityZone</span><span class="o">=</span><span class="n">availability_zone</span><span class="p">,</span>
+        <span class="n">DBSubnetGroupName</span><span class="o">=</span><span class="n">db_subnet_group_name</span><span class="p">,</span>
+        <span class="n">MultiAZ</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">PubliclyAccessible</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">AutoMinorVersionUpgrade</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">Engine</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span>
+        <span class="n">StorageType</span><span class="o">=</span><span class="n">storage_type</span><span class="p">,</span>
+        <span class="n">VpcSecurityGroupIds</span><span class="o">=</span><span class="n">vpc_security_group_ids</span><span class="p">,</span>
+        <span class="n">DBParameterGroupName</span><span class="o">=</span><span class="n">db_parameter_group_name</span>
+    <span class="p">)</span>
+</code></pre></div></div>
+
+<p>인스턴스를 런칭 또는 중지 하는 액션을 할때는 람다에 서브넷을 설정해 줄 필요가 없다. 해당 스크립트를 람다 콘솔에 작성한 후 <code class="highlighter-rouge">AWS cloud watch</code> 트리거를 설정해준다. 
+<img src="/images/posts/lambda-trigger.png" alt="deploy process" /></p>
+
+<p>크론탭을 사용해봤던 사람이라면 쉽게 트리거를 작성할 수 있다. 나는 근무시간에만 스테이징 서버를 띄울 계획이기 때문에, 월요일 부터 금욜일 까지 9-6를 cron expression으로 작성해 추가해준다.</p>
+:ET

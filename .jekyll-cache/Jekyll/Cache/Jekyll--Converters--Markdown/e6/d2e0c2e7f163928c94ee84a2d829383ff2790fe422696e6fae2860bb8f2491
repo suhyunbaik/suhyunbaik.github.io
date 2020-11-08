@@ -1,0 +1,50 @@
+I"~<p>updated: 2020-02-10</p>
+
+<p>DevOps의 주요 업무와 도구</p>
+
+<ol>
+  <li>주요 업무</li>
+  <li>도구</li>
+</ol>
+
+<h5 id="1-주요-업무">1. 주요 업무</h5>
+
+<p>DevOps 의 주요업무를 간략하게 정리해보면 다음과 같다.</p>
+
+<ul>
+  <li>CI/CD(Continuous integration and continuous delivery)</li>
+  <li>IaC(Infrastructure as code)</li>
+  <li>마이크로서비스</li>
+  <li>CM(Configuration management)</li>
+  <li>모니터링, 로깅</li>
+  <li>자동화</li>
+</ul>
+
+<h5 id="2-도구">2. 도구</h5>
+
+<p>최근 DevOps 들이 많이 사용하는 툴들을 정리했다.</p>
+
+<ul>
+  <li>Docker (Containerization)</li>
+  <li>Jenkins (CI/CD)</li>
+  <li>Circle CI (CI/CD)</li>
+  <li>Sentry (Error tracking)</li>
+  <li>Terraform (IaC)</li>
+  <li>Ansible (IaC)</li>
+  <li>Nagios (Monitoring)</li>
+  <li>
+    <p>New Relic (Monitoring)</p>
+  </li>
+  <li>Docker
+  -<a href="https://suhyunbaik.github.io/devops/2019/12/20/ctop/">ctop으로 도커 컨테이너 모니터링 하기</a></li>
+  <li>Jenkins
+  -<a href="https://suhyunbaik.github.io/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-1/">자동화된 배포 1</a>
+  -<a href="https://suhyunbaik.github.io/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-2/">자동화된 배포 2</a>
+  -<a href="https://suhyunbaik.github.io/devops/3019/13/31/automated-deploy-using-docker-and-jenkins-3/">자동화된 배포 3</a></li>
+  <li>Sentry
+    <ul>
+      <li><a href="https://suhyunbaik.github.io/devops/2020/01/05/sentry-self-hosted-01/">Sentry를 Ubuntu 18.04(Bionic) 에 self-hosted 형태로 구축하기 - 1 docker로 설치하기</a></li>
+    </ul>
+  </li>
+</ul>
+:ET

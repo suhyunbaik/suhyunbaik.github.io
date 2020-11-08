@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang='en'>
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <meta name="description" content="A pythonist in startup">
+  <meta name="keywords" content="Python, Developer, startup">
+  <meta name="author" content="Suhyun Baik">
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+  <!-- facebook start -->
+  <meta property="og:type"          content="website" />
+  <meta property="og:title"         content="도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성" />
+  <meta property="og:description"   content="도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성" />
+
+  <!-- Twitter start -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성">
+  <meta name="twitter:description" content="도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성">
+
+  <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+  <meta itemprop="name" content="도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성">
+  <meta itemprop="description" content="도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성">
+
+  <title>도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성</title>
+  <meta name='description' content="updated: 2019-12-27이번에는 젠킨스 파일을 작성한다.">
+  <link rel='canonical' href="http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-2/">
+  <link rel='alternate' type='application/rss+xml' title='A python developer' href="http://localhost:4000/feed.xml">
+  <!-- css   -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <style>
+    
+
+    html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */html{font-family:sans-serif;line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav,section{display:block}h1{font-size:2em;margin:0.67em 0}figcaption,figure,main{display:block}figure{margin:1em 40px}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace, monospace;font-size:1em}a{background-color:transparent;-webkit-text-decoration-skip:objects}a:active,a:hover{outline-width:0}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:inherit}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace, monospace;font-size:1em}dfn{font-style:italic}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-0.25em}sup{top:-0.5em}audio,video{display:inline-block}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}button,html [type="button"],[type="reset"],[type="submit"]{-webkit-appearance:button}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0}button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{display:inline-block;vertical-align:baseline}textarea{overflow:auto}[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0}[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto}[type="search"]{-webkit-appearance:textfield;outline-offset:-2px}[type="search"]::-webkit-search-cancel-button,[type="search"]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details,menu{display:block}summary{display:list-item}canvas{display:inline-block}template{display:none}[hidden]{display:none}body,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,dd,ol,ul,figure,hr,fieldset,legend{margin:0;padding:0}li>ol,li>ul{margin-bottom:0}table{border-collapse:collapse;border-spacing:0}address,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,ol,ul,figure,hr,table,fieldset{margin-bottom:32px}dd,ol,ul{list-style-position:inside;margin-left:16px}@-webkit-keyframes spin{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes spin{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.icon{position:relative;display:inline-block;width:25px;height:25px;overflow:hidden;fill:currentColor}.icon__cnt{width:100%;height:100%;background:inherit;fill:inherit;pointer-events:none;transform:translateX(0);-ms-transform:translate(0.5px, -0.3px)}.icon--m{width:50px;height:50px}.icon--l{width:100px;height:100px}.icon--xl{width:150px;height:150px}.icon--xxl{width:200px;height:200px}.icon__spinner{position:absolute;top:0;left:0;width:100%;height:100%}.icon--ei-spinner .icon__spinner,.icon--ei-spinner-2 .icon__spinner{-webkit-animation:spin 1s steps(12) infinite;animation:spin 1s steps(12) infinite}.icon--ei-spinner-3 .icon__spinner{-webkit-animation:spin 1.5s linear infinite;animation:spin 1.5s linear infinite}.icon--ei-sc-facebook{fill:#3b5998}.icon--ei-sc-github{fill:#333}.icon--ei-sc-google-plus{fill:#dd4b39}.icon--ei-sc-instagram{fill:#3f729b}.icon--ei-sc-linkedin{fill:#0976b4}.icon--ei-sc-odnoklassniki{fill:#ed812b}.icon--ei-sc-skype{fill:#00aff0}.icon--ei-sc-soundcloud{fill:#f80}.icon--ei-sc-tumblr{fill:#35465c}.icon--ei-sc-twitter{fill:#55acee}.icon--ei-sc-vimeo{fill:#1ab7ea}.icon--ei-sc-vk{fill:#45668e}.icon--ei-sc-youtube{fill:#e52d27}.icon--ei-sc-pinterest{fill:#bd081c}.icon--ei-sc-telegram{fill:#0088cc}.highlight{margin:0;background:#fff}.highlighter-rouge .highlight{border-radius:5px;background:#FAFAFA;font-family:'Noto Sans KR', sans-serif;font-size:14px}.highlight .c{color:#998;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#998;font-style:italic}.highlight .cp{color:#999;font-weight:bold}.highlight .c1{color:#998;font-style:italic}.highlight .cs{color:#999;font-weight:bold;font-style:italic}.highlight .gd{color:#000;background-color:#fdd}.highlight .gd .x{color:#000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000;background-color:#dfd}.highlight .gi .x{color:#000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaa}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#458;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:#008080}.highlight .nb{color:#0086B3}.highlight .nc{color:#458;font-weight:bold}.highlight .no{color:#008080}.highlight .ni{color:#800080}.highlight .ne{color:#900;font-weight:bold}.highlight .nf{color:#900;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:#000080}.highlight .nv{color:#008080}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#d14}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#990073}.highlight .bp{color:#999}.highlight .vc{color:#008080}.highlight .vg{color:#008080}.highlight .vi{color:#008080}.highlight .il{color:#099}body{color:#323232;font-size:19px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-weight:300;line-height:32px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}*::selection{color:#fff;background:#00A0FF}a{text-decoration:none;color:#323232;transition:.4s}a:hover,a:active,a:focus{text-decoration:underline}img{display:block;max-width:100%;font-style:italic}hr{height:1px;margin:32px 0;border:0;background-color:#E9EFF3}h1,h2,h3,h4,h5,h6{font-weight:inherit;line-height:initial;font-weight:600;font-family:'Noto Sans KR', sans-serif}h1{font-size:36px}h2{font-size:28px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}p,span{font-family:'Noto Sans KR', sans-serif}code{font-size:14px}blockquote{padding-left:16px;border-left:3px solid #2B5F72;font-style:italic;font-size:"Noto Serif KR",sans-serif}pre,code{font-family:Courier,monospace;background-color:#FAFAFA}pre{overflow:auto;padding:32px;margin-bottom:16px;font-size:16px;line-height:25px;white-space:pre-wrap;word-wrap:break-word}li code,p code{padding:4px 8px}input[type='text'],input[type='tel'],input[type='number'],input[type='email'],select,textarea{width:100%;padding:16px;border:1px solid #E9EFF3;border-radius:0;outline:none;background-color:#fff;font-size:14px;appearance:none;transition:.4s}input[type='text']:hover,input[type='text']:active,input[type='text']:focus,input[type='tel']:hover,input[type='tel']:active,input[type='tel']:focus,input[type='number']:hover,input[type='number']:active,input[type='number']:focus,input[type='email']:hover,input[type='email']:active,input[type='email']:focus,select:hover,select:active,select:focus,textarea:hover,textarea:active,textarea:focus{border:1px solid #323232}.o-grid{margin:0 auto;max-width:700px}.o-grid:after{content:'';display:table;clear:both}.o-grid .o-grid{margin-right:-16px;margin-left:-16px;padding:0}.o-grid--full{max-width:100vw}.o-grid__col{float:left;padding-right:16px;padding-left:16px}.o-grid__col--1-4-s{width:25%}.o-grid__col--1-3-s{width:33.3333333333%}.o-grid__col--2-4-s{width:50%}.o-grid__col--3-4-s{width:75%}.o-grid__col--4-4-s{width:100%}@media (min-width: 40em){.o-grid__col--1-4-m{width:25%}.o-grid__col--1-3-m{width:33.3333333333%}.o-grid__col--2-4-m{width:50%}.o-grid__col--3-4-m{width:75%}}@media (min-width: 64em){.o-grid__col--1-4-l{width:25%}.o-grid__col--1-3-l{width:33.3333333333%}.o-grid__col--2-4-l{width:50%}.o-grid__col--3-4-l{width:75%}}.o-grid__col--full{width:100%}.o-grid__col--center{margin:0 auto}.o-grid__col--end{margin-left:auto}.o-wrapper{padding:32px 0}.c-off-canvas-container{display:flex;min-height:100vh;flex-direction:column}.c-off-canvas-container .o-wrapper{flex:1 0 auto}.o-plain-list{margin:0;padding:0;list-style:none}.c-header__inner{padding:16px 0;border-bottom:1px solid #E9EFF3}.c-header__icon{vertical-align:middle}.c-logo__link{font-size:19px;font-weight:900;transition:.4s}.c-logo__link:hover,.c-logo__link:active,.c-logo__link:focus{color:#00A0FF;text-decoration:none}.c-nav__item{font-size:16px}.c-nav__link{display:block;transition:.4s}.c-nav__link--current{color:#00A0FF}.home-template .c-nav__link--current:not(:hover){color:#323232}.c-nav__link:hover,.c-nav__link:active,.c-nav__link:focus{color:#00A0FF;text-decoration:none}.c-off-canvas-toggle{float:right;position:relative;top:8px;z-index:10;height:19px;width:25px;cursor:pointer}.c-off-canvas-toggle__icon{position:absolute;left:0;height:1px;width:25px;background:#323232;cursor:pointer}.c-off-canvas-toggle__icon:before,.c-off-canvas-toggle__icon:after{content:'';display:block;height:100%;background-color:inherit;transition:.4s}.c-off-canvas-toggle__icon:before{transform:translateY(16px)}.c-off-canvas-toggle__icon:after{transform:translateY(7px)}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon{height:2px;background-color:transparent}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:before,.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:after{position:relative;visibility:visible;background:#323232}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:before{top:11px;transform:rotate(-45deg)}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:after{top:9px;transform:rotate(45deg)}.c-off-canvas-toggle--close{top:0;float:none;display:block;margin-left:auto}html,body{overflow-x:hidden}.c-off-canvas-content{position:fixed;top:0;right:0;width:300px;height:100%;padding:24px 32px;background-color:#fff;transform:translate3d(300px, 0, 0)}.c-off-canvas-container{transform:translate3d(0, 0, 0);transition:transform .4s cubic-bezier(0.16, 0.68, 0.43, 0.99)}.c-off-canvas-container.is-active{transform:translate3d(-300px, 0, 0)}.c-off-canvas-container.is-active:after{position:fixed;top:0;right:0;bottom:0;left:0;content:'';background-color:rgba(0,0,0,0.2)}.c-tags a{display:inline-block;padding:4px 16px;margin:0 8px 4px 0;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";line-height:25px;background-color:#FAFAFA;transition:.4s}.c-tags a:hover,.c-tags a:active,.c-tags a:focus{text-decoration:none;background-color:#FAFAFA}@media (max-width: 39.99em){.c-tags{margin-bottom:22px}}.c-btn{display:inline-block;padding:8px 32px;cursor:pointer;transition:.4s;text-align:center;vertical-align:middle;white-space:nowrap;line-height:inherit;border:0;border-radius:0;color:#fff;background-color:#207cdf;font-size:16px}.c-btn:hover,.c-btn:active,.c-btn:focus{text-decoration:none;background-color:#238cf6}.c-btn--full{width:100%}.c-btn--small{padding:4px 16px}.c-post-card{display:block;padding:32px 0;word-break:break-word;border-bottom:1px solid #E9EFF3}.c-post-card--first{padding-top:0}.c-post-card--last{padding-bottom:0;border-bottom:0}.c-post-card__title{margin-bottom:10px;font-size:19px;font-weight:600;transition:.4s}.c-post-card__excerpt{margin-bottom:10px}.c-post-card__date{display:block;color:#2B5F72;direction:ltr;font-size:12px;line-height:22px;text-transform:uppercase}.c-post-card:hover{color:#323232;text-decoration:none}.c-post-card:hover .c-post-card__title{color:#00A0FF}.c-pagination{text-transform:uppercase;transition:.4s}.c-pagination:hover,.c-pagination:active,.c-pagination:focus{color:#00A0FF;text-decoration:none}.c-pagination__text{position:relative;font-size:14px;letter-spacing:2px}.c-pagination__text--prev{left:-16px}.c-pagination__text--next{right:-16px}.c-pagination__icon{vertical-align:text-top}.c-pagination__icon--prev{left:-8px}.c-pagination__icon--next{right:-8px}.c-post{margin:0 auto;max-width:740px}.c-post__title{font-size:24px;margin-bottom:16px}@media (min-width: 40em){.c-post__title{font-size:28px;line-height:50px}}.c-post__date{position:relative;padding-top:16px;display:block;text-align:center;margin-bottom:16px;font-size:14px;line-height:22px;color:#2B5F72}.c-post__date:after{position:absolute;content:'';top:0;left:50%;height:1px;width:64px;background:#FAFAFA;transform:translateX(-50%)}.c-post__image{margin:0 auto 16px}.c-content{font-size:14px;font-family:"Noto Serif KR",sans-serif}.c-content a:not(.c-btn){text-decoration-skip:ink}.c-content a:not(.c-btn):hover,.c-content a:not(.c-btn):active,.c-content a:not(.c-btn):focus{color:#00A0FF}.twitter-tweet,.fluid-width-video-wrapper{margin-bottom:16px !important}.c-social-nav__item{display:inline-block}.c-social-nav__icon{fill:#323232;vertical-align:middle;transition:.4s}.c-social-nav__icon:hover,.c-social-nav__icon:active,.c-social-nav__icon:focus{fill:#00A0FF}.c-footer{padding:32px 0;background-color:#FAFAFA}.u-hidden{display:none}.u-hidden-visually{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.u-font-medium{font-size:16px;line-height:25px}.u-font-small{font-size:14px;line-height:22px}.noto-font-small{font-family:'Noto Serif KR', sans-serif;font-size:14px;line-height:22px}.u-font-tiny{font-size:12px;line-height:19px}.u-text-left{text-align:left}.u-text-right{text-align:right}.u-text-center{text-align:center}.u-text-justify{text-align:justify}.u-inline{display:inline}.u-block{display:block}.u-inline-block{display:inline-block}.u-left{float:left}.u-right{float:right}.u-clearfix:after{content:'';display:table;clear:both}
+
+    .c-post__image {display: none}
+  </style>
+</head>
+<!-- Global site tag (gtag.js) - Google Analytics start -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-153773360-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'UA-153773360-1');
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics end -->
+<body>
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>-->
+<div class='js-off-canvas-container c-off-canvas-container'>
+    <header class='c-header'>
+
+    <div class='o-grid'>
+        <div class='o-grid__col o-grid__col--full'>
+            <div class='c-header__inner'>
+
+                <div class='o-grid'>
+                    <div class='o-grid__col o-grid__col--3-4-s'>
+                        <div class='c-logo u-text-left'>
+                            <!--              <a class='c-logo__link' href='/'>A python developer</a>-->
+                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">🔥</a>
+<!--                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">😈</a>-->
+<!--                            <a class='c-logo__link' href='https://docs.google.com/document/d/e/2PACX-1vRdClPBFE-3MOIp5wyACP41XoQIW35QC2x6js9nk4B2FbCM42bazcNXrQBrbm1VAclDoob8KFm-S8JU/pub' style="font-weight: bold; margin-left: 20px; font-size: 1rem">😈</a>-->
+                        </div>
+                    </div>
+
+                    <!--          <div class='o-grid__col o-grid__col&#45;&#45;1-4-s'>-->
+                    <!--            <label class='js-off-canvas-toggle c-off-canvas-toggle' aria-label='Toggle navigation'>-->
+                    <!--              <span class='c-off-canvas-toggle__icon'></span>-->
+                    <!--            </label>-->
+                    <!--          </div>-->
+
+                    <div class='o-grid__col o-grid__col--1-4-s'>
+                        <div class='c-off-canvas-content'>
+                            <label class='js-off-canvas-toggle c-off-canvas-toggle c-off-canvas-toggle--close'>
+                                <span class='c-off-canvas-toggle__icon'></span>
+                            </label>
+
+                            <ul class='c-nav o-plain-list '>
+                                
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/about.html'>About</a>
+      </li>
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/categories.html'>Categories</a>
+      </li>
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<!--    <p>updated: 2019-12-27<br />
+이번에는 젠킨스 파일을 작성한다.</p>
+
+<p>젠킨스는 2가지 문법을 지원한다. <code class="highlighter-rouge">Scripted</code>, <code class="highlighter-rouge">Declarative</code> 2가지가 있다. <code class="highlighter-rouge">Scripted</code> 문법은 쉘 스크립트처럼 작성해서 파이프라인을 구성할 수 있다. <code class="highlighter-rouge">Groovy</code> 를 써봤으면 쉽게 쓸 수 있다. 그래서 이번에는 <code class="highlighter-rouge">Scripted</code> 문법을 사용했다.</p>
+
+<p>다음은 <code class="highlighter-rouge">Scripted</code> 문법 전용 <code class="highlighter-rouge">Directive</code> 다.</p>
+
+<p><code class="highlighter-rouge">stage</code>  : 파이프라인의 각 단계</p>
+
+<p><code class="highlighter-rouge">git</code> : git 에서 프로젝트 clone</p>
+
+<p><code class="highlighter-rouge">sh</code> : unix 환경에서 실행할 명령어 실행</p>
+
+<p><code class="highlighter-rouge">def</code>: 변수 또는 함수 선언</p>
+
+<p><code class="highlighter-rouge">dir</code>: 명령을 수행할 디렉토리/ 폴더 정의</p>
+
+<p>나는 스테이지를 3개로 나눴다.</p>
+
+<p>첫번째 스테이지는 도커 이미지를 빌드한다. 내가 작성한 도커 파일은 <code class="highlighter-rouge">AWS ECR</code>에 있는 베이스 이미지를 갖고 오기 위해 AWS에 로그인 한다. <code class="highlighter-rouge">region</code>은 명시하지 않아도 된다. 젠킨스에서는 <code class="highlighter-rouge">aws</code>에서 로그인 할 때 <code class="highlighter-rouge">aws cli</code> 를 사용한다. <code class="highlighter-rouge">aws cli</code>를 사용해봤던 개발자들은 알고 있겠지만, <code class="highlighter-rouge">AWS configuration</code>을 해야 <code class="highlighter-rouge">aws cli</code>를 사용할 수 있다. 내가 사용하는 사내 젠킨스는 서버내 <code class="highlighter-rouge">aws configuration</code>이 다른 팀에서 사용하는 다른 리전의 계정이 세팅되어 있어서, 리전을 명시해줘야 내가 만든 <code class="highlighter-rouge">AWS ECR</code>에 접근 할 수 있었다. 로그인을 하면 캐싱없이 베이스 이미지를 기반으로 빌드한다.</p>
+
+<p>두번째 스테이지에서는 빌드한 도커 이미지를 <code class="highlighter-rouge">AWS ECR</code>에 푸시한다.</p>
+
+<p>세번째 스테이지에서는 <code class="highlighter-rouge">AWS ECS</code> 에 배포한다. 첫번째 스테이지에서 로그인을 해도, 다른 서비스를 사용하려면 <code class="highlighter-rouge">region</code>을 명시해줘야 <code class="highlighter-rouge">No basic auth</code> 라는 <code class="highlighter-rouge">authorization</code>  관련 에러를 피할 수 있다. ECS에 배포하기 전에 ECS container의 spec이 적힌 task definition의 파일의 내용을 적절하게 바꾼다. 파일을 열어서 문자를 치환할때는 <code class="highlighter-rouge">sed</code> 명령어가 유용하므로 그것을 써서 치환한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pipeline <span class="o">{</span>
+    agent any
+    environment <span class="o">{</span>
+        imageUrl <span class="o">=</span> <span class="s2">"</span><span class="nv">$ecsRegistry</span><span class="s2">:</span><span class="nv">$BUILD_NUMBER</span><span class="s2">"</span>
+    <span class="o">}</span>
+    stages <span class="o">{</span>
+        stage<span class="o">(</span><span class="s2">"Docker Build"</span><span class="o">)</span> <span class="o">{</span>
+            steps <span class="o">{</span>
+                withAWS<span class="o">(</span>credentials: <span class="s2">"</span><span class="nv">$awsCredentials</span><span class="s2">"</span>, region: <span class="s2">"us-east-1"</span><span class="o">)</span> <span class="o">{</span>
+                    script <span class="o">{</span>
+                        def login <span class="o">=</span> ecrLogin<span class="o">()</span>
+                        sh <span class="s2">"</span><span class="k">${</span><span class="nv">login</span><span class="k">}</span><span class="s2">"</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                sh <span class="s2">"docker pull </span><span class="nv">$baseImage</span><span class="s2">"</span>
+                sh <span class="s2">"docker build --no-cache -t </span><span class="nv">$imageUrl</span><span class="s2"> --build-arg SSH_PRIVATE_KEY='</span><span class="nv">$privateKey</span><span class="s2">' --build-arg BASE_IMAGE='</span><span class="nv">$baseImage</span><span class="s2">' ."</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        stage<span class="o">(</span><span class="s2">"Docker Push"</span><span class="o">)</span> <span class="o">{</span>
+            steps <span class="o">{</span>
+                sh <span class="s2">"docker push </span><span class="nv">$imageUrl</span><span class="s2">"</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        stage<span class="o">(</span><span class="s2">"Deploy ECS"</span><span class="o">)</span> <span class="o">{</span>
+            steps <span class="o">{</span>
+                withAWS<span class="o">(</span>credentials: <span class="s2">"</span><span class="nv">$awsCredentials</span><span class="s2">"</span>, region: <span class="s2">"us-east-1"</span><span class="o">)</span> <span class="o">{</span>
+                    script <span class="o">{</span>
+                        def safeImageUrl <span class="o">=</span> imageUrl.replace<span class="o">(</span><span class="s2">"/"</span>, <span class="s2">"</span><span class="se">\\</span><span class="s2">/"</span><span class="o">)</span>
+                        sh <span class="s2">"sed -e </span><span class="se">\"</span><span class="s2">s/%memoryUnit%/</span><span class="nv">$memoryUnit</span><span class="s2">/g; s/%cpuUnit%/</span><span class="nv">$cpuUnit</span><span class="s2">/g; s/%imageUrl%/</span><span class="nv">$safeImageUrl</span><span class="s2">/g; s/%taskFamily%/</span><span class="nv">$taskFamily</span><span class="s2">/g; s/%awsLogGroup%/</span><span class="nv">$awsLogGroup</span><span class="s2">/g; s/%awsLogRegion%/</span><span class="nv">$awsLogRegion</span><span class="s2">/g; s/%awsLogPrefix%/</span><span class="nv">$awsLogPrefix</span><span class="s2">/g;</span><span class="se">\"</span><span class="s2"> taskDefinition &gt; taskDef.json"</span>
+                        def taskVersion <span class="o">=</span> sh<span class="o">(</span>script: <span class="s2">"aws ecs register-task-definition --cli-input-json file://taskDef.json | jq --raw-output .taskDefinition.revision"</span>, returnStdout: <span class="nb">true</span><span class="o">)</span>.trim<span class="o">()</span> as Integer
+                        sh <span class="s2">"echo </span><span class="nv">$taskVersion</span><span class="s2">"</span>
+                        sh <span class="s2">"aws ecs update-service --cluster </span><span class="nv">$clusterName</span><span class="s2"> --service </span><span class="nv">$serviceName</span><span class="s2"> --task-definition </span><span class="nv">$taskFamily</span><span class="s2">:</span><span class="nv">$taskVersion</span><span class="s2">"</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>이제 <code class="highlighter-rouge">AWS ECS</code>를 설정하고, 배포할때 사용할 <code class="highlighter-rouge">task definition.json</code>파일을 작성해야 한다.</p>
+-->
+
+
+
+
+
+<div class='o-wrapper'>
+
+  <div class='o-grid'>
+    <div class='o-grid__col'>
+      <article class='c-post' itemscope itemtype='http://schema.org/BlogPosting'>
+
+        <h1 class='c-post__title'>도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성</h1>
+
+        <time class='c-post__date' datetime='2019-12-21T00:00:00+09:00' itemprop='datePublished'>21 Dec 2019</time>
+
+        <div class='c-content' itemprop='articleBody'>
+          
+
+          <p>updated: 2019-12-27<br />
+이번에는 젠킨스 파일을 작성한다.</p>
+
+<p>젠킨스는 2가지 문법을 지원한다. <code class="highlighter-rouge">Scripted</code>, <code class="highlighter-rouge">Declarative</code> 2가지가 있다. <code class="highlighter-rouge">Scripted</code> 문법은 쉘 스크립트처럼 작성해서 파이프라인을 구성할 수 있다. <code class="highlighter-rouge">Groovy</code> 를 써봤으면 쉽게 쓸 수 있다. 그래서 이번에는 <code class="highlighter-rouge">Scripted</code> 문법을 사용했다.</p>
+
+<p>다음은 <code class="highlighter-rouge">Scripted</code> 문법 전용 <code class="highlighter-rouge">Directive</code> 다.</p>
+
+<p><code class="highlighter-rouge">stage</code>  : 파이프라인의 각 단계</p>
+
+<p><code class="highlighter-rouge">git</code> : git 에서 프로젝트 clone</p>
+
+<p><code class="highlighter-rouge">sh</code> : unix 환경에서 실행할 명령어 실행</p>
+
+<p><code class="highlighter-rouge">def</code>: 변수 또는 함수 선언</p>
+
+<p><code class="highlighter-rouge">dir</code>: 명령을 수행할 디렉토리/ 폴더 정의</p>
+
+<p>나는 스테이지를 3개로 나눴다.</p>
+
+<p>첫번째 스테이지는 도커 이미지를 빌드한다. 내가 작성한 도커 파일은 <code class="highlighter-rouge">AWS ECR</code>에 있는 베이스 이미지를 갖고 오기 위해 AWS에 로그인 한다. <code class="highlighter-rouge">region</code>은 명시하지 않아도 된다. 젠킨스에서는 <code class="highlighter-rouge">aws</code>에서 로그인 할 때 <code class="highlighter-rouge">aws cli</code> 를 사용한다. <code class="highlighter-rouge">aws cli</code>를 사용해봤던 개발자들은 알고 있겠지만, <code class="highlighter-rouge">AWS configuration</code>을 해야 <code class="highlighter-rouge">aws cli</code>를 사용할 수 있다. 내가 사용하는 사내 젠킨스는 서버내 <code class="highlighter-rouge">aws configuration</code>이 다른 팀에서 사용하는 다른 리전의 계정이 세팅되어 있어서, 리전을 명시해줘야 내가 만든 <code class="highlighter-rouge">AWS ECR</code>에 접근 할 수 있었다. 로그인을 하면 캐싱없이 베이스 이미지를 기반으로 빌드한다.</p>
+
+<p>두번째 스테이지에서는 빌드한 도커 이미지를 <code class="highlighter-rouge">AWS ECR</code>에 푸시한다.</p>
+
+<p>세번째 스테이지에서는 <code class="highlighter-rouge">AWS ECS</code> 에 배포한다. 첫번째 스테이지에서 로그인을 해도, 다른 서비스를 사용하려면 <code class="highlighter-rouge">region</code>을 명시해줘야 <code class="highlighter-rouge">No basic auth</code> 라는 <code class="highlighter-rouge">authorization</code>  관련 에러를 피할 수 있다. ECS에 배포하기 전에 ECS container의 spec이 적힌 task definition의 파일의 내용을 적절하게 바꾼다. 파일을 열어서 문자를 치환할때는 <code class="highlighter-rouge">sed</code> 명령어가 유용하므로 그것을 써서 치환한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pipeline <span class="o">{</span>
+    agent any
+    environment <span class="o">{</span>
+        imageUrl <span class="o">=</span> <span class="s2">"</span><span class="nv">$ecsRegistry</span><span class="s2">:</span><span class="nv">$BUILD_NUMBER</span><span class="s2">"</span>
+    <span class="o">}</span>
+    stages <span class="o">{</span>
+        stage<span class="o">(</span><span class="s2">"Docker Build"</span><span class="o">)</span> <span class="o">{</span>
+            steps <span class="o">{</span>
+                withAWS<span class="o">(</span>credentials: <span class="s2">"</span><span class="nv">$awsCredentials</span><span class="s2">"</span>, region: <span class="s2">"us-east-1"</span><span class="o">)</span> <span class="o">{</span>
+                    script <span class="o">{</span>
+                        def login <span class="o">=</span> ecrLogin<span class="o">()</span>
+                        sh <span class="s2">"</span><span class="k">${</span><span class="nv">login</span><span class="k">}</span><span class="s2">"</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                sh <span class="s2">"docker pull </span><span class="nv">$baseImage</span><span class="s2">"</span>
+                sh <span class="s2">"docker build --no-cache -t </span><span class="nv">$imageUrl</span><span class="s2"> --build-arg SSH_PRIVATE_KEY='</span><span class="nv">$privateKey</span><span class="s2">' --build-arg BASE_IMAGE='</span><span class="nv">$baseImage</span><span class="s2">' ."</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        stage<span class="o">(</span><span class="s2">"Docker Push"</span><span class="o">)</span> <span class="o">{</span>
+            steps <span class="o">{</span>
+                sh <span class="s2">"docker push </span><span class="nv">$imageUrl</span><span class="s2">"</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        stage<span class="o">(</span><span class="s2">"Deploy ECS"</span><span class="o">)</span> <span class="o">{</span>
+            steps <span class="o">{</span>
+                withAWS<span class="o">(</span>credentials: <span class="s2">"</span><span class="nv">$awsCredentials</span><span class="s2">"</span>, region: <span class="s2">"us-east-1"</span><span class="o">)</span> <span class="o">{</span>
+                    script <span class="o">{</span>
+                        def safeImageUrl <span class="o">=</span> imageUrl.replace<span class="o">(</span><span class="s2">"/"</span>, <span class="s2">"</span><span class="se">\\</span><span class="s2">/"</span><span class="o">)</span>
+                        sh <span class="s2">"sed -e </span><span class="se">\"</span><span class="s2">s/%memoryUnit%/</span><span class="nv">$memoryUnit</span><span class="s2">/g; s/%cpuUnit%/</span><span class="nv">$cpuUnit</span><span class="s2">/g; s/%imageUrl%/</span><span class="nv">$safeImageUrl</span><span class="s2">/g; s/%taskFamily%/</span><span class="nv">$taskFamily</span><span class="s2">/g; s/%awsLogGroup%/</span><span class="nv">$awsLogGroup</span><span class="s2">/g; s/%awsLogRegion%/</span><span class="nv">$awsLogRegion</span><span class="s2">/g; s/%awsLogPrefix%/</span><span class="nv">$awsLogPrefix</span><span class="s2">/g;</span><span class="se">\"</span><span class="s2"> taskDefinition &gt; taskDef.json"</span>
+                        def taskVersion <span class="o">=</span> sh<span class="o">(</span>script: <span class="s2">"aws ecs register-task-definition --cli-input-json file://taskDef.json | jq --raw-output .taskDefinition.revision"</span>, returnStdout: <span class="nb">true</span><span class="o">)</span>.trim<span class="o">()</span> as Integer
+                        sh <span class="s2">"echo </span><span class="nv">$taskVersion</span><span class="s2">"</span>
+                        sh <span class="s2">"aws ecs update-service --cluster </span><span class="nv">$clusterName</span><span class="s2"> --service </span><span class="nv">$serviceName</span><span class="s2"> --task-definition </span><span class="nv">$taskFamily</span><span class="s2">:</span><span class="nv">$taskVersion</span><span class="s2">"</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>이제 <code class="highlighter-rouge">AWS ECS</code>를 설정하고, 배포할때 사용할 <code class="highlighter-rouge">task definition.json</code>파일을 작성해야 한다.</p>
+
+        </div>
+
+        <div class='c-tags'>
+          
+            <a href='/tag/Docker'>Docker</a>
+          
+            <a href='/tag/Jenkins'>Jenkins</a>
+          
+            <a href='/tag/DevOps'>DevOps</a>
+          
+        </div>
+        <hr/>
+         <!-- Your share button code start-->
+<!--          <div class="fb-share-button"-->
+<!--            data-href="http://localhost:4000"-->
+<!--            data-layout="button_count">-->
+<!--          </div>-->
+        <!-- Your share button code end-->
+
+      </article>
+
+    </div>
+  </div>
+</div>
+
+    <!--<footer class='c-footer' style="background-color: #fff; border-top:1px solid gainsboro">-->
+<!--  <div class='o-grid'>-->
+<!--    <div class='o-grid__col o-grid__col&#45;&#45;full' style="font-size: 12px;-->
+<!--    color: gray;">-->
+<!--      Suhyun Baik-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</footer>-->
+</div>
+
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/evil-icons.min.js"></script>
+<script src="/js/jquery.fitvids.js"></script>
+<script src="/js/app.js"></script>
+<!-- Load Facebook SDK for JavaScript -->
+<div id="fb-root"></div>
+<script>(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+</body>
+</html>

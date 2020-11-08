@@ -1,0 +1,177 @@
+I"�*<p>updated: 2020-01-08</p>
+
+<p><a href="https://sentry.io/welcome/">Sentry</a>는 소스가 github에 공개되어있어서, 직접 구축해 사용할 수 있다. 여기서는 우선 도커를 사용해 구축하는 방법을 정리했다.</p>
+
+<ol>
+  <li>도커 설치</li>
+  <li>도커 컴포즈 설치</li>
+  <li>센트리 도커 프로젝트 받기</li>
+  <li>GeoIp 설정</li>
+  <li>install.sh 로 센트리 실행</li>
+</ol>
+
+<h5 id="1-도커-설치">1. 도커 설치</h5>
+
+<p>AWS EC2 ubuntu instance를 런칭한 후 접속한다.</p>
+
+<p>먼저 기존의 패키지들을 업데이트 해준다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt update
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">apt</code> 패키지를 HTTPS로 설치할 수 있게 도와주는 패키지들을 설치한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>apt-transport-https ca-certificates curl software-properties-common
+</code></pre></div></div>
+
+<p>공식 도커 리포지토리에 GPG Key 를 등록한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-fsSL</span> https://download.docker.com/linux/ubuntu/gpg | <span class="nb">sudo </span>apt-key add -
+</code></pre></div></div>
+
+<p>APT 소스에  도커 리포지토리를 추가한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>add-apt-repository <span class="s2">"deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"</span>
+</code></pre></div></div>
+
+<p>도커를 설치한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>docker-ce
+</code></pre></div></div>
+
+<p>도커가 설치됐는지 실행해본다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>systemctl status docker
+</code></pre></div></div>
+
+<p>Output</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>● docker.service - Docker Application Container Engine
+   Loaded: loaded <span class="o">(</span>/lib/systemd/system/docker.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
+   Active: active <span class="o">(</span>running<span class="o">)</span> since Fri 2020-01-03 08:02:17 UTC<span class="p">;</span> 45min ago
+     Docs: https://docs.docker.com
+ Main PID: 3360 <span class="o">(</span>dockerd<span class="o">)</span>
+    Tasks: 8
+   CGroup: /system.slice/docker.service
+           └─3360 /usr/bin/dockerd <span class="nt">-H</span> fd:// <span class="nt">--containerd</span><span class="o">=</span>/run/containerd/containerd.sock
+
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: <span class="nb">time</span><span class="o">=</span><span class="s2">"2020-01-03T08:02:17.090217516Z"</span> <span class="nv">level</span><span class="o">=</span>warning <span class="nv">msg</span><span class="o">=</span><span class="s2">"Yo
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: time="</span>2020-01-03T08:02:17.090478324Z<span class="s2">" level=warning msg="</span>Yo
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: <span class="nb">time</span><span class="o">=</span><span class="s2">"2020-01-03T08:02:17.090621788Z"</span> <span class="nv">level</span><span class="o">=</span>warning <span class="nv">msg</span><span class="o">=</span><span class="s2">"Yo
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: time="</span>2020-01-03T08:02:17.090940760Z<span class="s2">" level=info msg="</span>Loadi
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: <span class="nb">time</span><span class="o">=</span><span class="s2">"2020-01-03T08:02:17.339110960Z"</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">"Defau
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: time="</span>2020-01-03T08:02:17.475207558Z<span class="s2">" level=info msg="</span>Loadi
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: <span class="nb">time</span><span class="o">=</span><span class="s2">"2020-01-03T08:02:17.516353882Z"</span> <span class="nv">level</span><span class="o">=</span>info <span class="nv">msg</span><span class="o">=</span><span class="s2">"Docke
+Jan 03 08:02:17 ip-192-168-0-55 dockerd[3360]: time="</span>2020-01-03T08:02:17.516788243Z<span class="s2">" level=info msg="</span>Daemo
+Jan 03 08:02:17 ip-192-168-0-55 systemd[1]: Started Docker Application Container Engine.
+</code></pre></div></div>
+
+<h5 id="2-도커-컴포즈-설치">2. 도커 컴포즈 설치</h5>
+
+<p>도커 컴포즈를 설치한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt  <span class="nb">install </span>docker-compose
+</code></pre></div></div>
+
+<p>도커 컴포즈가 정상적으로 설치됐는지 확인하기 위해 버전을 확인한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker-compose version
+</code></pre></div></div>
+
+<h5 id="3-센트리-도커-프로젝트-받기">3. 센트리 도커 프로젝트 받기</h5>
+
+<p>센트리 도커 프로젝트를 받아야 한다. 폴더를 생성한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo mkdir </span>sentry
+</code></pre></div></div>
+
+<p>해당 폴더 내에서 프로젝트를 클론한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>sentry
+git clone https://github.com/getsentry/onpremise <span class="nb">.</span>
+</code></pre></div></div>
+
+<h5 id="4-geoip-설정">4. GeoIP 설정</h5>
+
+<p>센트리를 사용하려면 <a href="https://www.maxmind.com/en/geoip-demo">GeoIp</a>가 필요하다. 만약 GeoIp 데이터베이스가 이미 있다면 센트리 설정 파일에서 패스를 잡아주면 된다.  나는 센트리 프로젝트 폴더에 GeoIP 데이터베이스를 넣어주고 거기로 패스를 잡았다. <code class="highlighter-rouge">sentry.conf.py</code>  에서 <code class="highlighter-rouge">GEOIP_PATH_MMDB = '../GeoIP.dat'</code> 를 추가한다.</p>
+
+<h5 id="5-installsh-로-센트리-실행">5. Install.sh 로 센트리 실행</h5>
+
+<p>센트리를 사용하려면 다음과 같은 서비스가 필요하다.</p>
+
+<ul>
+  <li>Redis</li>
+  <li><a href="postgresql">Postgresql</a></li>
+  <li><a href="zookeeper">Zookeeper</a></li>
+  <li><a href="https://getsentry.github.io/symbolicator/">Kafka</a></li>
+  <li><a href="https://clickhouse.yandex">Clickhouse</a></li>
+  <li><a href="https://getsentry.github.io/symbolicator/">Symbolicator</a></li>
+</ul>
+
+<p>도커 컴포즈로 프로젝트를 실행하면, 해당 서비스들을 external로 연결하기 때문에 먼저 데이터볼륨을 생성하라는 에러 메세지를 준다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>docker-compose up <span class="nt">-d</span>
+</code></pre></div></div>
+
+<p>Output</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ERROR: Volume sentry-symbolicator declared as external, but could not be found. Please create the volume manually using <span class="sb">`</span>docker volume create <span class="nt">--name</span><span class="o">=</span>sentry-symbolicator<span class="sb">`</span> and try again.
+</code></pre></div></div>
+
+<p>external로 연결하는 데이터 볼륨들은 <code class="highlighter-rouge">docker-compose.yml</code>에 명시되어 있는데, 명령어를 쳐서 만드는 것보다 가장 빠른 방법을 선택한다. 센트리 프로젝트 내의 설치 스크립트를 실행시킨다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./install.sh
+</code></pre></div></div>
+
+<p>스트립트를 실행하면 자동으로 db 마이그레이션까지 진행한다. 진행 중에 admin 계정 생성을 위해서 아이디와 이메일, 비밀번호를 입력해야 하는 과정이 있다.</p>
+
+<p>모든 과정이 끝나면 도커 컴포즈 명령어로 실행한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>docker-compose up <span class="nt">-d</span>
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">ctop</code> 또는 <code class="highlighter-rouge">sudo docker ps</code>  로 컨테이너가 떠있는지 확인한다. 센트리를 실행하는 데 문제가 없다면, 인터넷 브라우저 창에서 <code class="highlighter-rouge">127.0.0.1:9000</code> 을 입력해 센트리로 접속할 수 있다. 아까 생성했던 admin 계정으로 로그인을 한다.</p>
+
+<ul>
+  <li>데이터 볼륨</li>
+</ul>
+
+<p>docker-compose.yml 을 보면 데이터 볼륨들이 명시되어있다.</p>
+
+<p>docker-compose.yml</p>
+
+<div class="language-docker highlighter-rouge"><div class="highlight"><pre class="highlight"><code>volumes:
+  sentry-data:
+    external: true
+  sentry-postgres:
+    external: true
+  sentry-redis:
+    external: true
+  sentry-zookeeper:
+    external: true
+  sentry-kafka:
+    external: true
+  sentry-clickhouse:
+    external: true
+  sentry-symbolicator:
+    external: true
+</code></pre></div></div>
+
+<p>데이터 볼륨이란?</p>
+
+<blockquote>
+  <p>Docker 데이터 볼륨은 데이터를 컨테이너가 아닌 호스트에 저장하는 방식입니다. 따라서 데이터볼륨은 컨테이너끼리 데이터를 공유할 때 활용할 수 있습니다.</p>
+
+  <p>Docker 컨테이너 안의 파일 변경 사항은 Union File System에 의해 관리됩니다. 하지만 데이터 볼륨은 Union File System을 통하지 않고 바로 호스트에 저장됩니다. 따라서 <code class="highlighter-rouge">docker commit</code> 명령을 통해 이미지로 생성해도 데이터 볼륨의 변경 사항은 이미지에 포함되지 않습니다.</p>
+
+  <p>http://pyrasis.com/book/DockerForTheReallyImpatient/Chapter06/04</p>
+</blockquote>
+
+<h4 id="reference">Reference</h4>
+
+<ul>
+  <li>https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04</li>
+  <li>https://medium.com/sentry-with-docker/installing-sentry-with-docker-c1d83dfee577</li>
+  <li>https://github.com/getsentry/onpremise</li>
+</ul>
+:ET
