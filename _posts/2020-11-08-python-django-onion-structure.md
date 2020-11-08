@@ -1,23 +1,22 @@
-파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기 
-
+---
+title: 파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기 
+layout: page
+tags: [architecture]
+categories: [architecture]
+---
 
 
 목차
 
-1 어니언 아키텍쳐 소개 
-
-2 어니언 아키텍쳐가 해결하는 문제
-
-3 파이선, 장고로 구현한 어니언 아키텍쳐 
-
+1. 어니언 아키텍쳐 소개 
+2. 어니언 아키텍쳐가 해결하는 문제  
+3. 파이선, 장고로 구현한 어니언 아키텍쳐  
 - Model, Service, View 구조
 - model과 domain model
 - service 와 application service, domain service
 - 다이어그램과 코드 
-
-4 DDD와 어니언 아키텍쳐와의 관계
-
-5 References
+4. DDD와 어니언 아키텍쳐와의 관계  
+5. References
 
 
 
