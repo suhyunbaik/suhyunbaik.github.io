@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Sentry를 Ubuntu에 self-hosted로 구축하기
-tags: [Sentry, Docker]
+tags: [Sentry, DevOps]
 categories: [DevOps]
 image: images/thumbnails/sentry_and_selfhosted.png
 

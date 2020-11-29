@@ -5,8 +5,8 @@
     <description>A pythonist in startup</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 29 Nov 2020 22:07:33 +0900</pubDate>
-    <lastBuildDate>Sun, 29 Nov 2020 22:07:33 +0900</lastBuildDate>
+    <pubDate>Sun, 29 Nov 2020 22:47:59 +0900</pubDate>
+    <lastBuildDate>Sun, 29 Nov 2020 22:47:59 +0900</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
 
     
@@ -1359,24 +1359,21 @@ In summary, we could state that the present productivity measures are not effici
         
           <item>
             <title>Tags</title>
-            <description>{.% for tag in site.tags %} {.% assign t = tag | first %} {.% assign posts = tag
-| last %}
+            <description>{% for tag in site.tags %} {% assign t = tag | first %} {% assign posts = tag | last %}
 
-&lt;h2&gt;#{{ t }}&lt;/h2&gt;
-&lt;ul&gt;
-    {.% for post in posts %} {.% if post.tags contains t %}
+&lt;h4&gt;#{{ t }}&lt;/h4&gt;
+&lt;ul style=&quot;list-style-type: none;&quot;&gt;
+    {% for post in posts %} {% if post.tags contains t %}
     &lt;li&gt;
         &lt;a href=&quot;{{ post.url }}&quot;&gt;{{ post.title }}&lt;/a&gt;
         &lt;span class=&quot;post-meta&quot;&gt;{{ post.date | date: &quot;%b %-d, %Y&quot; }}&lt;/span&gt;
     &lt;/li&gt;
-    {.% endif %} {.% endfor %}
+    {% endif %} {% endfor %}
 &lt;/ul&gt;
-{.% endfor %}</description>
+{% endfor %}</description>
             <link>http://localhost:4000/tags/</link>
           </item>
         
-      
-    
       
     
       
