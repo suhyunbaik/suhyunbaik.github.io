@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang='en'>
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+
+  <meta name="description" content="A pythonist in startup">
+  <meta name="keywords" content="Python, Developer, startup">
+  <meta name="author" content="Suhyun Baik">
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+  <!-- facebook start -->
+  <meta property="og:type"          content="website" />
+  <meta property="og:title"         content="django 서버에서 동시접속자 증가시 502 발생 문제" />
+  <meta property="og:description"   content="django 서버에서 동시접속자 증가시 502 발생 문제" />
+
+  <!-- Twitter start -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="django 서버에서 동시접속자 증가시 502 발생 문제">
+  <meta name="twitter:description" content="django 서버에서 동시접속자 증가시 502 발생 문제">
+
+  <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+  <meta itemprop="name" content="django 서버에서 동시접속자 증가시 502 발생 문제">
+  <meta itemprop="description" content="django 서버에서 동시접속자 증가시 502 발생 문제">
+
+  <title>django 서버에서 동시접속자 증가시 502 발생 문제</title>
+  <meta name='description' content="1.문제2.uWSGI worker 갯수 증가3.db connection pool 도입4.mysqlclient에서 pymyql 로 변경5.uWSGI 에서 gunicorn 으로 변경">
+  <link rel='canonical' href="http://localhost:4000/devops/2020/05/19/django-concurrent-user-and-502-error/">
+  <link rel='alternate' type='application/rss+xml' title='A python developer' href="http://localhost:4000/feed.xml">
+  <!-- css   -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <style>
+    
+
+    html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */html{font-family:sans-serif;line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav,section{display:block}h1{font-size:2em;margin:0.67em 0}figcaption,figure,main{display:block}figure{margin:1em 40px}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace, monospace;font-size:1em}a{background-color:transparent;-webkit-text-decoration-skip:objects}a:active,a:hover{outline-width:0}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:inherit}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace, monospace;font-size:1em}dfn{font-style:italic}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-0.25em}sup{top:-0.5em}audio,video{display:inline-block}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}button,html [type="button"],[type="reset"],[type="submit"]{-webkit-appearance:button}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0}button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{display:inline-block;vertical-align:baseline}textarea{overflow:auto}[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0}[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto}[type="search"]{-webkit-appearance:textfield;outline-offset:-2px}[type="search"]::-webkit-search-cancel-button,[type="search"]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details,menu{display:block}summary{display:list-item}canvas{display:inline-block}template{display:none}[hidden]{display:none}body,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,dd,ol,ul,figure,hr,fieldset,legend{margin:0;padding:0}li>ol,li>ul{margin-bottom:0}table{border-collapse:collapse;border-spacing:0}address,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,ol,ul,figure,hr,table,fieldset{margin-bottom:32px}dd,ol,ul{list-style-position:inside;margin-left:16px}@-webkit-keyframes spin{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes spin{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.icon{position:relative;display:inline-block;width:25px;height:25px;overflow:hidden;fill:currentColor}.icon__cnt{width:100%;height:100%;background:inherit;fill:inherit;pointer-events:none;transform:translateX(0);-ms-transform:translate(0.5px, -0.3px)}.icon--m{width:50px;height:50px}.icon--l{width:100px;height:100px}.icon--xl{width:150px;height:150px}.icon--xxl{width:200px;height:200px}.icon__spinner{position:absolute;top:0;left:0;width:100%;height:100%}.icon--ei-spinner .icon__spinner,.icon--ei-spinner-2 .icon__spinner{-webkit-animation:spin 1s steps(12) infinite;animation:spin 1s steps(12) infinite}.icon--ei-spinner-3 .icon__spinner{-webkit-animation:spin 1.5s linear infinite;animation:spin 1.5s linear infinite}.icon--ei-sc-facebook{fill:#3b5998}.icon--ei-sc-github{fill:#333}.icon--ei-sc-google-plus{fill:#dd4b39}.icon--ei-sc-instagram{fill:#3f729b}.icon--ei-sc-linkedin{fill:#0976b4}.icon--ei-sc-odnoklassniki{fill:#ed812b}.icon--ei-sc-skype{fill:#00aff0}.icon--ei-sc-soundcloud{fill:#f80}.icon--ei-sc-tumblr{fill:#35465c}.icon--ei-sc-twitter{fill:#55acee}.icon--ei-sc-vimeo{fill:#1ab7ea}.icon--ei-sc-vk{fill:#45668e}.icon--ei-sc-youtube{fill:#e52d27}.icon--ei-sc-pinterest{fill:#bd081c}.icon--ei-sc-telegram{fill:#0088cc}.highlight{margin:0;background:#fff}.highlighter-rouge .highlight{border-radius:5px;background:#FAFAFA;font-family:'Noto Sans KR', sans-serif;font-size:14px}.highlight .c{color:#998;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#998;font-style:italic}.highlight .cp{color:#999;font-weight:bold}.highlight .c1{color:#998;font-style:italic}.highlight .cs{color:#999;font-weight:bold;font-style:italic}.highlight .gd{color:#000;background-color:#fdd}.highlight .gd .x{color:#000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000;background-color:#dfd}.highlight .gi .x{color:#000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaa}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#458;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:#008080}.highlight .nb{color:#0086B3}.highlight .nc{color:#458;font-weight:bold}.highlight .no{color:#008080}.highlight .ni{color:#800080}.highlight .ne{color:#900;font-weight:bold}.highlight .nf{color:#900;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:#000080}.highlight .nv{color:#008080}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#d14}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#990073}.highlight .bp{color:#999}.highlight .vc{color:#008080}.highlight .vg{color:#008080}.highlight .vi{color:#008080}.highlight .il{color:#099}body{color:#323232;font-size:19px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-weight:300;line-height:32px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}*::selection{color:#fff;background:#00A0FF}a{text-decoration:none;color:#323232;transition:.4s}a:hover,a:active,a:focus{text-decoration:underline}img{display:block;max-width:100%;font-style:italic}hr{height:1px;margin:32px 0;border:0;background-color:#E9EFF3}h1,h2,h3,h4,h5,h6{font-weight:inherit;line-height:initial;font-weight:600;font-family:'Noto Sans KR', sans-serif}h1{font-size:36px}h2{font-size:28px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}p,span{font-family:'Noto Sans KR', sans-serif}code{font-size:14px}blockquote{padding-left:16px;border-left:3px solid #2B5F72;font-style:italic;font-size:"Noto Serif KR",sans-serif}pre,code{font-family:Courier,monospace;background-color:#FAFAFA}pre{overflow:auto;padding:32px;margin-bottom:16px;font-size:16px;line-height:25px;white-space:pre-wrap;word-wrap:break-word}li code,p code{padding:4px 8px}input[type='text'],input[type='tel'],input[type='number'],input[type='email'],select,textarea{width:100%;padding:16px;border:1px solid #E9EFF3;border-radius:0;outline:none;background-color:#fff;font-size:14px;appearance:none;transition:.4s}input[type='text']:hover,input[type='text']:active,input[type='text']:focus,input[type='tel']:hover,input[type='tel']:active,input[type='tel']:focus,input[type='number']:hover,input[type='number']:active,input[type='number']:focus,input[type='email']:hover,input[type='email']:active,input[type='email']:focus,select:hover,select:active,select:focus,textarea:hover,textarea:active,textarea:focus{border:1px solid #323232}.o-grid{margin:0 auto;max-width:700px}.o-grid:after{content:'';display:table;clear:both}.o-grid .o-grid{margin-right:-16px;margin-left:-16px;padding:0}.o-grid--full{max-width:100vw}.o-grid__col{float:left;padding-right:16px;padding-left:16px}.o-grid__col--1-4-s{width:25%}.o-grid__col--1-3-s{width:33.3333333333%}.o-grid__col--2-4-s{width:50%}.o-grid__col--3-4-s{width:75%}.o-grid__col--4-4-s{width:100%}@media (min-width: 40em){.o-grid__col--1-4-m{width:25%}.o-grid__col--1-3-m{width:33.3333333333%}.o-grid__col--2-4-m{width:50%}.o-grid__col--3-4-m{width:75%}}@media (min-width: 64em){.o-grid__col--1-4-l{width:25%}.o-grid__col--1-3-l{width:33.3333333333%}.o-grid__col--2-4-l{width:50%}.o-grid__col--3-4-l{width:75%}}.o-grid__col--full{width:100%}.o-grid__col--center{margin:0 auto}.o-grid__col--end{margin-left:auto}.o-wrapper{padding:32px 0}.c-off-canvas-container{display:flex;min-height:100vh;flex-direction:column}.c-off-canvas-container .o-wrapper{flex:1 0 auto}.o-plain-list{margin:0;padding:0;list-style:none}.c-header__inner{padding:16px 0;border-bottom:1px solid #E9EFF3}.c-header__icon{vertical-align:middle}.c-logo__link{font-size:19px;font-weight:900;transition:.4s}.c-logo__link:hover,.c-logo__link:active,.c-logo__link:focus{color:#00A0FF;text-decoration:none}.c-nav__item{font-size:16px}.c-nav__link{display:block;transition:.4s}.c-nav__link--current{color:#00A0FF}.home-template .c-nav__link--current:not(:hover){color:#323232}.c-nav__link:hover,.c-nav__link:active,.c-nav__link:focus{color:#00A0FF;text-decoration:none}.c-off-canvas-toggle{float:right;position:relative;top:8px;z-index:10;height:19px;width:25px;cursor:pointer}.c-off-canvas-toggle__icon{position:absolute;left:0;height:1px;width:25px;background:#323232;cursor:pointer}.c-off-canvas-toggle__icon:before,.c-off-canvas-toggle__icon:after{content:'';display:block;height:100%;background-color:inherit;transition:.4s}.c-off-canvas-toggle__icon:before{transform:translateY(16px)}.c-off-canvas-toggle__icon:after{transform:translateY(7px)}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon{height:2px;background-color:transparent}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:before,.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:after{position:relative;visibility:visible;background:#323232}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:before{top:11px;transform:rotate(-45deg)}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:after{top:9px;transform:rotate(45deg)}.c-off-canvas-toggle--close{top:0;float:none;display:block;margin-left:auto}html,body{overflow-x:hidden}.c-off-canvas-content{position:fixed;top:0;right:0;width:300px;height:100%;padding:24px 32px;background-color:#fff;transform:translate3d(300px, 0, 0)}.c-off-canvas-container{transform:translate3d(0, 0, 0);transition:transform .4s cubic-bezier(0.16, 0.68, 0.43, 0.99)}.c-off-canvas-container.is-active{transform:translate3d(-300px, 0, 0)}.c-off-canvas-container.is-active:after{position:fixed;top:0;right:0;bottom:0;left:0;content:'';background-color:rgba(0,0,0,0.2)}.c-tags a{display:inline-block;padding:4px 16px;margin:0 8px 4px 0;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";line-height:25px;background-color:#FAFAFA;transition:.4s}.c-tags a:hover,.c-tags a:active,.c-tags a:focus{text-decoration:none;background-color:#FAFAFA}@media (max-width: 39.99em){.c-tags{margin-bottom:22px}}.c-btn{display:inline-block;padding:8px 32px;cursor:pointer;transition:.4s;text-align:center;vertical-align:middle;white-space:nowrap;line-height:inherit;border:0;border-radius:0;color:#fff;background-color:#207cdf;font-size:16px}.c-btn:hover,.c-btn:active,.c-btn:focus{text-decoration:none;background-color:#238cf6}.c-btn--full{width:100%}.c-btn--small{padding:4px 16px}.c-post-card{display:block;padding:32px 0;word-break:break-word;border-bottom:1px solid #E9EFF3}.c-post-card--first{padding-top:0}.c-post-card--last{padding-bottom:0;border-bottom:0}.c-post-card__title{margin-bottom:10px;font-size:19px;font-weight:600;transition:.4s}.c-post-card__excerpt{margin-bottom:10px}.c-post-card__date{display:block;color:#2B5F72;direction:ltr;font-size:12px;line-height:22px;text-transform:uppercase}.c-post-card:hover{color:#323232;text-decoration:none}.c-post-card:hover .c-post-card__title{color:#00A0FF}.c-pagination{text-transform:uppercase;transition:.4s}.c-pagination:hover,.c-pagination:active,.c-pagination:focus{color:#00A0FF;text-decoration:none}.c-pagination__text{position:relative;font-size:14px;letter-spacing:2px}.c-pagination__text--prev{left:-16px}.c-pagination__text--next{right:-16px}.c-pagination__icon{vertical-align:text-top}.c-pagination__icon--prev{left:-8px}.c-pagination__icon--next{right:-8px}.c-post{margin:0 auto;max-width:740px}.c-post__title{font-size:24px;margin-bottom:16px}@media (min-width: 40em){.c-post__title{font-size:28px;line-height:50px}}.c-post__date{position:relative;padding-top:16px;display:block;text-align:center;margin-bottom:16px;font-size:14px;line-height:22px;color:#2B5F72}.c-post__date:after{position:absolute;content:'';top:0;left:50%;height:1px;width:64px;background:#FAFAFA;transform:translateX(-50%)}.c-post__image{margin:0 auto 16px}.c-content{font-size:14px;font-family:"Noto Serif KR",sans-serif}.c-content a:not(.c-btn){text-decoration-skip:ink}.c-content a:not(.c-btn):hover,.c-content a:not(.c-btn):active,.c-content a:not(.c-btn):focus{color:#00A0FF}.twitter-tweet,.fluid-width-video-wrapper{margin-bottom:16px !important}.c-social-nav__item{display:inline-block}.c-social-nav__icon{fill:#323232;vertical-align:middle;transition:.4s}.c-social-nav__icon:hover,.c-social-nav__icon:active,.c-social-nav__icon:focus{fill:#00A0FF}.c-footer{padding:32px 0;background-color:#FAFAFA}.u-hidden{display:none}.u-hidden-visually{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.u-font-medium{font-size:16px;line-height:25px}.u-font-small{font-size:14px;line-height:22px}.noto-font-small{font-family:'Noto Serif KR', sans-serif;font-size:14px;line-height:22px}.u-font-tiny{font-size:12px;line-height:19px}.u-text-left{text-align:left}.u-text-right{text-align:right}.u-text-center{text-align:center}.u-text-justify{text-align:justify}.u-inline{display:inline}.u-block{display:block}.u-inline-block{display:inline-block}.u-left{float:left}.u-right{float:right}.u-clearfix:after{content:'';display:table;clear:both}
+
+    .c-post__image {display: none}
+  </style>
+</head>
+<!-- Global site tag (gtag.js) - Google Analytics start -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-153773360-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'UA-153773360-1');
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics end -->
+
+<body>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+
+<div class='js-off-canvas-container c-off-canvas-container'>
+    <header class='c-header'>
+
+    <div class='o-grid'>
+        <div class='o-grid__col o-grid__col--full'>
+            <div class='c-header__inner'>
+
+                <div class='o-grid'>
+                    <div class='o-grid__col o-grid__col--3-4-s'>
+                        <div class='c-logo u-text-left'>
+                            <!--              <a class='c-logo__link' href='/'>A python developer</a>-->
+                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">🔥</a>
+<!--                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">😈</a>-->
+<!--                            <a class='c-logo__link' href='https://docs.google.com/document/d/e/2PACX-1vRdClPBFE-3MOIp5wyACP41XoQIW35QC2x6js9nk4B2FbCM42bazcNXrQBrbm1VAclDoob8KFm-S8JU/pub' style="font-weight: bold; margin-left: 20px; font-size: 1rem">😈</a>-->
+                        </div>
+                    </div>
+
+                    <!--          <div class='o-grid__col o-grid__col&#45;&#45;1-4-s'>-->
+                    <!--            <label class='js-off-canvas-toggle c-off-canvas-toggle' aria-label='Toggle navigation'>-->
+                    <!--              <span class='c-off-canvas-toggle__icon'></span>-->
+                    <!--            </label>-->
+                    <!--          </div>-->
+
+                    <div class='o-grid__col o-grid__col--1-4-s'>
+                        <div class='c-off-canvas-content'>
+                            <label class='js-off-canvas-toggle c-off-canvas-toggle c-off-canvas-toggle--close'>
+                                <span class='c-off-canvas-toggle__icon'></span>
+                            </label>
+
+                            <ul class='c-nav o-plain-list '>
+                                
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/about.html'>About</a>
+      </li>
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/categories.html'>Categories</a>
+      </li>
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/tags/'>Tags</a>
+      </li>
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<!--    <p>1.문제<br />
+2.uWSGI worker 갯수 증가<br />
+3.db connection pool 도입<br />
+4.mysqlclient에서 pymyql 로 변경<br />
+5.uWSGI 에서 gunicorn 으로 변경</p>
+
+<h5 id="1-문제">1. 문제</h5>
+
+<p>현재 문제가 있는 서버는 평균적으로 분당 1.9만의 리퀘스트를 소화하는데, 동시접속수가 증가하면 ELB 에서 502가 자주 발생한다. 대략 5분당 평균 13개의 502가 발생한다.</p>
+
+<p>Sever</p>
+
+<ul>
+  <li>Python==2.7</li>
+  <li>Django==1.11</li>
+  <li>uWSGI==2.0</li>
+  <li>mysqlclient</li>
+</ul>
+
+<p>이 문제를 해결하려고 여러가지 시도를 해봤다.</p>
+
+<h5 id="2-uwsgi-worker-갯수-증가">2. uWSGI worker 갯수 증가</h5>
+
+<p>기존 worker 갯수는 2개였다. 이전부터 이 worker 들은 <code class="highlighter-rouge">max-requests</code> 옵션에 지정된 리퀘스트를 소화한뒤 정상적으로 종료되는게 아니라, 갑자기 어디선가 발생한 <code class="highlighter-rouge">signal 9</code>을 받고 죽는 문제가 있었다. <code class="highlighter-rouge">signal 9</code> 이 발생하는 이유는 보통 메모리 부족인데, 파게이트 컨테이너 측정치를 봤을때는 메모리 사용량이 대체로 30%여서 메모리 문제는 아닌 것 같았다. 내 추측에는 아마 worker 가 2개 뿐이니 <code class="highlighter-rouge">max-request</code>에 지정된 리퀘스트 수 보다 더 많은 리퀘스트를 받아서 uWSGI에서 signal 9  을 발생시켜 worker 를 강제로 죽이고, worker 가 둘 다 죽어서 워커가 다시 respawn 될때까지 기다리는 상황이 빈번하게 발생하고, 이렇게 spawn된 worker가 없을때 들어온 리퀘스트가 502가 발생한다고 생각했다. 이러한 상황을 방지하기 위해서 <code class="highlighter-rouge">max-requests-delta</code> 옵션이 있지만 효과가 없는 것 같았다. (나중에 알게 되었는데 <code class="highlighter-rouge">max-requests-delta</code> 옵션은 <code class="highlighter-rouge">uWSGI &gt;= 2.1</code> 부터 효과가 있다고 한다.) 그래서 스테이징에 worker 수를 증가시켜 테스트를 했는데 2, 4, 6개였을때는 별 차이가 없었지만 8, 12, 16 등등 수를 크게 증가시킬수록 500대 에러 발생률이 크게 낮아졌다. <code class="highlighter-rouge">signal 9</code> 문제도 더이상 발생하지 않았다.</p>
+
+<p>그런데 worker 수를 증가시키지 말자는 의견이 있어서 이 방법은 가장 마지막에 시도할 해결방법으로 제쳐두었다. 반대 이유는 보통 이상적인 worker 갯수 산정을 <code class="highlighter-rouge">core x 2</code> 로 계산하기 때문에, worker 수가 너무 낮게 잡혀있는건 맞지만, 워커 갯수를 12, 15 정도로 증가시킬거라면 그냥 파게이트 컨테이너를 1대 더 띄우는게 낫다는 이유였다.</p>
+
+<h5 id="3-db-connection-pool-도입">3. db connection pool 도입</h5>
+
+<p>uWSGI 에서 몽키 패치를 해도 디비 커넥션이 병목현상이 디비 커넥션에서 일어난다고 생각했다. 그래서 <code class="highlighter-rouge">sqlalchemy</code> 디비 커넥션 풀링을 도입해서 스테이징에서 테스트 했다.
+<img src="/images/posts/db_connection_with_pooling.png" alt="db connection with pooling" /><br />
+커넥션 풀링 도입 전과 후과 다르다. 그러나 동시접속자 수가 증가하면 여전히 502가 발생했다.</p>
+
+<h5 id="4-mysqlclient-에서-pymysql-로-변경">4. mysqlclient 에서 pymysql 로 변경</h5>
+
+<p>uWSGI 에서는 gevent 쓰려면 몽키패치를 해야한다. 몽키패치는 pure python 에서만 효과를 발휘하는데, 현재 사용하고 있는 mysqlicent 는 cpython 이라서 몽키패치가 안된다. 결국 gevent 를 100개 spawn하더라도, mysqliclient가 몽키패치 되지않아 gevent 1개가 끝날때까지 나머지가 블로킹 될거고 이 부분이 병목이 된다는 생각이 들었다. pymysql은 pure python 이지만 mysqlclient 에 비교하면 성능이 60%나 떨어진다고 한다. 그러나 성능이 떨어지더라도 몽키패치가 되면 성능이 상쇄될거라고 생각해서 pymyql 로 변경했다.</p>
+
+<h5 id="5-uwsgi-에서-gunicorn-으로-변경">5. uWSGI 에서 gunicorn 으로 변경</h5>
+
+<p>pymysql 로 라이브러리를 변경 한 뒤에 uWSGI 의 몽키패치가 효과가 있었지만, 동시접속사 수 문제에서는 여전히 큰 효과가 없었다. 그리고 uWSGI 를 잘쓰려면 학습해야하는데 우선 피쳐 개발이 급해서 학습할 시간이 없고, 대략 gunicorn 성능이 더 좋다고 해서 gunicorn 옮기기로 결정했다. 아래는 gunicorn 으로 변경 후 500대 에러의 변화다.
+<img src="/images/posts/gunicorn_deploy.png" alt="gunicorn deploy" /></p>
+
+<h5 id="references">References</h5>
+
+<p>*<a href="https://stackoverflow.com/questions/48977889/avoid-that-all-workers-get-re-spawned-at-the-same-time">avoid all workers get respawned</a>
+*<a href="https://wiki.openstack.org/wiki/PyMySQL_evaluation">pymysql evalution</a></p>
+-->
+
+
+
+
+
+<div class='o-wrapper'>
+
+  <div class='o-grid'>
+    <div class='o-grid__col'>
+      <article class='c-post' itemscope itemtype='http://schema.org/BlogPosting'>
+        <div style="display: flex; height: 25px">
+          <p style="margin-bottom:10px; font-size:14px; color:#7E8482;">Devops&nbsp;&nbsp;| </p>
+          <time datetime='2020-05-19T00:00:00+09:00' itemprop='datePublished' style="text-align: left; padding-top: 0px; color:#7E8482; font-size: 14px;font-family: 'Noto Sans KR', sans-serif; padding-left: 10px">19 May 2020</time>
+<!--          <time class='c-post__date' datetime='2020-05-19T00:00:00+09:00' itemprop='datePublished' style="text-align: left; padding-top: 0px; color:#7E8482">19 May 2020</time>-->
+        </div>
+        <h1 class='c-post__title'>django 서버에서 동시접속자 증가시 502 발생 문제</h1>
+
+        <div class='c-content' itemprop='articleBody'>
+          
+          <p>1.문제<br />
+2.uWSGI worker 갯수 증가<br />
+3.db connection pool 도입<br />
+4.mysqlclient에서 pymyql 로 변경<br />
+5.uWSGI 에서 gunicorn 으로 변경</p>
+
+<h5 id="1-문제">1. 문제</h5>
+
+<p>현재 문제가 있는 서버는 평균적으로 분당 1.9만의 리퀘스트를 소화하는데, 동시접속수가 증가하면 ELB 에서 502가 자주 발생한다. 대략 5분당 평균 13개의 502가 발생한다.</p>
+
+<p>Sever</p>
+
+<ul>
+  <li>Python==2.7</li>
+  <li>Django==1.11</li>
+  <li>uWSGI==2.0</li>
+  <li>mysqlclient</li>
+</ul>
+
+<p>이 문제를 해결하려고 여러가지 시도를 해봤다.</p>
+
+<h5 id="2-uwsgi-worker-갯수-증가">2. uWSGI worker 갯수 증가</h5>
+
+<p>기존 worker 갯수는 2개였다. 이전부터 이 worker 들은 <code class="highlighter-rouge">max-requests</code> 옵션에 지정된 리퀘스트를 소화한뒤 정상적으로 종료되는게 아니라, 갑자기 어디선가 발생한 <code class="highlighter-rouge">signal 9</code>을 받고 죽는 문제가 있었다. <code class="highlighter-rouge">signal 9</code> 이 발생하는 이유는 보통 메모리 부족인데, 파게이트 컨테이너 측정치를 봤을때는 메모리 사용량이 대체로 30%여서 메모리 문제는 아닌 것 같았다. 내 추측에는 아마 worker 가 2개 뿐이니 <code class="highlighter-rouge">max-request</code>에 지정된 리퀘스트 수 보다 더 많은 리퀘스트를 받아서 uWSGI에서 signal 9  을 발생시켜 worker 를 강제로 죽이고, worker 가 둘 다 죽어서 워커가 다시 respawn 될때까지 기다리는 상황이 빈번하게 발생하고, 이렇게 spawn된 worker가 없을때 들어온 리퀘스트가 502가 발생한다고 생각했다. 이러한 상황을 방지하기 위해서 <code class="highlighter-rouge">max-requests-delta</code> 옵션이 있지만 효과가 없는 것 같았다. (나중에 알게 되었는데 <code class="highlighter-rouge">max-requests-delta</code> 옵션은 <code class="highlighter-rouge">uWSGI &gt;= 2.1</code> 부터 효과가 있다고 한다.) 그래서 스테이징에 worker 수를 증가시켜 테스트를 했는데 2, 4, 6개였을때는 별 차이가 없었지만 8, 12, 16 등등 수를 크게 증가시킬수록 500대 에러 발생률이 크게 낮아졌다. <code class="highlighter-rouge">signal 9</code> 문제도 더이상 발생하지 않았다.</p>
+
+<p>그런데 worker 수를 증가시키지 말자는 의견이 있어서 이 방법은 가장 마지막에 시도할 해결방법으로 제쳐두었다. 반대 이유는 보통 이상적인 worker 갯수 산정을 <code class="highlighter-rouge">core x 2</code> 로 계산하기 때문에, worker 수가 너무 낮게 잡혀있는건 맞지만, 워커 갯수를 12, 15 정도로 증가시킬거라면 그냥 파게이트 컨테이너를 1대 더 띄우는게 낫다는 이유였다.</p>
+
+<h5 id="3-db-connection-pool-도입">3. db connection pool 도입</h5>
+
+<p>uWSGI 에서 몽키 패치를 해도 디비 커넥션이 병목현상이 디비 커넥션에서 일어난다고 생각했다. 그래서 <code class="highlighter-rouge">sqlalchemy</code> 디비 커넥션 풀링을 도입해서 스테이징에서 테스트 했다.
+<img src="/images/posts/db_connection_with_pooling.png" alt="db connection with pooling" /><br />
+커넥션 풀링 도입 전과 후과 다르다. 그러나 동시접속자 수가 증가하면 여전히 502가 발생했다.</p>
+
+<h5 id="4-mysqlclient-에서-pymysql-로-변경">4. mysqlclient 에서 pymysql 로 변경</h5>
+
+<p>uWSGI 에서는 gevent 쓰려면 몽키패치를 해야한다. 몽키패치는 pure python 에서만 효과를 발휘하는데, 현재 사용하고 있는 mysqlicent 는 cpython 이라서 몽키패치가 안된다. 결국 gevent 를 100개 spawn하더라도, mysqliclient가 몽키패치 되지않아 gevent 1개가 끝날때까지 나머지가 블로킹 될거고 이 부분이 병목이 된다는 생각이 들었다. pymysql은 pure python 이지만 mysqlclient 에 비교하면 성능이 60%나 떨어진다고 한다. 그러나 성능이 떨어지더라도 몽키패치가 되면 성능이 상쇄될거라고 생각해서 pymyql 로 변경했다.</p>
+
+<h5 id="5-uwsgi-에서-gunicorn-으로-변경">5. uWSGI 에서 gunicorn 으로 변경</h5>
+
+<p>pymysql 로 라이브러리를 변경 한 뒤에 uWSGI 의 몽키패치가 효과가 있었지만, 동시접속사 수 문제에서는 여전히 큰 효과가 없었다. 그리고 uWSGI 를 잘쓰려면 학습해야하는데 우선 피쳐 개발이 급해서 학습할 시간이 없고, 대략 gunicorn 성능이 더 좋다고 해서 gunicorn 옮기기로 결정했다. 아래는 gunicorn 으로 변경 후 500대 에러의 변화다.
+<img src="/images/posts/gunicorn_deploy.png" alt="gunicorn deploy" /></p>
+
+<h5 id="references">References</h5>
+
+<p>*<a href="https://stackoverflow.com/questions/48977889/avoid-that-all-workers-get-re-spawned-at-the-same-time">avoid all workers get respawned</a>
+*<a href="https://wiki.openstack.org/wiki/PyMySQL_evaluation">pymysql evalution</a></p>
+
+        </div>
+
+        <div class='c-tags'>
+          
+            <a href='/tag/Devops'>Devops</a>
+          
+        </div>
+        <hr/>
+         <!-- Your share button code start-->
+<!--          <div class="fb-share-button"-->
+<!--            data-href="//devops/2020/05/19/django-concurrent-user-and-502-error/"-->
+<!--            data-layout="button_count">-->
+<!--          </div>-->
+        <!-- Your share button code end-->
+
+      </article>
+
+    </div>
+  </div>
+</div>
+
+    <!--<footer class='c-footer' style="background-color: #fff; border-top:1px solid gainsboro">-->
+<!--  <div class='o-grid'>-->
+<!--    <div class='o-grid__col o-grid__col&#45;&#45;full' style="font-size: 12px;-->
+<!--    color: gray;">-->
+<!--      Suhyun Baik-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</footer>-->
+</div>
+
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/evil-icons.min.js"></script>
+<script src="/js/jquery.fitvids.js"></script>
+<script src="/js/app.js"></script>
+<!-- Load Facebook SDK for JavaScript -->
+<div id="fb-root"></div>
+<script>(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+</body>
+
+</html>

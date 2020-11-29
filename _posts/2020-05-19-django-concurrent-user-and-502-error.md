@@ -1,8 +1,8 @@
 ---
 title: django 서버에서 동시접속자 증가시 502 발생 문제
 layout: page
-tags: [devops]
-categories: [devops]
+tags: [Devops]
+categories: [Devops]
 ---
 
 1.문제  

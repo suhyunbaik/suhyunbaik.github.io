@@ -1,8 +1,8 @@
 ---
 title: 파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기 
 layout: page
-tags: [architecture]
-categories: [architecture]
+tags: [Architecture]
+categories: [Architecture]
 ---
 
 

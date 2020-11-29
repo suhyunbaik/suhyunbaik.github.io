@@ -1,0 +1,136 @@
+I"i(<ol>
+  <li>신호수신</li>
+  <li>핸들러의 작동</li>
+  <li>리퀘스트 처리 시작</li>
+  <li>미들웨어 처리 1</li>
+  <li>레솔루션 타임</li>
+  <li>미들웨어 처리 2</li>
+  <li>뷰(View)</li>
+  <li>응답시간(Response time)</li>
+  <li>미들웨어 처리 3: 예외</li>
+  <li>무응답</li>
+  <li>미들웨어 처리 4: 마지막 단계</li>
+  <li>응답</li>
+</ol>
+
+<p><a href="https://www.b-list.org/weblog/2006/jun/13/how-django-processes-request/">How Django processes a request</a> 번역글입니다.</p>
+
+<h5 id="1-신호-수신">1. 신호 수신</h5>
+
+<p>2가지 방법으로 장고 앱을 invoke한다.</p>
+
+<p>1 아파치/모드파이선(apache/mod_python) 서버가 셋업되어있을 경우, 모드 파이선이 리퀘스트를 장고에게 전달하고 <code class="highlighter-rouge">django.core.hanlders.modpython.ModPythonHandler</code> 인스턴스를 생성한다.</p>
+
+<p>2 <code class="highlighter-rouge">WSGI</code>를 준수하는 다른 요소일경우 장고 <code class="highlighter-rouge">django.core.handlers.wsgi.WsgiHandler</code> 인스턴스를 생성한다.</p>
+
+<h5 id="2-핸들러의-작동">2. 핸들러의 작동</h5>
+
+<p>핸들러가 인스턴스화 되면, 다음과 같은 과정을 거친다.</p>
+
+<ol>
+  <li>
+    <p>핸들러가 장고 세팅 파일을 임포트한다.</p>
+  </li>
+  <li>
+    <p>장고의 커스텀 익셥센 클래스를 임포트한다.</p>
+  </li>
+</ol>
+
+<p>3핸들러는 자체 <code class="highlighter-rouge">load_middleware</code> 메소드를 호출하고, 해당 메소드는 세팅파일의 <code class="highlighter-rouge">MIDDLEWARE_CLASSES</code> 에 나열된 미들웨어 클래스들을 불러온다.</p>
+
+<p>미들웨어는 4가지 상태에 대한 후킹이 가능하다. (<code class="highlighter-rouge">process_request</code>, <code class="highlighter-rouge">process_view</code>, <code class="highlighter-rouge">process_response</code>, <code class="highlighter-rouge">process_exception</code>) 핸들러가 미들웨어를 검사할때는 메소드 이름으로 검사한다.</p>
+
+<h5 id="3-리퀘스트-처리-시작">3. 리퀘스트 처리 시작</h5>
+
+<p>리퀘스트를 처리할 준비가 다 됐기 때문에, 시그널 <code class="highlighter-rouge">request_started</code> 를 디스패칭한다. 모드 파이선과 WSGI 가 리퀘스트를 다르게 처리하기 때문에 모드 파이선일 경우 <code class="highlighter-rouge">django.core.handlers.modpython.ModPythonRequest</code> 를, WSGI 일 경우에는 <code class="highlighter-rouge">django.core.hanlders.wsgi.WSGIRequest</code> 라는 클래스를 사용한다. <code class="highlighter-rouge">HttpRequest</code> 가 전달되면 핸들러가 <code class="highlighter-rouge">get_response</code>  메소드를 호출하고, <code class="highlighter-rouge">HttpRequest</code> 를 인자로 전달한다.</p>
+
+<h5 id="4-미들웨어-처리-1">4. 미들웨어 처리 1</h5>
+
+<p><code class="highlighter-rouge">get_response</code> 는 핸들러의 <code class="highlighter-rouge">_request_middleware</code> 인스턴스 변수를 순회하면서 리스트 내 각 메소들르 호출해 <code class="highlighter-rouge">HttpRequest</code> 인스턴스를 아규먼트로 전달한다. 이 메소드들은 처리 과정을 무시하고 바로  <code class="highlighter-rouge">get_response</code> 를 반환할 수 있는 옵션이 있다. 만약 메소드 중 하나가 바로 반환을 한다면, 메인 핸들러 코드로 돌아가고 남은 미들웨어 클래스는 무시한다.</p>
+
+<h5 id="5-레솔루션-타임">5. 레솔루션 타임</h5>
+
+<p>미들웨어중 어느것도 리스폰스를 즉시 반환하지 않았다면, 핸들러는 요청된 URL를 분석한다. 핸들러는 세팅 파일에 있는 <code class="highlighter-rouge">ROOT_URLCONF</code> 를 읽고,  <code class="highlighter-rouge">django.core.urlresolvers.RegexURLResolver</code> 인스턴스를 만든 뒤 해당 인스턴스의 <code class="highlighter-rouge">resolve</code> 메소드를 호출한다.</p>
+
+<p>만약 매칭되는 url 이 없다면 <code class="highlighter-rouge">django.core.urlresolvers.Resolver404</code> 예외를 발생시킨다.</p>
+
+<h5 id="6-미들웨어-처리-2">6. 미들웨어 처리 2</h5>
+
+<p>뷰 함수가 사용된다면 핸들러가 <code class="highlighter-rouge">_view_middleware</code> 리스트에 있는 메소드르 호출해 <code class="highlighter-rouge">HttpRequest</code> 를 전달한다. 이 단계에서도 미들웨어가 개입해 핸들러가 바로 리스폰스를 반환하도록 할 수 있다.</p>
+
+<h5 id="7-뷰">7. 뷰</h5>
+
+<p>장고는 무엇이든지 간단한 요구조건 몇가지만 들어맞으면 뷰로 분류한다.</p>
+
+<ul>
+  <li>
+    <p>호출가능해야한다.</p>
+  </li>
+  <li>
+    <p>첫번쨰 인자로 <code class="highlighter-rouge">django.http.HttpRequest</code> 의 인스턴스를 받는다.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">django.http.HttpResponse</code> 인스턴스를 반환하거나 예외를 발생시킨다.</p>
+  </li>
+</ul>
+
+<h5 id="8-응답시간response-time">8. 응답시간(Response time)</h5>
+
+<p>템플릿이 있을 경우, 템플릿이 렌더링 된 후, 또는 그에 상응하는 결과가 생성된 후에는 뷰가 <code class="highlighter-rouge">django.http.HttpResponse</code> 인스턴스를 생성할 책임이 있다. 이 클래스의 생성자는 2가지 선택적 인수를 받는다.</p>
+
+<ul>
+  <li>
+    <p>리스폰스 바디에 담을 스트링</p>
+  </li>
+  <li>
+    <p>리스폰스 헤더 <code class="highlighter-rouge">Content-Type</code> 의 값</p>
+  </li>
+</ul>
+
+<h5 id="9-미들웨어-처리-3-예외">9. 미들웨어 처리 3: 예외</h5>
+
+<p>뷰에서 예외가 발생하면 <code class="highlighter-rouge">get_response</code>가 <code class="highlighter-rouge">_exception_middleware</code>에 있는 메소드를 호출해 <code class="highlighter-rouge">HttpRequest</code> 와 예외를 인자로 전달한다. 호출된 메소드 중 하나가 <code class="highlighter-rouge">HttpResponse</code>를 반환한다.</p>
+
+<h5 id="10-무응답">10. 무응답</h5>
+
+<p>아래와 같은 경우일때  <code class="highlighter-rouge">HttpResponse</code> 를 반환한다.</p>
+
+<ol>
+  <li>
+    <p>뷰가 값을 반환하지 않음</p>
+  </li>
+  <li>
+    <p>뷰가 예외를 발생시키지만 그걸 처리할수 있는 미들웨어가 없음</p>
+  </li>
+  <li>
+    <p>예외를 처리하는 미들웨어에서 새 예외사항이 발생함</p>
+  </li>
+</ol>
+
+<p>이러한 상황이 발생할 경우 <code class="highlighter-rouge">get_response</code> 가 자체적으로 에러를 처리한다.</p>
+
+<ol>
+  <li><code class="highlighter-rouge">http404</code> 예외가 발생하고 <code class="highlighter-rouge">DEBUG=True</code> 일 경우, <code class="highlighter-rouge">get_response</code>가 <code class="highlighter-rouge">django.views.debug.technical_404_response</code> 라는 뷰를 실행하고 <code class="highlighter-rouge">HttpRequest</code> 와 익셉션을 전달한다. 이 뷰는 URL Resolver 가 매치하려고 햇었던 패턴에 대한 정보를 표시한다.</li>
+  <li>만약 <code class="highlighter-rouge">DEBUG=False</code> 이면 익셉션은 <code class="highlighter-rouge">Http404</code>, <code class="highlighter-rouge">get_response</code> 가 URL Resolver 의 <code class="highlighter-rouge">resolve_404</code> 를 호출한다. 이 메소드는 url 설정을 읽어서 어떤 뷰가 404 에러를 핸들링 해야 하는지 찾는다. 디폴트 값은 <code class="highlighter-rouge">django.views.defaults.page_not_found</code> 이지만, 변수 <code class="highlighter-rouge">hanlder404</code>에 값을 할당해 URL 설정을 오버라이드 할 수 있다.</li>
+  <li>익셉션의 종류에 상관없이, <code class="highlighter-rouge">DEBUG=True</code> 일 경우, <code class="highlighter-rouge">get_response</code>가 <code class="highlighter-rouge">django.views.debug.technical_500_response</code> 뷰를 실행하고 <code class="highlighter-rouge">HttpResponse</code>와 익셉션을 인자로 전달한다. 이 뷰는 트레이스백, 스택 각 레벨의 지역 변수, 등 자세한 정보를 제공한다.</li>
+  <li><code class="highlighter-rouge">DEBUG=False</code> 일 경우, <code class="highlighter-rouge">get_response</code> 가 URL 리졸버의 <code class="highlighter-rouge">resolve_500</code> 메소들르 호출하고, 3번고 비슷한 방법으로 작동한다.</li>
+</ol>
+
+<p>추가적으로, <code class="highlighter-rouge">django.http.Http404</code> 또는 파이선 빌트인 <code class="highlighter-rouge">SystemExit</code> 이외의 익셉션일 경우, 핸들러는 디스패처 신호 <code class="highlighter-rouge">got_request_exception</code>을 실행하고 반환하기 전에 장고 admins 설정에 리스팅된 사람들에게 메일을 발송하기전에 예외에 대한 설명을 만든다.</p>
+
+<h5 id="11-미들웨어-처리-4-마지막-단계">11. 미들웨어 처리 4, 마지막 단계</h5>
+
+<p>이 단계에서 <code class="highlighter-rouge">HttpResponse</code> 인스턴스를 반환한다. <code class="highlighter-rouge">HttpResponse</code>는 <code class="highlighter-rouge">_response_middleware</code>의 메소드를 호출하고, <code class="highlighter-rouge">HttpRequest</code>, <code class="highlighter-rouge">HttpResponse</code>를 인자로 전달한다. 이 단계는 미들웨어가 변화을 일으킬 수 있는 마지막 단계다.</p>
+
+<h5 id="12-응답">12. 응답</h5>
+
+<p>이제 마지막 단계다. 핸들러가 디스패처 시그널 <code class="highlighter-rouge">request_finished</code> 를 발생시킨다. 이 신호를 받은 핸들러는 현재 리퀘스트를 위해 사용했던 자원들을 정리하고 해제한다. 예를 들어, 장고는 열러있는 모든 데이터베이스 커넥션을 닫는  <code class="highlighter-rouge">request_finished</code> 에 리스너를 연결한다. 이 작업 뒤에, 핸들러는 적절한 반환할 값을 만들고 반환한다.</p>
+
+<p>이렇게 해서 장고가 리퀘스트를 다루는 처음부터 마지막 까지 과정을 훑어보았다.</p>
+
+<h5 id="references">References</h5>
+
+<ul>
+  <li>https://www.b-list.org/weblog/2006/jun/13/how-django-processes-request/</li>
+</ul>
+:ET

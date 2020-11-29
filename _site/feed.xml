@@ -5,35 +5,729 @@
     <description>A pythonist in startup</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 30 Apr 2020 18:04:23 +0900</pubDate>
-    <lastBuildDate>Thu, 30 Apr 2020 18:04:23 +0900</lastBuildDate>
+    <pubDate>Sun, 29 Nov 2020 22:07:33 +0900</pubDate>
+    <lastBuildDate>Sun, 29 Nov 2020 22:07:33 +0900</lastBuildDate>
     <generator>Jekyll v4.0.0</generator>
 
     
       <item>
-        <title>2020년 독서목록</title>
-        <description>&lt;h5 id=&quot;1월&quot;&gt;1월&lt;/h5&gt;
+        <title>번역 | 장고에서 리퀘스트를 처리하는 방법</title>
+        <description>&lt;ol&gt;
+  &lt;li&gt;신호수신&lt;/li&gt;
+  &lt;li&gt;핸들러의 작동&lt;/li&gt;
+  &lt;li&gt;리퀘스트 처리 시작&lt;/li&gt;
+  &lt;li&gt;미들웨어 처리 1&lt;/li&gt;
+  &lt;li&gt;레솔루션 타임&lt;/li&gt;
+  &lt;li&gt;미들웨어 처리 2&lt;/li&gt;
+  &lt;li&gt;뷰(View)&lt;/li&gt;
+  &lt;li&gt;응답시간(Response time)&lt;/li&gt;
+  &lt;li&gt;미들웨어 처리 3: 예외&lt;/li&gt;
+  &lt;li&gt;무응답&lt;/li&gt;
+  &lt;li&gt;미들웨어 처리 4: 마지막 단계&lt;/li&gt;
+  &lt;li&gt;응답&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.b-list.org/weblog/2006/jun/13/how-django-processes-request/&quot;&gt;How Django processes a request&lt;/a&gt; 번역글입니다.&lt;/p&gt;
+
+&lt;h5 id=&quot;1-신호-수신&quot;&gt;1. 신호 수신&lt;/h5&gt;
+
+&lt;p&gt;2가지 방법으로 장고 앱을 invoke한다.&lt;/p&gt;
+
+&lt;p&gt;1 아파치/모드파이선(apache/mod_python) 서버가 셋업되어있을 경우, 모드 파이선이 리퀘스트를 장고에게 전달하고 &lt;code class=&quot;highlighter-rouge&quot;&gt;django.core.hanlders.modpython.ModPythonHandler&lt;/code&gt; 인스턴스를 생성한다.&lt;/p&gt;
+
+&lt;p&gt;2 &lt;code class=&quot;highlighter-rouge&quot;&gt;WSGI&lt;/code&gt;를 준수하는 다른 요소일경우 장고 &lt;code class=&quot;highlighter-rouge&quot;&gt;django.core.handlers.wsgi.WsgiHandler&lt;/code&gt; 인스턴스를 생성한다.&lt;/p&gt;
+
+&lt;h5 id=&quot;2-핸들러의-작동&quot;&gt;2. 핸들러의 작동&lt;/h5&gt;
+
+&lt;p&gt;핸들러가 인스턴스화 되면, 다음과 같은 과정을 거친다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;핸들러가 장고 세팅 파일을 임포트한다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;장고의 커스텀 익셥센 클래스를 임포트한다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;3핸들러는 자체 &lt;code class=&quot;highlighter-rouge&quot;&gt;load_middleware&lt;/code&gt; 메소드를 호출하고, 해당 메소드는 세팅파일의 &lt;code class=&quot;highlighter-rouge&quot;&gt;MIDDLEWARE_CLASSES&lt;/code&gt; 에 나열된 미들웨어 클래스들을 불러온다.&lt;/p&gt;
+
+&lt;p&gt;미들웨어는 4가지 상태에 대한 후킹이 가능하다. (&lt;code class=&quot;highlighter-rouge&quot;&gt;process_request&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;process_view&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;process_response&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;process_exception&lt;/code&gt;) 핸들러가 미들웨어를 검사할때는 메소드 이름으로 검사한다.&lt;/p&gt;
+
+&lt;h5 id=&quot;3-리퀘스트-처리-시작&quot;&gt;3. 리퀘스트 처리 시작&lt;/h5&gt;
+
+&lt;p&gt;리퀘스트를 처리할 준비가 다 됐기 때문에, 시그널 &lt;code class=&quot;highlighter-rouge&quot;&gt;request_started&lt;/code&gt; 를 디스패칭한다. 모드 파이선과 WSGI 가 리퀘스트를 다르게 처리하기 때문에 모드 파이선일 경우 &lt;code class=&quot;highlighter-rouge&quot;&gt;django.core.handlers.modpython.ModPythonRequest&lt;/code&gt; 를, WSGI 일 경우에는 &lt;code class=&quot;highlighter-rouge&quot;&gt;django.core.hanlders.wsgi.WSGIRequest&lt;/code&gt; 라는 클래스를 사용한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpRequest&lt;/code&gt; 가 전달되면 핸들러가 &lt;code class=&quot;highlighter-rouge&quot;&gt;get_response&lt;/code&gt;  메소드를 호출하고, &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpRequest&lt;/code&gt; 를 인자로 전달한다.&lt;/p&gt;
+
+&lt;h5 id=&quot;4-미들웨어-처리-1&quot;&gt;4. 미들웨어 처리 1&lt;/h5&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;get_response&lt;/code&gt; 는 핸들러의 &lt;code class=&quot;highlighter-rouge&quot;&gt;_request_middleware&lt;/code&gt; 인스턴스 변수를 순회하면서 리스트 내 각 메소들르 호출해 &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpRequest&lt;/code&gt; 인스턴스를 아규먼트로 전달한다. 이 메소드들은 처리 과정을 무시하고 바로  &lt;code class=&quot;highlighter-rouge&quot;&gt;get_response&lt;/code&gt; 를 반환할 수 있는 옵션이 있다. 만약 메소드 중 하나가 바로 반환을 한다면, 메인 핸들러 코드로 돌아가고 남은 미들웨어 클래스는 무시한다.&lt;/p&gt;
+
+&lt;h5 id=&quot;5-레솔루션-타임&quot;&gt;5. 레솔루션 타임&lt;/h5&gt;
+
+&lt;p&gt;미들웨어중 어느것도 리스폰스를 즉시 반환하지 않았다면, 핸들러는 요청된 URL를 분석한다. 핸들러는 세팅 파일에 있는 &lt;code class=&quot;highlighter-rouge&quot;&gt;ROOT_URLCONF&lt;/code&gt; 를 읽고,  &lt;code class=&quot;highlighter-rouge&quot;&gt;django.core.urlresolvers.RegexURLResolver&lt;/code&gt; 인스턴스를 만든 뒤 해당 인스턴스의 &lt;code class=&quot;highlighter-rouge&quot;&gt;resolve&lt;/code&gt; 메소드를 호출한다.&lt;/p&gt;
+
+&lt;p&gt;만약 매칭되는 url 이 없다면 &lt;code class=&quot;highlighter-rouge&quot;&gt;django.core.urlresolvers.Resolver404&lt;/code&gt; 예외를 발생시킨다.&lt;/p&gt;
+
+&lt;h5 id=&quot;6-미들웨어-처리-2&quot;&gt;6. 미들웨어 처리 2&lt;/h5&gt;
+
+&lt;p&gt;뷰 함수가 사용된다면 핸들러가 &lt;code class=&quot;highlighter-rouge&quot;&gt;_view_middleware&lt;/code&gt; 리스트에 있는 메소드르 호출해 &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpRequest&lt;/code&gt; 를 전달한다. 이 단계에서도 미들웨어가 개입해 핸들러가 바로 리스폰스를 반환하도록 할 수 있다.&lt;/p&gt;
+
+&lt;h5 id=&quot;7-뷰&quot;&gt;7. 뷰&lt;/h5&gt;
+
+&lt;p&gt;장고는 무엇이든지 간단한 요구조건 몇가지만 들어맞으면 뷰로 분류한다.&lt;/p&gt;
+
 &lt;ul&gt;
-  &lt;li&gt;객체지향의 오해와 진실&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;호출가능해야한다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;첫번쨰 인자로 &lt;code class=&quot;highlighter-rouge&quot;&gt;django.http.HttpRequest&lt;/code&gt; 의 인스턴스를 받는다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;django.http.HttpResponse&lt;/code&gt; 인스턴스를 반환하거나 예외를 발생시킨다.&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h5 id=&quot;3월&quot;&gt;3월&lt;/h5&gt;
+&lt;h5 id=&quot;8-응답시간response-time&quot;&gt;8. 응답시간(Response time)&lt;/h5&gt;
+
+&lt;p&gt;템플릿이 있을 경우, 템플릿이 렌더링 된 후, 또는 그에 상응하는 결과가 생성된 후에는 뷰가 &lt;code class=&quot;highlighter-rouge&quot;&gt;django.http.HttpResponse&lt;/code&gt; 인스턴스를 생성할 책임이 있다. 이 클래스의 생성자는 2가지 선택적 인수를 받는다.&lt;/p&gt;
+
 &lt;ul&gt;
-  &lt;li&gt;도메인 주도 설계 핵심&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;리스폰스 바디에 담을 스트링&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;리스폰스 헤더 &lt;code class=&quot;highlighter-rouge&quot;&gt;Content-Type&lt;/code&gt; 의 값&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h5 id=&quot;4월&quot;&gt;4월&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;개발 7년차, 매니저 1일차&lt;/li&gt;
-  &lt;li&gt;소프트웨어 장인&lt;/li&gt;
-&lt;/ul&gt;
+&lt;h5 id=&quot;9-미들웨어-처리-3-예외&quot;&gt;9. 미들웨어 처리 3: 예외&lt;/h5&gt;
 
-&lt;h4 id=&quot;5월&quot;&gt;5월&lt;/h4&gt;
+&lt;p&gt;뷰에서 예외가 발생하면 &lt;code class=&quot;highlighter-rouge&quot;&gt;get_response&lt;/code&gt;가 &lt;code class=&quot;highlighter-rouge&quot;&gt;_exception_middleware&lt;/code&gt;에 있는 메소드를 호출해 &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpRequest&lt;/code&gt; 와 예외를 인자로 전달한다. 호출된 메소드 중 하나가 &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpResponse&lt;/code&gt;를 반환한다.&lt;/p&gt;
+
+&lt;h5 id=&quot;10-무응답&quot;&gt;10. 무응답&lt;/h5&gt;
+
+&lt;p&gt;아래와 같은 경우일때  &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpResponse&lt;/code&gt; 를 반환한다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;뷰가 값을 반환하지 않음&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;뷰가 예외를 발생시키지만 그걸 처리할수 있는 미들웨어가 없음&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;예외를 처리하는 미들웨어에서 새 예외사항이 발생함&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;이러한 상황이 발생할 경우 &lt;code class=&quot;highlighter-rouge&quot;&gt;get_response&lt;/code&gt; 가 자체적으로 에러를 처리한다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;http404&lt;/code&gt; 예외가 발생하고 &lt;code class=&quot;highlighter-rouge&quot;&gt;DEBUG=True&lt;/code&gt; 일 경우, &lt;code class=&quot;highlighter-rouge&quot;&gt;get_response&lt;/code&gt;가 &lt;code class=&quot;highlighter-rouge&quot;&gt;django.views.debug.technical_404_response&lt;/code&gt; 라는 뷰를 실행하고 &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpRequest&lt;/code&gt; 와 익셉션을 전달한다. 이 뷰는 URL Resolver 가 매치하려고 햇었던 패턴에 대한 정보를 표시한다.&lt;/li&gt;
+  &lt;li&gt;만약 &lt;code class=&quot;highlighter-rouge&quot;&gt;DEBUG=False&lt;/code&gt; 이면 익셉션은 &lt;code class=&quot;highlighter-rouge&quot;&gt;Http404&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;get_response&lt;/code&gt; 가 URL Resolver 의 &lt;code class=&quot;highlighter-rouge&quot;&gt;resolve_404&lt;/code&gt; 를 호출한다. 이 메소드는 url 설정을 읽어서 어떤 뷰가 404 에러를 핸들링 해야 하는지 찾는다. 디폴트 값은 &lt;code class=&quot;highlighter-rouge&quot;&gt;django.views.defaults.page_not_found&lt;/code&gt; 이지만, 변수 &lt;code class=&quot;highlighter-rouge&quot;&gt;hanlder404&lt;/code&gt;에 값을 할당해 URL 설정을 오버라이드 할 수 있다.&lt;/li&gt;
+  &lt;li&gt;익셉션의 종류에 상관없이, &lt;code class=&quot;highlighter-rouge&quot;&gt;DEBUG=True&lt;/code&gt; 일 경우, &lt;code class=&quot;highlighter-rouge&quot;&gt;get_response&lt;/code&gt;가 &lt;code class=&quot;highlighter-rouge&quot;&gt;django.views.debug.technical_500_response&lt;/code&gt; 뷰를 실행하고 &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpResponse&lt;/code&gt;와 익셉션을 인자로 전달한다. 이 뷰는 트레이스백, 스택 각 레벨의 지역 변수, 등 자세한 정보를 제공한다.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;DEBUG=False&lt;/code&gt; 일 경우, &lt;code class=&quot;highlighter-rouge&quot;&gt;get_response&lt;/code&gt; 가 URL 리졸버의 &lt;code class=&quot;highlighter-rouge&quot;&gt;resolve_500&lt;/code&gt; 메소들르 호출하고, 3번고 비슷한 방법으로 작동한다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;추가적으로, &lt;code class=&quot;highlighter-rouge&quot;&gt;django.http.Http404&lt;/code&gt; 또는 파이선 빌트인 &lt;code class=&quot;highlighter-rouge&quot;&gt;SystemExit&lt;/code&gt; 이외의 익셉션일 경우, 핸들러는 디스패처 신호 &lt;code class=&quot;highlighter-rouge&quot;&gt;got_request_exception&lt;/code&gt;을 실행하고 반환하기 전에 장고 admins 설정에 리스팅된 사람들에게 메일을 발송하기전에 예외에 대한 설명을 만든다.&lt;/p&gt;
+
+&lt;h5 id=&quot;11-미들웨어-처리-4-마지막-단계&quot;&gt;11. 미들웨어 처리 4, 마지막 단계&lt;/h5&gt;
+
+&lt;p&gt;이 단계에서 &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpResponse&lt;/code&gt; 인스턴스를 반환한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpResponse&lt;/code&gt;는 &lt;code class=&quot;highlighter-rouge&quot;&gt;_response_middleware&lt;/code&gt;의 메소드를 호출하고, &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpRequest&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;HttpResponse&lt;/code&gt;를 인자로 전달한다. 이 단계는 미들웨어가 변화을 일으킬 수 있는 마지막 단계다.&lt;/p&gt;
+
+&lt;h5 id=&quot;12-응답&quot;&gt;12. 응답&lt;/h5&gt;
+
+&lt;p&gt;이제 마지막 단계다. 핸들러가 디스패처 시그널 &lt;code class=&quot;highlighter-rouge&quot;&gt;request_finished&lt;/code&gt; 를 발생시킨다. 이 신호를 받은 핸들러는 현재 리퀘스트를 위해 사용했던 자원들을 정리하고 해제한다. 예를 들어, 장고는 열러있는 모든 데이터베이스 커넥션을 닫는  &lt;code class=&quot;highlighter-rouge&quot;&gt;request_finished&lt;/code&gt; 에 리스너를 연결한다. 이 작업 뒤에, 핸들러는 적절한 반환할 값을 만들고 반환한다.&lt;/p&gt;
+
+&lt;p&gt;이렇게 해서 장고가 리퀘스트를 다루는 처음부터 마지막 까지 과정을 훑어보았다.&lt;/p&gt;
+
+&lt;h5 id=&quot;references&quot;&gt;References&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://www.b-list.org/weblog/2006/jun/13/how-django-processes-request/&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Mon, 23 Nov 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/django/2020/11/23/how-django-processes-a-request/</link>
+        <guid isPermaLink="true">http://localhost:4000/django/2020/11/23/how-django-processes-a-request/</guid>
+      </item>
+    
+      <item>
+        <title>2020년 회고</title>
+        <description>&lt;p&gt;2019-2020년에 사건 사고가 많았고 신기한 경험도 해서 회고를 해보았다.&lt;/p&gt;
+
+&lt;h5 id=&quot;잦은-이직&quot;&gt;잦은 이직&lt;/h5&gt;
+
+&lt;p&gt;여러가지 사정으로 인해 이직을 자주 했다. 거쳐간 회사들을 돌아보니 각 회사 서비스마다 도메인은 다 다른데  몇가지 공통점이 있었다. 먼저 타겟 국가가 한국이 아니거나, 한국을 포함한 많은 나라를 타켓팅하는 글로벌 서비스다. 개발과 데브옵스 일을 같이 한다. 나는 데브옵스 일을 하면서 많은 경험을 할 수 있어서 좋았다.&lt;/p&gt;
+
+&lt;p&gt;AWS Opsworks 를 jenkins 로 교체하고, EC2 에서 ECS Fargate 로 교체하는 경험을 했다. Fargate 로 굴러가는 서비스를 운영하면서 여러 troubleshooting 을 경험했다. jenkins 를 구축하면서 ci/cd 를 경험했다. 모니터링이 전혀 구축되어 있지 않아서 newrelic 을 달았다가 sentry 를 구축해서 newrelic 을 교체했다. 기타 등등 많은 일을 경험했다.&lt;/p&gt;
+
+&lt;p&gt;파이선 2.X를 3.X로 포팅하면서 아키텍쳐에 대한 고민을 했다. 이전에는 아키텍쳐의 중요성을 체감하지 못했었었다. 여러가지 레거시 프로젝트를 경험하고 나니, 아키텍쳐 이론을 갖추고 구체화하는 경험의 필요성을 느꼈다.&lt;/p&gt;
+
+&lt;h5 id=&quot;구인의-어려움&quot;&gt;구인의 어려움&lt;/h5&gt;
+
+&lt;p&gt;입사하고 나서 바로 구인을 진행했다. 이상적인 동료상에 대해서 테크리드와 대화를 많이 나눴고, 면접시 체크 리스트도 만들었다. 우리는 글로벌 서비스를 준비하고 있다. 구성원들이 글을 읽고 쓰는 취미가 있어 글을 연재했거나 기고했던 경험이 있다. 지금도 팀 블로그에 토픽을 정해서 글 쓰는 일자가 구성원별로 스케쥴링 해 관리한다.&lt;/p&gt;
+
+&lt;p&gt;우리와 같이 서비스를 만들 동료도 글로벌 서비스를 해보았거나, 하고 싶어했으면 좋겠다. 글을 쓰고 읽는 취미가 있어 블로그를 운영하거나 글을 기고해본 경험이 있었으면 좋겠고, 개발 및 제품의 완성도도 추구하면서 비즈니스 도메인의 생태계에 긍정적인 영향을 미치고 싶어했으면 좋겠다.&lt;/p&gt;
+
+&lt;p&gt;이렇게 정리해보고 나니 구인이 어렵겠다는 생각이 들었다. 그러나 몇번의 면접을 진행해본 결과 기준은 절대 완화해선 안된다는 결론을 내렸다.&lt;/p&gt;
+
+&lt;h5 id=&quot;프로젝트의-단계&quot;&gt;프로젝트의 단계&lt;/h5&gt;
+
+&lt;p&gt;팀을 세팅하는 상태에서 참여에 제품을 만드는 경험은 이번이 처음이다. 백엔드 조직은 팀원이 없다. 팀장만 있고 팀원만 있으니 홍철 없는 홍철팀 상태라고 할 수 있겠다. 이직할때마다 이미 서비스 중인, 성숙한 상태의 프로덕트를 유지보수하는 역할을 많이 맡았었기 때문에 이런 경험이 신선하다. 그리고 이직하면서 아주 초기 단계부터 참여해서 프로덕트 개발 경험을 얻고 싶다는 바람이 있었는데 그게 충족되서 좋다.&lt;/p&gt;
+
+&lt;h5 id=&quot;기록의-효용성&quot;&gt;기록의 효용성&lt;/h5&gt;
+
+&lt;p&gt;사실 2019년 겨울 ~ 2020년 초 봄에 정기 기고를 기획했다. 그런데 그 글이 어떻게 퍼져서 주위의 몇몇 분들이 읽어보고 피드백을 주셨다. 그 중에 가장 인상깊었던 피드백은 이 글을 읽고 개발자로서의 정체성과 미래에 대한 불안과 근심이 있었는데 어느정도 해소가 되었고 힘이 됐다는 피드백이다. 글을 쓰기 전에는 나의 경험을 공유함으로써 다른 사람들이 더 나은 선택을 할 수 있도록 긍정적인 영향을 미치고 싶다는 의도가 가득했는데, 막상 글을 쓸 때에는 ‘이 글이 남에게 도움이 되긴 하나’, ‘그전에 누가 읽기는 하나’ 하는 의심이 컸다. 시간이 걸렸지만 결국 나의 바램대로 도움이 되었다고 하니 기분이 좋았다. 뭐든지, 기록을 남기면 누군가는 그걸 읽게되고 그렇게 가치가 생기나보다.&lt;/p&gt;
+
+&lt;p&gt;2021년에는 코로나 백신이 나와서 접종을 받을 수 있으면 좋겠고, 좋은 팀원을 만났으면 좋겠다. 그리고 프로덕트가 예상했던 모습대로 만들어졌으면 좋겠다.&lt;/p&gt;
 
 </description>
-        <pubDate>Wed, 29 Apr 2020 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/archive/2020/04/29/2020-book-list/</link>
-        <guid isPermaLink="true">http://localhost:4000/archive/2020/04/29/2020-book-list/</guid>
+        <pubDate>Fri, 20 Nov 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/retrospective/2020/11/20/2020-retrospective/</link>
+        <guid isPermaLink="true">http://localhost:4000/retrospective/2020/11/20/2020-retrospective/</guid>
+      </item>
+    
+      <item>
+        <title>파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기</title>
+        <description>&lt;p&gt;목차&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;어니언 아키텍쳐 소개&lt;/li&gt;
+  &lt;li&gt;어니언 아키텍쳐가 해결하는 문제&lt;/li&gt;
+  &lt;li&gt;파이선, 장고로 구현한 어니언 아키텍쳐
+    &lt;ul&gt;
+      &lt;li&gt;Model, Service, View 구조&lt;/li&gt;
+      &lt;li&gt;model과 domain model&lt;/li&gt;
+      &lt;li&gt;service 와 application service, domain service&lt;/li&gt;
+      &lt;li&gt;다이어그램과 코드&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;DDD와 어니언 아키텍쳐와의 관계&lt;/li&gt;
+  &lt;li&gt;References&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h5 id=&quot;어니언-아키텍쳐-소개&quot;&gt;어니언 아키텍쳐 소개&lt;/h5&gt;
+
+&lt;p&gt;어니언 아키텍쳐(onion architecture)는 2008년에 제프리 팔레르모가 만든 패턴 입니다. 어니언 아키텍쳐를 적용하기에 좋은 대상은 복잡한 기능이 많고 장기간 사용할 비즈니스 어플리케이션이며, 소규모 웹 어플리케이션에는 적합하지 않습니다. 이 아키텍쳐는 전통적인 계층적 아키텍쳐 (layered architecture)와 헥사고날 아키텍쳐(Hexagonal architecture)와 비슷한 부분이 많습니다. 계층적 아키텍쳐처럼 어니언 아키텍쳐도 계층이라는 단어를 사용하지만 의미는 약간 다르며, 3-tire 와 n-tier 아키텍쳐에 있는 문제점을 해결한 아키텍쳐입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://herbertograca.files.wordpress.com/2017/07/1980s-90s-layered-architecture.png?w=1100&quot; alt=&quot;layered architecture&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;전통적인 레이어드 아키텍쳐를 표현한 다이어그램&lt;/p&gt;
+
+&lt;p&gt;전통적인 계층적 아키텍쳐는 계층(layer)으로 이뤄집니다. 각 계층은 자신보다 하위에 있는 계층에 의존합니다. 각 계층은 하위 계층만 호출할 수 있습니다다. 모든 계층은 소프트웨어에서 공통으로 사용하는 인프라나 유틸리티 서비스에 의존합니다.&lt;/p&gt;
+
+&lt;p&gt;인프라, 유틸리티 서비스와 관련된 코드가 전 계층에 있기 때문에 모든 계층이 종국에는 뒤섞이면서 서로 강결합해버립니다. 이런 결합이 생기면, UI와 비즈니스 로직의 결합이 발생해 데이터 접근방식에 영향을 줍니다. 가장 흔히 발생하는 문제는 비즈니스 로직이 없어서 UI 도 없는 문제입니다. 데이터 접근 부분이 없어서 비즈니스 로직도 없는 경우도 생깁니다. 데이터 접근 방식은 업계 통상 2년마다 바뀌는데, 계층적 아키텍쳐가 적용된 소프트웨어라면 인프라와 강결합된 코드가 전 계층에 퍼져 있을테니 데이터베이스를 교체할때 비싼 유지보수 비용을 지불하게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;제프리 팔레르모가 제안한 어니언 아키텍쳐는 위에 언급된 단점을 개선한 아키텍쳐입니다.&lt;/p&gt;
+
+&lt;h5 id=&quot;어니언-아키텍쳐가-해결하는-문제&quot;&gt;어니언 아키텍쳐가 해결하는 문제&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://i0.wp.com/jeffreypalermo.com/wp-content/uploads/2018/06/image257b0257d255b59255d.png?resize=366%2C259&amp;amp;ssl=1&quot; alt=&quot;onion architecture&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;어니언 아키텍쳐의 주 관심사는 내부/외부 구획을 짓기와 결합의 조종입니다. 모든 코드는 해당 영역보다 더 중심부에 가까운 영역에 있는 요소에 의존할 수 있지만, 바깥으로 향하는 영역에 있는 요소에 의존하면 안됩니다. 각 계층은 서로 소통할때 인터페이스를 사용합니다. 어니언 아키텍쳐는 기존의 n-tier 아키텍쳐와는 다르게 데이터 계층에 의존하지 않습니다. 대신 도메인 모델 계층에 의존합니다.&lt;/p&gt;
+
+&lt;p&gt;아키텍쳐 중심부에는 도메인 모델이 있습니다. 도메인 모델은 다른 무엇과도 결합하지 않습니다. 도메인 모델 계층, 도메인 서비스계층, 어플리케이션 서비스 계층을 포함하는 어플리케이션 코어는 여러 계층으로 나눠질 수 있습니다. 나누는 계층 갯수는 제한이 없습니다. 필요한대로 나누면 됩니다. 그러나 도메인 모델 계층은 반드시 중심에 있어야 합니다.&lt;/p&gt;
+
+&lt;p&gt;오브젝트를 저장하는 행위는 어플리케이션 코어에 없다. 인프라인 데이터베이스와 연관성이 있기 때문입니다. 어플리케이션 코어에는 인터페이스만 있어야 합니다. 바깥 원은 자주 바뀌는 요소들을 위한 자리입니다. UI, 인프라, 테스트 등이 여기에 속합니다. 변화가 자주 일어나는 요소들은 반드시 어플리케이션의 코어에서 분리되어야 합니다. 이러한 요소들 중에는 데이터 접근 방식이 있습니다. 데이터 접근 방식은 통상 2년 단위로 크게 바뀌고 데이터베이스에 강하게 의존하기 때문에 분리되야 합니다. 데이터베이스도 소프트웨어 구성에서 외부에 속해야 합니다. 데이터베이스, 파일시스템, 등등을 어플리케이션에서 결합되지 않게해 어플리케이션 유지 보수 비용을 줄입니다.&lt;/p&gt;
+
+&lt;p&gt;어니언 아키텍쳐의 각 계층을 간략해게 정리하자면 다음과 같습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;도메인 모델 계층: 도메인 오브젝트와 도메인 인터페이스가 있는 계층. 의존성이 없습니다.&lt;/li&gt;
+  &lt;li&gt;도메인 서비스 계층: 도메인 모델 계층과 어플리케이션 서비스 계층을 연결합니다. 이 계층에서 오브젝트를 갖고오거나 저장하는 등, 데이터베이스와 연관된 작업을 수행하는 인터페이스를 둡니다.&lt;/li&gt;
+  &lt;li&gt;어플리케이션 서비스 계층: 어플리케이션 종속적인 비즈니스 로직이 있는 계층.  (예: usecase)&lt;/li&gt;
+  &lt;li&gt;외부 계층: UI, 데이터베이스, 테스트와 같이 변화가 잦은 요소들이 있는 계층. 웹 어플리케이션일 경우에는 이 계층에 웹 API 또는 유닛 테스트가 있습니다. 이 계층은 인터페이스를 통해 내부 계층과 연결됩니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;계층들은 서로를 감싸면서 양파같은 모양을 형성합니다. 어니언은 외부 계층은 하위 계층에 의존할 수 있지만, 하위 계층은 외부 계층에 있는 코드를 직접 호출할 수 없다는 의존성 규칙이 있습니다. 각 계층은 의존성 규칙에 따라서 상호작용합니다.&lt;/p&gt;
+
+&lt;p&gt;어니언 아키텍쳐의 주 특징을 간단하게 4가지로 정리하면 다음과 같습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;어플리케이션은 독립적인 오브젝트 모델로 개발해야 합니다.&lt;/li&gt;
+  &lt;li&gt;내부 원은 인터페이스를 정의한다. 외부 원은 인터페이스를 구현합니다.&lt;/li&gt;
+  &lt;li&gt;결합 방향은 중앙을 향해야 합니다.&lt;/li&gt;
+  &lt;li&gt;모든 어플리케이션 코어 코드는 인프라와 별개로 컴파일될 수 있고 실행될 수 있어야 합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;파이선-장고로-구현한-어니언-아키텍쳐&quot;&gt;파이선, 장고로 구현한 어니언 아키텍쳐&lt;/h5&gt;
+
+&lt;p&gt;카페에서 커피 주문을 받거나 고객의 주문을 관리하는 시스템을 어니언 아키텍쳐로 구현해보기로 합니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Model, Service, View 구조&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;먼저 보통 파이선 장고 프로젝트를 시작할떄 흔히 사용하는  model, service, view 구조로 개발해보도록 합니다. 카페, 고객, 주문 모델링은 장고 ORM 으로 구현합니다.&lt;/p&gt;
+
+&lt;p&gt;models.py&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;django.db&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Cafe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AutoField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;primary_key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CharField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Customer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AutoField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;primary_key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CharField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AutoField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;primary_key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;customer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ForeignKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Customer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on_delete&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CASCADE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cafe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ForeignKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Cafe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on_delete&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CASCADE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;카페에 커피를 주문하고, 주문을 관리할 수 있는 비즈니스 로직을 구현합니다. 카페와 고객의 아이디를 받아서 데이터베이스의 주문 테이블에 주문을 저장히고, 저장된 주문 데이터를 불러와 주문 객체로 만들어서 해당 객체를 가지고 비즈니스 로직을 수행해야 합니다. 데이터를 불러오거나 저장할때는 ORM을 사용합니다. ORM 을 사용하기 때문에 데이터 접근, 데이터 객체 변환 계층은 필요없다. ORM 이 그 역할을 동시에 수행합니다.&lt;/p&gt;
+
+&lt;p&gt;service.py&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderCoffeeService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;order_coffee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OrderDomainModel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;간단한 API를 작성합니다. API 는 service 에서 반환한 객체를 serializer 를 통해 직렬화 한뒤 외부에 반환합니다.&lt;/p&gt;
+
+&lt;p&gt;serializer.py&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;rest_framework&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;serializers&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderResponseSerializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;serializers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Serializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;serializers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IntegerField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;serializers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IntegerField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;serializers&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IntegerField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;views.py&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;django.http&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;JsonResponse&lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;cafe.application_service&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order_coffee_service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order_service&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;cafe.serializer&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OrderResponseSerializer&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;order_coffee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;order_coffee_service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order_coffee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HttpResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order_service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;serializer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OrderResponseSerializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;JsonResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;serializer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;보통 장고로 구현한 backend용 파이선 프로젝트는 위의 구조를 많이 사용하는 것 같습니다. 이제 위 코드를 어니언 아키텍쳐 다이어그램과 최대한 비슷하게 구현해봅시다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;model 과 domain model&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;어니언 아키텍쳐 규칙에 따라 인프라와 연관된 코드를 다른 코드에서 분리해야 합니다. 여기서는 인프라 코드가 장고 ORM 입니다. ORM으로 작성한 model은 데이터베이스에 접근해서 데이터를 가져오는 용도로만 사용합니다. ORM으로 가져온 데이터는 객체상태로 존재하지만 해당 객체를 바로 쓰지 않습니다. 도메인 모델을 통해서 객체로 만듭니다.&lt;/p&gt;
+
+&lt;p&gt;domain_models.py&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;dataclasses&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dataclass&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;cafe.models&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Cafe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Customer&lt;/span&gt;
+
+
+&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dataclass&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CafeDomainModel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;
+
+    &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;classmethod&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cls&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Cafe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cls&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cafe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cafe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+
+&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dataclass&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderDomainModel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;
+
+    &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;classmethod&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cls&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cls&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;service 와 application service, domain service&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Service 계층은 2가지의 다른 작업을 동시에 수행합니다. 하나는 비즈니스 로직이고 또 하나는 객체를 가지고 수행하는 작업입니다. Cafe 또는 Order 객체를 갖고오거나 객체를 삭제, 수정, 저장하는 행위는 어니언 아키텍쳐에서 Object Service에 해당합니다. 주문을 조회하고 커피 주문을 하는 행위는 Application Service 입니다. 먼저 Object service 에서 사용할 추상클래스를 정의합니다.&lt;/p&gt;
+
+&lt;p&gt;object_service.py&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;abc&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ObjectService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ABC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abstractmethod&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+
+    &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abstractmethod&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;추상클래스를 상속해 cafe object service 와 order object service를 구현합니다.&lt;/p&gt;
+
+&lt;p&gt;object_service.py&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CafeObjectService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ObjectService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Cafe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Cafe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Cafe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NoReturn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;cafe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderObjectService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ObjectService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pk&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DoesNotExist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Order Does not exist'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NoReturn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;비즈니스 로직이 있는 application service 는 이제 object service 로 비즈니스 로직을 수행합니다.&lt;/p&gt;
+
+&lt;p&gt;application_service.py&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderCoffeeService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe_object_service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CafeObjectService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  	&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_cafe_object_service&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe_object_service&lt;/span&gt;
+    
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;order_coffee&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cafe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cafe_object_service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cafe_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_cafe_object_service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    
+    
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order_object_service&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OrderObjectService&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order_object_service&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order_object_service&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;order_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OrderDomainModel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;order&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order_object_service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OrderDomainModel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;of&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;order&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+     
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;다이어그램&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://suhyunbaik.github.io/images/posts/python_django_onion.png&quot; alt=&quot;python_django_onion&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;완성된 코드는 &lt;a href=&quot;https://github.com/suhyunbaik/python-django-onion&quot;&gt;여기서&lt;/a&gt; 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;h5 id=&quot;ddd와의-관계&quot;&gt;DDD와의 관계&lt;/h5&gt;
+
+&lt;p&gt;어니언 아키텍쳐와 DDD는 성취하려는 목표가 다릅니다. 어니언 아키텍쳐는 도메인과 비즈니스 로직을 데이터 접근, UI, 인프라와 같은 영역에 의존하지 않고 독립적인 영역으로 만드는 게 목표입니다. 그래서 어니언 아키첵쳐에서는 도메인 모델에 대한 설명이 적습니다. 대신 도메인을 보호하는 방법에 대해 설명하는데 많은 부분을 할애합니다. 다이어그램에서 볼 수 있듯이, 어플리케이션을 내/외부로 구획을 짓고 서로 결합하지 않도록 강력하게 관리하는 방법이 어니언 아키텍쳐의 주요 관심사입니다.&lt;/p&gt;
+
+&lt;p&gt;DDD는 도메인과 객체를 비즈니스 세계와 가장 가깝게 설계하고 비즈니스 세계와 코드상의 간극을 줄이는게 목표입니다. 도메인은 비즈니스 도메인과 직접적인 연관관계가 있어야 하며, 각 객체는 실제 환경에서 해당 객체가 상징하는 요소가 하는 행동과 동일한 행동을 해야 하고 동일한 규칙을 가져야 합니다. 어니언 아키텍쳐에서 Domain model, Domain Service 라고 부르는 영역을 설계하는 방법이 주요 관심사입니다.&lt;/p&gt;
+
+&lt;p&gt;어니언 아키텍쳐와 DDD를 한 어플리케이션에 사용한다면 각 아키텍쳐의 장단점을 적절하게 취할 수 있다는 생각이 듭니다. 어니언 아키텍쳐로 내/외부 부분을 확실하게 구분지어 의존성을 조절하고, DDD로 비즈니스에 가장 가까운 도메인 및 객체 설계를 한다면 좋을 것 같습니다.&lt;/p&gt;
+
+&lt;p&gt;현재 제트팀은 백엔드에 적용할 아키텍쳐를 검토 중입니다. 어니언 아키텍쳐도 논의 대상 중 하나이며, 향후 서비스에 이 아키텍쳐를 적용하는걸 기대해봅니다.&lt;/p&gt;
+
+&lt;h5 id=&quot;references&quot;&gt;References&lt;/h5&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/&lt;/li&gt;
+  &lt;li&gt;https://alistair.cockburn.us/coming-soon/&lt;/li&gt;
+  &lt;li&gt;https://jeffreypalermo.com&lt;/li&gt;
+  &lt;li&gt;https://www.infoq.com/news/2014/10/ddd-onion-architecture/&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 08 Nov 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/architecture/2020/11/08/python-django-onion-structure/</link>
+        <guid isPermaLink="true">http://localhost:4000/architecture/2020/11/08/python-django-onion-structure/</guid>
+      </item>
+    
+      <item>
+        <title>파이선으로 개발한 프롭테크 서비스 DDD 구조로 리팩토링</title>
+        <description>&lt;p&gt;목차&lt;/p&gt;
+
+&lt;p&gt;서비스를 context 로 분리하고 django app으로 구분&lt;br /&gt;
+view, service, repository, model 로 분리&lt;br /&gt;
+IoC Container 구현&lt;br /&gt;
+부분적 경계를 facades 로 구현&lt;br /&gt;
+밸류 오브젝트를 엔티티로 변경&lt;br /&gt;
+후기&lt;/p&gt;
+
+&lt;p&gt;깃허브 https://github.com/suhyunbaik/buba-service&lt;br /&gt;
+몇년전에 프롭테크 서비스를 개발했었다. 사업적인 문제로 서비스를 접었는데 최근에 코드를 다시 살펴보니 개선할 부분이 많았다. 그 당시 서비스를 개발할때는 팀 내에 도메인 전문가가 없었고 구조에 대한 고민을 미처 못했다. 이번에는 리팩토링을 하면서 DDD를 적용해보기로 했다. 이 서비스는 프롭테크 서비스 이지만 직방, 다방과 타켓층이 다르다. 직방, 다방은 집을 알아보는 임차인이 타켓이지만, 이 서비스는 공인중개사가 타켓이다. 공인중개사의 업무 효율을 높이고 본인이 갖고있는 매물의 특징과 정보를 분석해서 영업에 도움이 되는 게 이 서비스의 목표다.&lt;/p&gt;
+
+&lt;p&gt;서비스를 context 로 분리하고 django app으로 구분&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/context_map.png&quot; alt=&quot;context_map&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;기존 코드는 기능별로 경계가 없어서 마치 큰 진흙덩어리처럼 기능이 서로 단단하게 강결합 된 상태다. 코드를 분리하기 위해서 먼저 서비스를 정리한다. 해당 서비스의 기능은 크게 매물 관리, 고객관리, 공동중개망, 문자 서비스, 공인중개사 관리로 나눌 수 있다. DDD 에서 말하는 bounded context 로 서비스를 나눠보자면 customer(고객), listing(매물), sms(문자), realtor(공인중개사)로 나눌 수 있다. 여기서 매물 관리는 product(공간정보), listing(매물) 이라는 2개의 bounded context 로 나눈다. 그리고 listing(매물) 이라는 context 에는 multiple listing(공동중개망) 이라는 aggregate 을 만든다.  매물관리를 이렇게 나눈 이유는 밑에 나온다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;view, service, repository, model 로 분리&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;기존 코드는 장고 공식문서에 설명하는 MVT(model view, template) 패턴을 따랐기 때문에 views.py 에 비즈니스 로직이 있었다. 이번에는 DDD를 적용하기로 했으므로, DDD에 맞춰서 코드를 나눈다. view는 요청을 받고 serialize, deserilaizer를 수행하며, 클라이언트에게 응답을 준다. service 는 여러 서비스와 리포지토리를 가지고 비즈니스 로직을 수행한다. repository 는 model 에서 밸류 오브젝트를 갖고온다. model 은 장고 내부 인프라 레이어와 연결되고, 그대로 RDS DB와 연결된다. 한개의 app은 4개 레이어 계층으로 구성한다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# views
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RealtorMyselfView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;APIView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;authentication_classes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TokenAuthentication&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;permission_classes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IsAuthenticated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;service&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'realtor_service'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;realtor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;serializer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RealtorSerializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;JsonResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'data'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;serializer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# services 
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RealtorService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;realtor_repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;realtor_repository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;realtor_repository&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_realtors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;realtor_repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_all_realtors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;realtor_repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_realtor_by_realtor_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;register_realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SignUpRequestSerializer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NoReturn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;realtor_repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+                                               &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'email'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;phone_number&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'phone_number'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# repository
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RealtorRepository&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;realtor_dao&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Realtor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_all_realtors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;realtor_dao&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_realtor_by_realtor_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;realtor_dao&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create_realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SignUpRequestSerializer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NoReturn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;realtor_dao&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create_user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+                                     &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'email'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;phone_number&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'phone_number'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# models
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Realtor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AbstractBaseUser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PermissionsMixin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;REQUIRED_FIELDS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'phone_number'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;USERNAME_FIELD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;verbose_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;verbose_name_plural&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'공인중개사'&lt;/span&gt;
+
+    &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;UUIDField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;primary_key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uuid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uuid4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;editable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CharField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;unique&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;verbose_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'아이디'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;models&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CharField&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;verbose_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'이름'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;objects&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RealtorManager&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;IoC Container 구현&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/container.png&quot; alt=&quot;container&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;해당 서비스를 개발할때 초반에는 어려움이 없었는데, 후반으로 갈수록 기능이 다양해지고 복잡도가 증가하면서 circualr import 처럼 잘못된 설계에서 기인하는 문제가 계속 터져서 고통을 겪었었다. 그 때 당시에는 의존성도 관리대상이라는 사실을 몰랐기 때문에 개발하다보니 import 에 import 가 꼬리를 물었고 이게 에러를 발생시켰다. 이번에는 의존성을 제어하기 위해 스프링 프레임워크를 참조했다.&lt;/p&gt;
+
+&lt;p&gt;스프링 프레임워크에는 객체의 생성 및 생명주기를 관리하는 IoC 컨테이너가 있다. 스프링으로 프로덕션 개발을 한 경험이 없어서 깊이있게 알지 못하지만, 내가 아는 바로는 앱이 실행될때 컨테이너가 떠서 미리 필요한 객체들을 생성하고 이 객체들은 빈이라고 부르며, 자바 어노테이트를 사용해 미리 생성할 객체를 등록할 수 있다고 알고 있다. 장고에는 컨테이너가 없고 객체 등록용 어노테이트가 없기 때문에 직접 만들어서 써야한다. 각 앱마다 컨테이너를 1개씩 만들고, 컨테이너 클래스가 인스턴스화 되면 해당 앱에서 사용하는 객체들을 생성해서 들고있도록 한다. 의존성 주입 방법은 스프링에서는 setter, method, constructor 3가지 방법이 있는데, 이 프로젝트에서는 constructor 방식만 사용했다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;deps&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;register_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;deps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'realtor_repository'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RealtorRepository&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;deps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'realtor_service'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RealtorService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;deps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'realtor_repository'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;component&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;deps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;component&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ValueError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'{name} instance does not exists'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;component&lt;/span&gt;
+
+
+&lt;span class=&quot;n&quot;&gt;container&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;register_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;부분적 경계를 facades로 구현&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/facades.png&quot; alt=&quot;facades&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;가끔은 다른 bounded context에 있는 service에 접근할 필요한 경우가 있다. 해당 서비스에서는 customer 앱에서 listing 앱에 접근해 해당 customer가 관심을 보였던 매물정보를 갖고오는 기능이 있다. 클린 아키텍쳐 책 24장에서는 부분적 경계 구현 방법으로 크게 3가지를 제시하고 있는데, 첫번째는 단계를 건너뛰기, 두번째는 일차원 경계(boundary interface 사용), 세번째는 퍼사드 패턴을 이용하는 방법이다. 이 중에서 퍼사드를 사용하는 방법을 선택했다. 
+고객 상세 정보를 들고오는 API 는 고객이 보고 간 매물 정보도 같이 보여준다. 매물 정보는 매물 컨텍스트 안에 있기 때문에 다른 django app 으로 분리되어있다. customer service 에서 listing service 로 직접 접근하지 않고, listing facades 를 만들어서 파사드를 통해 리스팅 컨텍스트에 접근한다. 이런 방법을 쓰면 실수로 다른 개발자가 listing service 의 메소드를 수정했을 경우 다른 api 가 영향 받는 범위를 줄일 수 있고, listing app 을 MSA로 만들 경우 facade 는 다른 서버와 통신하는 부분으로 만든다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# views 
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;customer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_customer_detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;serializer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CustomerDetailResponseSerializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'customer'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'listings'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;favorites&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;JsonResponse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;serializer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# services
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CustomerService&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;listing_facades&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;customer_repository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_repository&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;listing_facades&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;listing_facades&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_customer_favorites&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;listing_facades&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_customer_favorites&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    
+&lt;span class=&quot;c1&quot;&gt;# facades 
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ListingFacades&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;listing_service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;listing_service&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;listing_service&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_customer_favorites&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;listing_service&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_customer_favorites&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;customer_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;밸류 오브젝트에서 엔티티로 변경&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;서비스를 개발하다가 사용자수가 어느정도 늘어나면서 유저가 본인이 사용하고 싶은 기능을 요구하는 경우도 있었는데, 기존 서비스의 구조와 맞지않거나 기능 개발에 필요한 시간이 많다는 이유로 개발하지 않고 그냥 지나간 경우가 있었다. 코드를 다시 뜯어보고 나니, 잘못된 모델링 때문에 이런저런 이유로 기능을 개발하지 못한 경우가 대부분이다. DDD에서 말하는 엔티티, 밸류 오브젝트에 대한 개념이 잡혀있었다면 저지르지 않았을 실수가 많이 보였다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;공간정보과 거래형태를 분리하고 거래형태를 밸류 오브젝트에서 엔티티로 변경&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/product.png&quot; alt=&quot;product&quot; /&gt;&lt;br /&gt;
+ 가장 큰 실수는 공간에 대한 정보를 매물의 밸류 오브젝트로 모델링한 실수다. 당시에는 매물정보(전월세, 가격 등등 거래형태에 대한 정보)만 필요하다고 생각했고 공간정보(부동산 종류, 위치 등등)는 밸류 오브젝트라고 생각했다. 그런데 당시 서비스 유저가 해당 공간에 대한 내역이 쌓이는 기능을 원한다고 애기했을때 구현하기가 상당히 어려워졌다. 그래서 이번에는 매물과 공간정보를 분리하고 둘다 엔티티로 모델링 헀다. 예를 들어 대성 빌라 202동 101호 20평 전세 4억 매물이 있다면 대성빌라 202동 101호 20평은 product context 의 product entity 가 되고, 전세 3억은 listing context 의 listing entity 가 된다. product entity 는 listing entity 와 파트너 관게를 맺고, listing entity 는 customer 와 realtor entity 와 관계를 맺는다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;공인중개사와 공인중개사 사무소를 분리하고 사무소를 밸류 오브젝트에서 엔티티로 변경&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;부동산 거래 경험이 없거나 공인중개사의 근무형태를 잘 모르는 사람들은 공인중개사의 근무 형태가 회사의 일반적인 정규직 형태와 같을 거라고 생각한다. 예를 들면, 공인중개사A 는  A 사무소를 차려서 거기에만 근무한다고 생각한다. 이런 생각과 다르게 공인중개사의 근무형태는 다양하다. 공인중개사 A가 B,C,D 사무소를 동시에 운영하는 경우도 있고, 공인중개사 B가 공인중개사 A의 사무소 A에 월,화 만 출근하고 공인중개사 C의 E사무소에 수, 목, 금요일만 출근하는 등 다양한 근무형태를 보인다.&lt;/p&gt;
+
+&lt;p&gt;이런 사실을 모르고 개발했을때는 공인중개사를 엔티티, 공인중개사 사무소를 밸류 오브젝트로 간주했다. 이럴 경우 프롭테크 서비스를 사용하는 공인중개사 A가 본인 사무소 A가 아닌 다른 사무소 B 에 가서 서비스를 사용하려고 할 때 문제가 발생한다. 그래서 공인중개사와 공인중개소를 독립된 엔티티로 모델링한다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;고객과 고객의 정체성을 분리하고 정체성을 밸류 오브젝트에서 엔티티로 변경&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/customer.png&quot; alt=&quot;customer&quot; /&gt;&lt;br /&gt;
+이 서비스에는 공인주개사무소를 방문했던 고객 정보를 입력해서 보는 기능이 있다. 당시 개발 할때는 고객 A가 원룸, 월세 매물을 문의하는 임차인일 경우만 상정했기 때문에 고객이라는 엔티티에 고객의 정체성은 밸류 오브젝트가 됐다. 그러나 현실 세계에서 고객은 계속 임차인이거나 임대인으로만 정체성을 유지하지 않는다. 고객B 는 A 공인중개사무소를 방문할때마다 계속 정체성이 계속 바뀐다. 몇 개월 전에는 빌라 매물을 구매할 의향이 있는 매수인이였지만, 지금은 빌라 매물을 전세로 시장에 내놓으려는 임대인이면서 동시에 다른 지역의 아파트 전세 매물을 알아보는 임차인이다. 미래에는 빌라 매물을 매도하고 아파트를 구매하려는 매도인 겸 매수인이 될지도 모른다. 고객의 정체성을 정리하면, 고객A는 시간의 흐름에 따라 매수인, 임대인, 임차인, 매도인, 매수인으로 변한다. 과거의 구조에서는 고객 A는 한개의 정체성만 갖고 있을 수 있어서 매수인A, 임대인 A, 임차인 A, 매도인 A, 매수인 A를 별개의 고객으로 간주했다. 이런 구조는 공인중개사의 업무에도 도움이 안된다. 고객 A의 과거 방문의도 및 내역을 알 수 없기 때문이다.&lt;/p&gt;
+
+&lt;p&gt;그래서 이번에는 고객과 고객 정체성 모델을 분리했고 둘다 엔티티로 본다. 이제부터 고객 A는 메수인, 임대인, 임차인 등등 다양한 정체성을 가질 수 있다.&lt;/p&gt;
+
+&lt;p&gt;후기&lt;/p&gt;
+
+&lt;p&gt;에릭 에반스 책 DDD 에서는 DDD를 하기 위해서 도메인 전문가가 팀에 있어야 한다고 말한다. 이 서비스를 개발하면서 팀원중에는 꼭 도메인 전문가가 있어야 한다는 생각이 들었다. 해당 분야에 대한 기본 지식이 있었다면 모델링을 할때 실수를 줄일 수 있을거라고 생각했다. 코드를 다시 읽어봤을때 대부분의 문제는 서비스 특성상 엔티티로 봐야 하는 개념들을 밸류오브젝트로 모델링 했거나, 그 반대로 모델링 하는 등의 문제였기 때문이다.&lt;/p&gt;
+
+&lt;p&gt;그리고 대부분의 DDD 나 설계 관련 책이 자바로 되어있어서 그런지 파이선 커뮤니티에서는 아키텍쳐에 대한 논의가 별로 없어보인다. 경험이 많진 않지만 이런 저런 서비스를 개발 및 운영해본 결과, 초반에는 그냥 개발해도 되지만 서비스가 발전하면 복잡도를 감당하기 위해서 설계가 필요하다. 장고, 플라스크 두 프레임워크에서 컨테이너나 의존성 관계 관리 등의 기능을 제공하지 않아 DDD를 하기가 불편한데 나중에는 이런 기능을 지원하지 않을까 생각한다.&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 10 Jul 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/ddd/2020/07/10/python-proptech-ddd/</link>
+        <guid isPermaLink="true">http://localhost:4000/ddd/2020/07/10/python-proptech-ddd/</guid>
+      </item>
+    
+      <item>
+        <title>django 서버에서 동시접속자 증가시 502 발생 문제</title>
+        <description>&lt;p&gt;1.문제&lt;br /&gt;
+2.uWSGI worker 갯수 증가&lt;br /&gt;
+3.db connection pool 도입&lt;br /&gt;
+4.mysqlclient에서 pymyql 로 변경&lt;br /&gt;
+5.uWSGI 에서 gunicorn 으로 변경&lt;/p&gt;
+
+&lt;h5 id=&quot;1-문제&quot;&gt;1. 문제&lt;/h5&gt;
+
+&lt;p&gt;현재 문제가 있는 서버는 평균적으로 분당 1.9만의 리퀘스트를 소화하는데, 동시접속수가 증가하면 ELB 에서 502가 자주 발생한다. 대략 5분당 평균 13개의 502가 발생한다.&lt;/p&gt;
+
+&lt;p&gt;Sever&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Python==2.7&lt;/li&gt;
+  &lt;li&gt;Django==1.11&lt;/li&gt;
+  &lt;li&gt;uWSGI==2.0&lt;/li&gt;
+  &lt;li&gt;mysqlclient&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;이 문제를 해결하려고 여러가지 시도를 해봤다.&lt;/p&gt;
+
+&lt;h5 id=&quot;2-uwsgi-worker-갯수-증가&quot;&gt;2. uWSGI worker 갯수 증가&lt;/h5&gt;
+
+&lt;p&gt;기존 worker 갯수는 2개였다. 이전부터 이 worker 들은 &lt;code class=&quot;highlighter-rouge&quot;&gt;max-requests&lt;/code&gt; 옵션에 지정된 리퀘스트를 소화한뒤 정상적으로 종료되는게 아니라, 갑자기 어디선가 발생한 &lt;code class=&quot;highlighter-rouge&quot;&gt;signal 9&lt;/code&gt;을 받고 죽는 문제가 있었다. &lt;code class=&quot;highlighter-rouge&quot;&gt;signal 9&lt;/code&gt; 이 발생하는 이유는 보통 메모리 부족인데, 파게이트 컨테이너 측정치를 봤을때는 메모리 사용량이 대체로 30%여서 메모리 문제는 아닌 것 같았다. 내 추측에는 아마 worker 가 2개 뿐이니 &lt;code class=&quot;highlighter-rouge&quot;&gt;max-request&lt;/code&gt;에 지정된 리퀘스트 수 보다 더 많은 리퀘스트를 받아서 uWSGI에서 signal 9  을 발생시켜 worker 를 강제로 죽이고, worker 가 둘 다 죽어서 워커가 다시 respawn 될때까지 기다리는 상황이 빈번하게 발생하고, 이렇게 spawn된 worker가 없을때 들어온 리퀘스트가 502가 발생한다고 생각했다. 이러한 상황을 방지하기 위해서 &lt;code class=&quot;highlighter-rouge&quot;&gt;max-requests-delta&lt;/code&gt; 옵션이 있지만 효과가 없는 것 같았다. (나중에 알게 되었는데 &lt;code class=&quot;highlighter-rouge&quot;&gt;max-requests-delta&lt;/code&gt; 옵션은 &lt;code class=&quot;highlighter-rouge&quot;&gt;uWSGI &amp;gt;= 2.1&lt;/code&gt; 부터 효과가 있다고 한다.) 그래서 스테이징에 worker 수를 증가시켜 테스트를 했는데 2, 4, 6개였을때는 별 차이가 없었지만 8, 12, 16 등등 수를 크게 증가시킬수록 500대 에러 발생률이 크게 낮아졌다. &lt;code class=&quot;highlighter-rouge&quot;&gt;signal 9&lt;/code&gt; 문제도 더이상 발생하지 않았다.&lt;/p&gt;
+
+&lt;p&gt;그런데 worker 수를 증가시키지 말자는 의견이 있어서 이 방법은 가장 마지막에 시도할 해결방법으로 제쳐두었다. 반대 이유는 보통 이상적인 worker 갯수 산정을 &lt;code class=&quot;highlighter-rouge&quot;&gt;core x 2&lt;/code&gt; 로 계산하기 때문에, worker 수가 너무 낮게 잡혀있는건 맞지만, 워커 갯수를 12, 15 정도로 증가시킬거라면 그냥 파게이트 컨테이너를 1대 더 띄우는게 낫다는 이유였다.&lt;/p&gt;
+
+&lt;h5 id=&quot;3-db-connection-pool-도입&quot;&gt;3. db connection pool 도입&lt;/h5&gt;
+
+&lt;p&gt;uWSGI 에서 몽키 패치를 해도 디비 커넥션이 병목현상이 디비 커넥션에서 일어난다고 생각했다. 그래서 &lt;code class=&quot;highlighter-rouge&quot;&gt;sqlalchemy&lt;/code&gt; 디비 커넥션 풀링을 도입해서 스테이징에서 테스트 했다.
+&lt;img src=&quot;/images/posts/db_connection_with_pooling.png&quot; alt=&quot;db connection with pooling&quot; /&gt;&lt;br /&gt;
+커넥션 풀링 도입 전과 후과 다르다. 그러나 동시접속자 수가 증가하면 여전히 502가 발생했다.&lt;/p&gt;
+
+&lt;h5 id=&quot;4-mysqlclient-에서-pymysql-로-변경&quot;&gt;4. mysqlclient 에서 pymysql 로 변경&lt;/h5&gt;
+
+&lt;p&gt;uWSGI 에서는 gevent 쓰려면 몽키패치를 해야한다. 몽키패치는 pure python 에서만 효과를 발휘하는데, 현재 사용하고 있는 mysqlicent 는 cpython 이라서 몽키패치가 안된다. 결국 gevent 를 100개 spawn하더라도, mysqliclient가 몽키패치 되지않아 gevent 1개가 끝날때까지 나머지가 블로킹 될거고 이 부분이 병목이 된다는 생각이 들었다. pymysql은 pure python 이지만 mysqlclient 에 비교하면 성능이 60%나 떨어진다고 한다. 그러나 성능이 떨어지더라도 몽키패치가 되면 성능이 상쇄될거라고 생각해서 pymyql 로 변경했다.&lt;/p&gt;
+
+&lt;h5 id=&quot;5-uwsgi-에서-gunicorn-으로-변경&quot;&gt;5. uWSGI 에서 gunicorn 으로 변경&lt;/h5&gt;
+
+&lt;p&gt;pymysql 로 라이브러리를 변경 한 뒤에 uWSGI 의 몽키패치가 효과가 있었지만, 동시접속사 수 문제에서는 여전히 큰 효과가 없었다. 그리고 uWSGI 를 잘쓰려면 학습해야하는데 우선 피쳐 개발이 급해서 학습할 시간이 없고, 대략 gunicorn 성능이 더 좋다고 해서 gunicorn 옮기기로 결정했다. 아래는 gunicorn 으로 변경 후 500대 에러의 변화다.
+&lt;img src=&quot;/images/posts/gunicorn_deploy.png&quot; alt=&quot;gunicorn deploy&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;references&quot;&gt;References&lt;/h5&gt;
+
+&lt;p&gt;*&lt;a href=&quot;https://stackoverflow.com/questions/48977889/avoid-that-all-workers-get-re-spawned-at-the-same-time&quot;&gt;avoid all workers get respawned&lt;/a&gt;
+*&lt;a href=&quot;https://wiki.openstack.org/wiki/PyMySQL_evaluation&quot;&gt;pymysql evalution&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 19 May 2020 00:00:00 +0900</pubDate>
+        <link>http://localhost:4000/devops/2020/05/19/django-concurrent-user-and-502-error/</link>
+        <guid isPermaLink="true">http://localhost:4000/devops/2020/05/19/django-concurrent-user-and-502-error/</guid>
       </item>
     
       <item>
@@ -56,46 +750,6 @@
         <pubDate>Wed, 01 Apr 2020 00:00:00 +0900</pubDate>
         <link>http://localhost:4000/devops/2020/04/01/dev-culture-and-speed/</link>
         <guid isPermaLink="true">http://localhost:4000/devops/2020/04/01/dev-culture-and-speed/</guid>
-      </item>
-    
-      <item>
-        <title>레거시 프로젝트에 강결합된 배포&amp;운영 서비스 교체 -1</title>
-        <description>&lt;p&gt;문제의 레거시 프로젝트는 대략 2012년부터 시작해, 문서 한장 없이 구전을 통해 스펙이 전해졌다. 이 프로젝트는 서버 모니터링을 할때 AWS OpsWorks 라는 서비스를 사용하고, Django Fabric 패키지를 사용해 짠 코드를 사용해 배포한다.&lt;/p&gt;
-
-&lt;p&gt;OpsWorks 와 Fabric 을 사용하는 배포 방식은 옛날에는 아무 문제가 없었을테지만, 내가 맡게 된 2019년에는 이미 여러가지 문제점이 있었다.&lt;/p&gt;
-
-&lt;p&gt;문제점들&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;Fabric 코드와 OpsWorls 서비스는 강하게 결합 되어있어, 다른 서비스(예를 들지만 code deploy)를 사용할 수 없다. 만약 다른 서비스를 사용하고 싶다면 Fabric을 사용하는 코드 부분을 전부 바꾸거나, 덜어내야한다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;OpsWorks 내에 인스턴스를 등록할때 인스턴스에 이름을 줄 수 있다. 만약 레디스 용 인스턴스를 런칭한 후 OpsWorks에 등록해 Redis1이라는 이름을 줬다면, 다른 인스턴스 설정에는 레디스 인스턴스의 IP 대신 Redis1이라고 적어도 바로 연결된다. 편리해 보이지만 지금처럼 OpsWorks를 제거하려고 하면 모든 설정파일에서 Ip 주소 대신 이름이 적힌 부분을 찾아서 다 바꿔줘야 한다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;OpsWorks로 런칭한 인스턴스에는 OpsWorks agent 가 자동으로 설치된다. AMI를 뜬 후 해당 AMI 를 사용해서 인스턴스를 런칭하면 agent 프로세스가 계속 실행되면 인스턴스의 상태를 AWS 쪽에 쏘게되고. 해당 agent 를 제거하는 방법이 안쉽다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;OpsWorks에서 배포할때는 chef 라는 걸 사용하는데, 해당 프로그램은 루비로 프로그래밍한다. 만약 cronjob이나 virtualenv, python, package 등등 의 버전이 변경될 경우 chef 를 수정해줘야 한다. (그리고 이팀에는 루비 개발자가 없다)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;로드밸런서가 elb 가 아니고, OpsWorks classic 로드밸런서를 사용한다. OpsWorks classic 로드밸런서는 elb에 비해서 기능이 제한적이다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;트래픽이 몰려서 로드밸런싱할때, AMI에서 인스턴스를 런칭하는 방식이 아니다. OpsWorks 에 미리 등록된 인스턴스를 부팅 한 후, 쉐프가 처음부터(virtualenv 패키지 설치 부터 완전히 새로) 세팅을 한다. 이 작업이 끝난 후에야 로드밸런서에 연결되기 때문에 느리다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;OpsWorks를 이제 많이 사용하지 않는 추세이기 때문에 문제점이 발생했을 때 찾아보기가 힘들고, 공식문서도 더이상 유지보수 되지 않는다.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;이 외에도 다양한 문제점이 있어서 OpsWorks 서비스를 더이상 사용하지 않기로 결정헀다. 가장 많이 사용하는 기능이 배포 기능이라, 배포를 다른 서비스로 바꿔야 했다. 그런데 Ec2 Instance를 버리고 컨테이너 기반 Fargate 로 가기로 결정이 됐다. OpsWorks를 다른서비스로 교체하는 결정도 기술적인 큰 변화인데, 교체와 동시에 Fargate를 사용하는 것도 큰 기술 변화라 걱정이 앞섰다.&lt;/p&gt;
-
-</description>
-        <pubDate>Sat, 21 Mar 2020 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/devops/2020/03/21/legacy-and-opsworks/</link>
-        <guid isPermaLink="true">http://localhost:4000/devops/2020/03/21/legacy-and-opsworks/</guid>
       </item>
     
       <item>
@@ -463,684 +1117,6 @@ git clone https://github.com/getsentry/onpremise &lt;span class=&quot;nb&quot;&g
       </item>
     
       <item>
-        <title>AWS Lambda를 사용해 스테이징 서버 start, stop을 자동화하기</title>
-        <description>&lt;p&gt;서버 비용 절감을 위해서 스테이징 서버를 근무시간에만 띄우기로 결정했다. db도 최근 스냅샷을 갖고와서 런칭해 사용하기로 했다. 스테이징 서버는 웹서버용 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS fargate&lt;/code&gt;와, &lt;code class=&quot;highlighter-rouge&quot;&gt;Redis&lt;/code&gt;용 &lt;code class=&quot;highlighter-rouge&quot;&gt;EC2 instance&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Rabbitmq&lt;/code&gt; 용 &lt;code class=&quot;highlighter-rouge&quot;&gt;EC2 instance&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;RDS  instance&lt;/code&gt; 1개로 구성된다. &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS Console&lt;/code&gt;에 들어가서 마우스 클릭으로도 충분히 서버를 실행하고 끌 수 있지만, 다른 instance 를 실수로 중지할 수 있는 위험이 있다. 그리고 현재 사용하고 있는 스테이징 용 db와 새 스테이징의 vpc가 다르다. 스냅샷으로 인스턴스를 런칭할 때 다른 vpc에서 instance 를 런칭해야 하는데, 이렇게 하려면  &lt;code class=&quot;highlighter-rouge&quot;&gt;aws console&lt;/code&gt; 의 &lt;code class=&quot;highlighter-rouge&quot;&gt;vpc&lt;/code&gt; 섹션에서 수동으로 매번 지정해줘야 한다. 그리고 서버 사용이 끝나면 &lt;code class=&quot;highlighter-rouge&quot;&gt;rds instance&lt;/code&gt;를 삭제해야 하는데 이 작업 역시 수동으로 하고 싶지 않는 작업이다.&lt;/p&gt;
-
-&lt;p&gt;이런 반복 작업에 버리는 시간이 아까워서 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS Lambda&lt;/code&gt; 에 &lt;code class=&quot;highlighter-rouge&quot;&gt;boto3&lt;/code&gt; 라이브러리를 사용해 자동으로 서버를 띄우고 내리는 기능을 만들었다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/automated_server.png&quot; alt=&quot;automated server create and destroy&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;스테이징 서버를 중지하는 스크립트.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# stop staging server
-&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;boto3&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;REDIS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'REDIS'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;RABBITMQ&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'RABBITMQ'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;DB&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DB'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;TASK&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'TASK'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;lambda_handler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# stop redis, rabbitmq
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ec2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'us-east-1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stop_instances&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InstanceIds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REDIS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RABBITMQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;# delete rds
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'rds'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'us-east-1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;delete_db_instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DBInstanceIdentifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                                                                    &lt;span class=&quot;n&quot;&gt;SkipFinalSnapshot&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                                                                    &lt;span class=&quot;n&quot;&gt;DeleteAutomatedBackups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# stop ecs task
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ecs'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'us-east-1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stop_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cluster&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'cluster'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                                  &lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                                  &lt;span class=&quot;n&quot;&gt;reason&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;스테이징 서버를 시작하는 스크립트.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# start staging server
-&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;boto3&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;REGION&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'us-east-1'&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;REDIS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'REDIS'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;RABBITMQ&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'RABBITMQ'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;STAGING_IDENTIFIER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'STAGING_IDENTIFIER'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;MASTER_IDENTIFIER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'MASTER_IDENTIFIER'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;DB_CLASS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DB_CLASS'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;VPC_ID&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;
-
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;lambda_handler&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;# rds 시작
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;start_db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;# redis, rabbitmq 시작
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ec2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REGION&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start_instances&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InstanceIds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REDIS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RABBITMQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;start_db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;rds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'rds'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REGION&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;snapshot&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_latest_snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;restore_db_instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rds&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_latest_snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-  	&lt;span class=&quot;c1&quot;&gt;# 가장 최근 스냅샷을 갖고온다.
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;snapshots&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;describe_db_snapshots&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;DBInstanceIdentifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MASTER_IDENTIFIER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;SnapshotType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'automated'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;MaxRecords&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DBSnapshots'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;ordered_snapshots&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;sorted&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;snapshots&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SnapshotCreateTime&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reverse&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ordered_snapshots&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;
-
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot_db_identifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-  	&lt;span class=&quot;c1&quot;&gt;# db 인스턴스 세팅을 갖고온다.
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;db_instance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;describe_db_instances&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;DBInstanceIdentifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;snapshot_db_identifier&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DBInstances'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;db_instance&lt;/span&gt;
-
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;restore_db_instance&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-  	&lt;span class=&quot;c1&quot;&gt;# 스냅샷과 db 인스턴스 세팅으로 새 instance를 다른 vpc에 런칭한다.
-&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;snapshot_db_identifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DBInstanceIdentifier'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;snapshot_identifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DBSnapshotIdentifier'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;current_db_instance_settings&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshot_db_identifier&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;availability_zone&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'AvailabilityZone'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;db_subnet_group_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;engine&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Engine&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;storage_type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'StorageType'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;vpc_security_group_ids&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'vpc_security_group_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;db_parameter_group_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_db_instance_settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-        &lt;span class=&quot;s&quot;&gt;'DBParameterGroups'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DBParameterGroupName'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;restore_db_instance_from_db_snapshot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;DBInstanceIdentifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STAGING_IDENTIFIER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;DBSnapshotIdentifier&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;snapshot_identifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;DBInstanceClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DB_CLASS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;AvailabilityZone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;availability_zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;DBSubnetGroupName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_subnet_group_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;MultiAZ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;PubliclyAccessible&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;AutoMinorVersionUpgrade&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;Engine&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;engine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;StorageType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;storage_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;VpcSecurityGroupIds&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vpc_security_group_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;DBParameterGroupName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_parameter_group_name&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;인스턴스를 런칭 또는 중지 하는 액션을 할때는 람다에 서브넷을 설정해 줄 필요가 없다. 해당 스크립트를 람다 콘솔에 작성한 후 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS cloud watch&lt;/code&gt; 트리거를 설정해준다. 
-&lt;img src=&quot;/images/posts/lambda-trigger.png&quot; alt=&quot;deploy process&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;크론탭을 사용해봤던 사람이라면 쉽게 트리거를 작성할 수 있다. 나는 근무시간에만 스테이징 서버를 띄울 계획이기 때문에, 월요일 부터 금욜일 까지 9-6를 cron expression으로 작성해 추가해준다.&lt;/p&gt;
-</description>
-        <pubDate>Fri, 27 Dec 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/devops/2019/12/27/automatically-start-and-stop-staging-server-using-lambda/</link>
-        <guid isPermaLink="true">http://localhost:4000/devops/2019/12/27/automatically-start-and-stop-staging-server-using-lambda/</guid>
-      </item>
-    
-      <item>
-        <title>DevOps의 주요 업무와 도구</title>
-        <description>&lt;p&gt;updated: 2020-02-10&lt;/p&gt;
-
-&lt;p&gt;DevOps의 주요 업무와 도구&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;주요 업무&lt;/li&gt;
-  &lt;li&gt;도구&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h5 id=&quot;1-주요-업무&quot;&gt;1. 주요 업무&lt;/h5&gt;
-
-&lt;p&gt;DevOps 의 주요업무를 간략하게 정리해보면 다음과 같다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;CI/CD(Continuous integration and continuous delivery)&lt;/li&gt;
-  &lt;li&gt;IaC(Infrastructure as code)&lt;/li&gt;
-  &lt;li&gt;마이크로서비스&lt;/li&gt;
-  &lt;li&gt;CM(Configuration management)&lt;/li&gt;
-  &lt;li&gt;모니터링, 로깅&lt;/li&gt;
-  &lt;li&gt;자동화&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;2-도구&quot;&gt;2. 도구&lt;/h5&gt;
-
-&lt;p&gt;최근 DevOps 들이 많이 사용하는 툴들을 정리했다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Docker (Containerization)&lt;/li&gt;
-  &lt;li&gt;Jenkins (CI/CD)&lt;/li&gt;
-  &lt;li&gt;Circle CI (CI/CD)&lt;/li&gt;
-  &lt;li&gt;Sentry (Error tracking)&lt;/li&gt;
-  &lt;li&gt;Terraform (IaC)&lt;/li&gt;
-  &lt;li&gt;Ansible (IaC)&lt;/li&gt;
-  &lt;li&gt;Nagios (Monitoring)&lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;New Relic (Monitoring)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;Docker
-  -&lt;a href=&quot;https://suhyunbaik.github.io/devops/2019/12/20/ctop/&quot;&gt;ctop으로 도커 컨테이너 모니터링 하기&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Jenkins
-  -&lt;a href=&quot;https://suhyunbaik.github.io/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-1/&quot;&gt;자동화된 배포 1&lt;/a&gt;
-  -&lt;a href=&quot;https://suhyunbaik.github.io/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-2/&quot;&gt;자동화된 배포 2&lt;/a&gt;
-  -&lt;a href=&quot;https://suhyunbaik.github.io/devops/3019/13/31/automated-deploy-using-docker-and-jenkins-3/&quot;&gt;자동화된 배포 3&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Sentry
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;https://suhyunbaik.github.io/devops/2020/01/05/sentry-self-hosted-01/&quot;&gt;Sentry를 Ubuntu 18.04(Bionic) 에 self-hosted 형태로 구축하기 - 1 docker로 설치하기&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Sat, 21 Dec 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/devops/2019/12/21/devops-main-and-tools/</link>
-        <guid isPermaLink="true">http://localhost:4000/devops/2019/12/21/devops-main-and-tools/</guid>
-      </item>
-    
-      <item>
-        <title>도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 3 AWS ECS</title>
-        <description>&lt;p&gt;이제 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS&lt;/code&gt;를 설정해서 파게이트를 띄워야 한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS&lt;/code&gt;를 쓰려면 알아야 할 것들을 정리했다.&lt;/p&gt;
-
-&lt;h4 id=&quot;클러스터cluster&quot;&gt;클러스터(cluster)&lt;/h4&gt;
-&lt;p&gt;ECS의 기본단위로, 컨테이너를 실행하는 가상의 공간이다.&lt;/p&gt;
-
-&lt;h4 id=&quot;컨테이너-인스턴스container-instance&quot;&gt;컨테이너 인스턴스(container instance)&lt;/h4&gt;
-&lt;p&gt;클러스터에 속한 인스턴스다. EC2 또는 파게이트를 선택할 수 있다.&lt;/p&gt;
-
-&lt;h4 id=&quot;태스크-디피니션task-definition&quot;&gt;태스크 디피니션(task definition)&lt;/h4&gt;
-&lt;p&gt;태스크를 실행하기 전에 만드는 스펙이다. 여기에는 컨테이너 네트워크 모드, 역할, 이미지, 실행 명령어 등등 설정을 할 수 있다. 태스크 디피니션을 아마존 콘솔에서 만들어 놓고, &lt;code class=&quot;highlighter-rouge&quot;&gt;task definition.json&lt;/code&gt; 을 프로젝트에 포함시켜 배포할 때 마다 다르게 설정 할 수 도 있다.&lt;/p&gt;
-
-&lt;h4 id=&quot;태스크task&quot;&gt;태스크(task)&lt;/h4&gt;
-&lt;p&gt;컨테이너를 실행하는 단위.&lt;/p&gt;
-
-&lt;h4 id=&quot;서비스service&quot;&gt;서비스(service)&lt;/h4&gt;
-&lt;p&gt;태스크를 관리하는 단위.&lt;/p&gt;
-
-&lt;p&gt;요약하자면 클러스터 안에는 컨테이너 인스턴스가 있고, 컨테이너 인스턴스를 실행하려면 태스크가 필요하다. 태스크 디피니션을 만들어서 태스크를 어떻게 실행할 것인지 결정한다. 한번 만들어진 태스크 디피니션의 설정값은 디폴트 값처럼 적용된다. 태스크 디피니션은 컨테이너를 배포할 때 마다 변경할 수 있다.&lt;/p&gt;
-
-&lt;h4 id=&quot;1-클러스터-생성&quot;&gt;1. 클러스터 생성&lt;/h4&gt;
-&lt;p&gt;먼저 클러스터를 만든다. 파게이트를 선택하고, 이름을 정한다. VPC는 원한다면 새로 만들고, 기존 것을 사용할거면 그대로 둔다. 컨테이너 인사이트는 클러스터, 컨테이너, 서비스 레벨에서 지표를 수집하는 기능이다. 나중에 aws-cli로도 활성화 시킬 수 있다.
-&lt;img src=&quot;/images/posts/ecs-01.png&quot; alt=&quot;ECS 1&quot; /&gt;
-&lt;img src=&quot;/images/posts/ecs-02.png&quot; alt=&quot;ECS 2&quot; /&gt;
-create 버튼만 누르면 ECS 클러스터가 바로 생성된다.&lt;/p&gt;
-
-&lt;h4 id=&quot;2-태스크-디피니션-생성&quot;&gt;2. 태스크 디피니션 생성&lt;/h4&gt;
-&lt;p&gt;이제 태스크 디피니션을 생성한다. 
-&lt;img src=&quot;/images/posts/taskdefinition-01.png&quot; alt=&quot;task definition&quot; /&gt;&lt;br /&gt;
-create 을 선택하면 첫 화면에서 파게이트/EC2 둘 중에 하나를 선택할 수 있다. 이번에는 파게이트를 선택한다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/taskdefinition-02.png&quot; alt=&quot;task definition&quot; /&gt;&lt;br /&gt;
-태스크 디피니션의 이름을 정한다. 그리고 IAM Role 도 선택해야 한. ECS와 클라우드 워치 관련 권한을 가 role 을 만들어서 추가한다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/taskdefinition-03.png&quot; alt=&quot;task definition&quot; /&gt;&lt;br /&gt;
-다음은 태스크 사이즈를 정해햐 한다. 일단은 가장 작은 사이즈로 한다. 사이즈를 정한 뒤에 컨테이너를 추가할 수 있다. &lt;code class=&quot;highlighter-rouge&quot;&gt;Add container&lt;/code&gt;를 선택하면 컨테이너의 세부사항을 설정할 수 있는 창이 따로 열린다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/taskdefinition-04.png&quot; alt=&quot;task definition&quot; /&gt;&lt;br /&gt;
-컨테이너 이름을 정한다. 만약 컨테이널르 띄울때 쓸 이미지가 있다면 입력해준다. &lt;code class=&quot;highlighter-rouge&quot;&gt;port mapping&lt;/code&gt;에서 열어줄 포트를 정한다. 나는 &lt;code class=&quot;highlighter-rouge&quot;&gt;80&lt;/code&gt; 번 포트만 열었다. 보통 &lt;code class=&quot;highlighter-rouge&quot;&gt;EC2&lt;/code&gt; 인스턴스에 &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; 접속을 많이 한다면 22번 포트도 추가로 열어준다. 
-Advanced container configuration에서 health check, environment 등등을 설정해 줄 수 있다. 나는 다른 설정은 필요하지 않아서 다 넘겼다. 한번쯤은 보고 넘겨야 하는 부분은 logging 이다. 파게이트로 컨테이너를 띄우 디버깅이 굉장히 힘들어 질 수 도 있다. 파게이트는 기본적으로 cloudwatch로 로그를 보낸다. loggging 섹션에서 어디에 로깅을 쌓는지 확인할 수 있다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/taskdefinition-05.png&quot; alt=&quot;task definition&quot; /&gt;&lt;br /&gt;
-컨테이너를 띄울때 실패했던 이유 중에 logging 부분 설정이 잘못되있는 경우도 있고, 띄우는데 성공했지만 cloudwatch 로그에 아무것도 찍히지 않는 경우도 있다. cloudwatch에는 console log만 보이고 syslog는 보이지 않기 때문에, 로그에 내용이 없다면 로깅 부분을 살펴봐야 한다.&lt;/p&gt;
-
-</description>
-        <pubDate>Sat, 21 Dec 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-3/</link>
-        <guid isPermaLink="true">http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-3/</guid>
-      </item>
-    
-      <item>
-        <title>도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 2 젠킨스 파일 작성</title>
-        <description>&lt;p&gt;updated: 2019-12-27&lt;br /&gt;
-이번에는 젠킨스 파일을 작성한다.&lt;/p&gt;
-
-&lt;p&gt;젠킨스는 2가지 문법을 지원한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;Scripted&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Declarative&lt;/code&gt; 2가지가 있다. &lt;code class=&quot;highlighter-rouge&quot;&gt;Scripted&lt;/code&gt; 문법은 쉘 스크립트처럼 작성해서 파이프라인을 구성할 수 있다. &lt;code class=&quot;highlighter-rouge&quot;&gt;Groovy&lt;/code&gt; 를 써봤으면 쉽게 쓸 수 있다. 그래서 이번에는 &lt;code class=&quot;highlighter-rouge&quot;&gt;Scripted&lt;/code&gt; 문법을 사용했다.&lt;/p&gt;
-
-&lt;p&gt;다음은 &lt;code class=&quot;highlighter-rouge&quot;&gt;Scripted&lt;/code&gt; 문법 전용 &lt;code class=&quot;highlighter-rouge&quot;&gt;Directive&lt;/code&gt; 다.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;stage&lt;/code&gt;  : 파이프라인의 각 단계&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git&lt;/code&gt; : git 에서 프로젝트 clone&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;sh&lt;/code&gt; : unix 환경에서 실행할 명령어 실행&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;def&lt;/code&gt;: 변수 또는 함수 선언&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dir&lt;/code&gt;: 명령을 수행할 디렉토리/ 폴더 정의&lt;/p&gt;
-
-&lt;p&gt;나는 스테이지를 3개로 나눴다.&lt;/p&gt;
-
-&lt;p&gt;첫번째 스테이지는 도커 이미지를 빌드한다. 내가 작성한 도커 파일은 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 있는 베이스 이미지를 갖고 오기 위해 AWS에 로그인 한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;region&lt;/code&gt;은 명시하지 않아도 된다. 젠킨스에서는 &lt;code class=&quot;highlighter-rouge&quot;&gt;aws&lt;/code&gt;에서 로그인 할 때 &lt;code class=&quot;highlighter-rouge&quot;&gt;aws cli&lt;/code&gt; 를 사용한다. &lt;code class=&quot;highlighter-rouge&quot;&gt;aws cli&lt;/code&gt;를 사용해봤던 개발자들은 알고 있겠지만, &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS configuration&lt;/code&gt;을 해야 &lt;code class=&quot;highlighter-rouge&quot;&gt;aws cli&lt;/code&gt;를 사용할 수 있다. 내가 사용하는 사내 젠킨스는 서버내 &lt;code class=&quot;highlighter-rouge&quot;&gt;aws configuration&lt;/code&gt;이 다른 팀에서 사용하는 다른 리전의 계정이 세팅되어 있어서, 리전을 명시해줘야 내가 만든 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 접근 할 수 있었다. 로그인을 하면 캐싱없이 베이스 이미지를 기반으로 빌드한다.&lt;/p&gt;
-
-&lt;p&gt;두번째 스테이지에서는 빌드한 도커 이미지를 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 푸시한다.&lt;/p&gt;
-
-&lt;p&gt;세번째 스테이지에서는 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS&lt;/code&gt; 에 배포한다. 첫번째 스테이지에서 로그인을 해도, 다른 서비스를 사용하려면 &lt;code class=&quot;highlighter-rouge&quot;&gt;region&lt;/code&gt;을 명시해줘야 &lt;code class=&quot;highlighter-rouge&quot;&gt;No basic auth&lt;/code&gt; 라는 &lt;code class=&quot;highlighter-rouge&quot;&gt;authorization&lt;/code&gt;  관련 에러를 피할 수 있다. ECS에 배포하기 전에 ECS container의 spec이 적힌 task definition의 파일의 내용을 적절하게 바꾼다. 파일을 열어서 문자를 치환할때는 &lt;code class=&quot;highlighter-rouge&quot;&gt;sed&lt;/code&gt; 명령어가 유용하므로 그것을 써서 치환한다.&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pipeline &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    agent any
-    environment &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        imageUrl &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ecsRegistry&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$BUILD_NUMBER&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    stages &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        stage&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Docker Build&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            steps &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                withAWS&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;credentials: &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$awsCredentials&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, region: &lt;span class=&quot;s2&quot;&gt;&quot;us-east-1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                    script &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                        def login &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; ecrLogin&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-                        sh &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-                    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-                sh &lt;span class=&quot;s2&quot;&gt;&quot;docker pull &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$baseImage&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-                sh &lt;span class=&quot;s2&quot;&gt;&quot;docker build --no-cache -t &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$imageUrl&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; --build-arg SSH_PRIVATE_KEY='&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$privateKey&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;' --build-arg BASE_IMAGE='&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$baseImage&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;' .&quot;&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        stage&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Docker Push&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            steps &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                sh &lt;span class=&quot;s2&quot;&gt;&quot;docker push &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$imageUrl&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        stage&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Deploy ECS&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-            steps &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                withAWS&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;credentials: &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$awsCredentials&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, region: &lt;span class=&quot;s2&quot;&gt;&quot;us-east-1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                    script &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                        def safeImageUrl &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; imageUrl.replace&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-                        sh &lt;span class=&quot;s2&quot;&gt;&quot;sed -e &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;s/%memoryUnit%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$memoryUnit&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%cpuUnit%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$cpuUnit&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%imageUrl%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$safeImageUrl&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%taskFamily%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$taskFamily&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%awsLogGroup%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$awsLogGroup&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%awsLogRegion%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$awsLogRegion&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g; s/%awsLogPrefix%/&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$awsLogPrefix&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/g;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; taskDefinition &amp;gt; taskDef.json&quot;&lt;/span&gt;
-                        def taskVersion &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; sh&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;script: &lt;span class=&quot;s2&quot;&gt;&quot;aws ecs register-task-definition --cli-input-json file://taskDef.json | jq --raw-output .taskDefinition.revision&quot;&lt;/span&gt;, returnStdout: &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.trim&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; as Integer
-                        sh &lt;span class=&quot;s2&quot;&gt;&quot;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$taskVersion&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-                        sh &lt;span class=&quot;s2&quot;&gt;&quot;aws ecs update-service --cluster &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$clusterName&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; --service &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$serviceName&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; --task-definition &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$taskFamily&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$taskVersion&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-                    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;이제 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS&lt;/code&gt;를 설정하고, 배포할때 사용할 &lt;code class=&quot;highlighter-rouge&quot;&gt;task definition.json&lt;/code&gt;파일을 작성해야 한다.&lt;/p&gt;
-</description>
-        <pubDate>Sat, 21 Dec 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-2/</link>
-        <guid isPermaLink="true">http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-2/</guid>
-      </item>
-    
-      <item>
-        <title>도커, 젠킨스, AWS ECR, ECS 로 CI/CD 구축 - 1 도커파일 작성</title>
-        <description>&lt;p&gt;updated: 2020-02-19
-최근 ECS를 사용해서 컨테이너 기반으로 스테이징 서버를 구축했다. Circle CI를 써보고 싶었는데, 이미 사내에 젠킨스가 구축되어 있어서 젠킨스를 쓰기로 했다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/deploy-process.png&quot; alt=&quot;deploy process&quot; /&gt;&lt;br /&gt;
-먼저 빗버킷 &lt;code class=&quot;highlighter-rouge&quot;&gt;dev&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;staging&lt;/code&gt; 브랜치에 푸시가 되면 젠킨스가 변화를 감지하고 스크립트 실행한다. 젠킨스 스크립트는 브랜치별로 다른 configuration 파일을 s3 버킷에서 다운받는다. 해당 파일을 소스코드에 추가하고 도커 이미지를 생성하, 생성된 도커 이미지는 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 푸시한다. 새 이미지를 가지고 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECS&lt;/code&gt; 파게이트에 배포한다.&lt;/p&gt;
-
-&lt;p&gt;먼저 도커파일을 작성해서 로컬에서 띄어보았다. 해당 프로젝트는 빗버킷 프라이빗 리포지토리를 &lt;code class=&quot;highlighter-rouge&quot;&gt;pip install&lt;/code&gt; 로 설치해 라이브러리로 사용하는데, 이때 ssh key 가 필요하다. 그래서 로컬의 ssh key를 카피해서 도커 실행시 argument로 전달하는 방법으로 해결했다.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;python 2.7 alpine&lt;/code&gt; 버전을 사용하는 도커 파일을 작성한다.&lt;/p&gt;
-
-&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# arguments&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ARG&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; SSH_PRIVATE_KEY&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; python:2.7-alpine&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# set envs&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; DJANGO_SETTINGS_MODULE=staging&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; PYTHONIOENCODING=utf-8&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;apk add &lt;span class=&quot;nt&quot;&gt;--no-cache&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;	python2-dev&lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;	build-base&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# for gcc&lt;/span&gt;
-	mariadb-dev\  # for mysqlclient
-	openssh-client\ # for ssh-keyscan
-	zlib-dev\  # for pillow
-	jpeg-dev\  # for pillow
-	libressl-dev\  # for scipy, numpy
-	libffi-dev\  # for scipy, numpy
-	lapack-dev\  # for scipy, numpy
-	gfortran\  # for scipy, numpy
-	musl-dev\  # for scipy, numpy
-	git\
-	nginx\
-	vim\
-    &amp;amp;&amp;amp; rm -rf /var/cache/apk/* \ #remove cache
-    &amp;amp;&amp;amp; pip install cpython  &lt;span class=&quot;c&quot;&gt;# for scipy, numpy&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; /root/.ssh &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;    &lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;0700 /root/.ssh &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;    ssh-keyscan bitbucket.org &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /root/.ssh/known_hosts
-
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$SSH_PRIVATE_KEY&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /root/.ssh/id_rsa &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\
-&lt;/span&gt;    &lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;400 /root/.ssh/id_rsa
-
-&lt;span class=&quot;c&quot;&gt;# create working directory&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; /app
-
-&lt;span class=&quot;k&quot;&gt;ADD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; app /app&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# set working directory&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;WORKDIR&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; /app&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# install dependencies&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;RUN &lt;/span&gt;pip &lt;span class=&quot;nb&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-r&lt;/span&gt; requirements.txt
-
-&lt;span class=&quot;c&quot;&gt;# run django project&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;CMD&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; [&quot;python&quot;, &quot;manage.py&quot;, &quot;runserver&quot;, &quot;0.0.0.0:80&quot;]&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# open port 80, 5672 for rabbitmq&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;EXPOSE&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; 80 5672&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;도커 이미지를 &lt;code class=&quot;highlighter-rouge&quot;&gt;test&lt;/code&gt; 라는 이름으로 빌드한다.&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker build &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--build-arg&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;SSH_PRIVATE_KEY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; ~/.ssh/id_rsa&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;도커 이미지로 컨테이너를 띄운다.&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;-it&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;:latest
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;도커 컨테이너가 떴는지 확인한다.&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker ps
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;만약 컨테이너가 떴다면 터미널 화면 또는 인터넷 브라우저에서 &lt;code class=&quot;highlighter-rouge&quot;&gt;0.0.0.0:8000&lt;/code&gt; 주소로 확인할 수 있다. 만약 문제가 있어서 컨테이너가 안떴다면 다음 명령어로 정지한 컨테이너를 확인할 수 있다.&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker ps &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;도커 컨테이너를 확인하고 컨테이너를 삭제한다. 이 방법은 젠킨스에서 자동배포할때 사용할 수 없다. 그리고 해당 프로젝트가 설치하는 패키지가 많아서 이미지를 빌드하는데 기본적으로 1분이 넘었다. 여러가지 방법이 있을 수 있겠지만 나는 이전에 빌드된 이미지를 베이스 이미지로 사용하는 방법을 선택했다. 해당 프로젝트는 사용하는 라이브러리가 크게 바뀌지 않을 예정이여서 가능했다. 먼저 빌드한 이미지를 &lt;code class=&quot;highlighter-rouge&quot;&gt;base image&lt;/code&gt; 라는 이름으로 &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 푸시하고, 이미지를 빌드 할 때 마다 &lt;code class=&quot;highlighter-rouge&quot;&gt;base image&lt;/code&gt; 를 갖고와서 그 이미지를 기반으로 빌드하는 방법이다.&lt;/p&gt;
-
-&lt;p&gt;이 방법은 다음과 같은 스텝을 거쳤다.&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;베이스 이미지로 사용할 이미지를 로컬에서 빌드한다.&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 푸시한다.&lt;/li&gt;
-  &lt;li&gt;젠킨스에 &lt;code class=&quot;highlighter-rouge&quot;&gt;Build with parameters&lt;/code&gt; 설정에서 Base image의 태그를 추가한다.&lt;/li&gt;
-  &lt;li&gt;테스트 한다.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt; 콘솔로 들어가서 &lt;code class=&quot;highlighter-rouge&quot;&gt;create repository&lt;/code&gt; 를 선택한다.
-&lt;img src=&quot;/images/posts/ecr-console.png&quot; alt=&quot;aws ecr console&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;repository 이름만 정하면 바로 생성할 수 있다. 생성된 repository 를 목록에서 클릭하면 &lt;code class=&quot;highlighter-rouge&quot;&gt;view push commands&lt;/code&gt; 에서 이미지를 푸시, 풀하는 데 사용하는 커맨드를 볼 수 있다.
-이미지를 푸시하는 커맨드를 사용해 로컬에 있는 베이스 이미지를 푸시한 뒤, 도커 파일의 윗부분을 수정한다.&lt;/p&gt;
-
-&lt;div class=&quot;language-dockerfile highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# arguments&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ARG&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; SSH_PRIVATE_KEY&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;ARG&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; BASE_IMAGE&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; $BASE_IMAGE&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;이제부터 도커 이미지를 빌드할때는 argument로 준 이미지를 기반으로 빌드하게 된다. &lt;code class=&quot;highlighter-rouge&quot;&gt;AWS ECR&lt;/code&gt;에 있는 이미지를 받아오는 부분은 젠킨스가 할 일이다.&lt;br /&gt;
-2편에서는 젠킨스를 설정한 방법을 정리했다.&lt;/p&gt;
-
-</description>
-        <pubDate>Sat, 21 Dec 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-1/</link>
-        <guid isPermaLink="true">http://localhost:4000/devops/2019/12/21/automated-deploy-using-docker-and-jenkins-1/</guid>
-      </item>
-    
-      <item>
-        <title>파이선 GC(Garbege Collector)의 작동방식</title>
-        <description>&lt;p&gt;파이선 GC는 &lt;a href=&quot;[https://ko.wikipedia.org/wiki/%EC%B0%B8%EC%A1%B0_%ED%9A%9F%EC%88%98_%EA%B3%84%EC%82%B0_%EB%B0%A9%EC%8B%9D](https://ko.wikipedia.org/wiki/참조_횟수_계산_방식)&quot;&gt;참조횟수 계산방식(reference counting)&lt;/a&gt;으로 작동한다. 참조횟수 계산방식에 대한 위키피디아의 설명은 다음과 같다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;참조 횟수 계산 방식&lt;/strong&gt;(reference counting)은 메모리를 제어하는 방법 중 하나로, &lt;a href=&quot;https://ko.wikipedia.org/wiki/쓰레기_수집_(컴퓨터_과학)&quot;&gt;쓰레기 수집&lt;/a&gt;의 한 방식이다. 구성 방식은 단순하다. 어떤 한 동적 단위(객체, Object)가 참조값을 가지고 이 단위 객체가 참조(참조 복사)되면 참조값을 늘리고 참조한 다음 더이상 사용하지 않게 되면 참조값을 줄이면 된다. 보통 참조값이 0이 되면 더이상 유효한 단위 객체로 보지 않아 메모리에서 제거한다.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;간단하게 말하자면 모든 객체는 참조값을 가진다. 해당 객체가 참조되면 참조값을 늘어난다. 객체가 더이상 사용하지 않으면 참조값을 줄어든다. 참조값이 0이되면 메모리에서 제거한다.&lt;/p&gt;
-
-&lt;p&gt;단점은 참조할 때 마다 참조값을 검사해야 하기 때문에, 검사 부하가 커진다. 참조하는 단위 객체들이 서로 참조하면 순환 참조 오류가 발생해, 잘못된 참조 파괴가 생기거나 단위객체가 고아(orphaned)가 될 수 있다. 순환 참조일 경우 이미 참조가 끝났더라도 참조값은 계속 1이다.&lt;/p&gt;
-
-&lt;p&gt;이 문제를 해결하기 위해서 파이선은 추가적인 GC 방식을 도입했다. &lt;code class=&quot;highlighter-rouge&quot;&gt;gcmodule.c&lt;/code&gt;의 &lt;code class=&quot;highlighter-rouge&quot;&gt;gc.collect()&lt;/code&gt;가 참조횟수 방식을 사용해서는 접근과 해제가 불가능한 객체를 해제한다. 이 방식은 &lt;a href=&quot;https://www.geeksforgeeks.org/mark-and-sweep-garbage-collection-algorithm/&quot;&gt;Mark and sweep algorithm(표시하고 쓸기)&lt;/a&gt;, 방식이다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;표시하고 쓸기 기법은 포인터 추적 기법 가운데 가장 단순한 기법이다. 먼저 각 메모리 할당 영역에 표시를 위해 1 &lt;a href=&quot;https://ko.wikipedia.org/wiki/비트_(단위)&quot;&gt;비트&lt;/a&gt;의 메모리를 남겨 둔다. 표시 단계에서, 모든 변수가 가리키는 영역을 “사용 중”으로 표시하고, 그 영역에서 가리키는 또다른 영역 또한 “사용 중”으로 표시한다. 이와 같이 모든 메모리 영역을 표시하고 나면, 표시되지 않은 영역을 접근 불가능한 메모리 영역이 된다. 접근 불가능한 메모리 영역들을 쓸기 단계에서 모두 해제한다.&lt;/p&gt;
-
-  &lt;p&gt;이 기법의 단점은, 표시 단계에서 메모리 내용이 변경되지 않아야 하기 때문에 전체 시스템의 실행이 정지된다는 것이다. 또한 전체 메모리 영역을 검사해야 하므로 메모리 &lt;a href=&quot;https://ko.wikipedia.org/wiki/페이징&quot;&gt;페이징&lt;/a&gt;을 사용하는 운영체제에서 프로그램의 성능이 저하될 수 있다.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-</description>
-        <pubDate>Fri, 20 Dec 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/python/2019/12/20/python-gc/</link>
-        <guid isPermaLink="true">http://localhost:4000/python/2019/12/20/python-gc/</guid>
-      </item>
-    
-      <item>
-        <title>HTTP1.1와 HTTP2.0 차이점</title>
-        <description>&lt;p&gt;Http 는 request에 대한 response를 받아야만 다음 request를 처리할 수 있다.&lt;/p&gt;
-
-&lt;h3 id=&quot;http11&quot;&gt;HTTP/1.1&lt;/h3&gt;
-&lt;p&gt;Http 1.0은 &lt;code class=&quot;highlighter-rouge&quot;&gt;connection&lt;/code&gt;을 매번 생성했다. 그래서 요청한 리소스 개수에 비례해서 &lt;code class=&quot;highlighter-rouge&quot;&gt;latency&lt;/code&gt;가 길어진다. 이러한 문제를 해결하기 위해 1.1부터 &lt;code class=&quot;highlighter-rouge&quot;&gt;persistent connection(connection 재사용)&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;pipelining(여러개의 request 를 미리 날림)&lt;/code&gt; 등의 기술이 등장했다. 하지만 다음과 같은 문제가 있었다.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. HOL Blocking(Head Of Line Blocking)  
-pipelining을 사용해 여러개의 request를 미리 날리더라도, 첫번째 리소스를 요청하고 응답이 지연되면 당연히 두번쨰, 세번째 리소스는 첫번째 리소스의 응답처리가 완료되기까지 지연된다.
-
-2. RTT(Round Trip Time) 증가  
- 매요청별로 connection을 생성하기 때문에 3-way handshake가 반복적으로 발생해 성능 저하를 초래한다.
- 
-3.무거운 Header  
- 매 요청시마다 중복된 헤더값을 전송한다.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;요약: HTTP/1.1은 동시전송이 불가능하다. 요청과 응답이 순차로 이뤄진다. header가 무겁다. 1.1 은 plain text 를 리턴한다.&lt;/p&gt;
-
-&lt;h3 id=&quot;http20&quot;&gt;HTTP/2.0&lt;/h3&gt;
-&lt;p&gt;HTTP 2.0은 한 &lt;code class=&quot;highlighter-rouge&quot;&gt;connection&lt;/code&gt;으로 여러개의 메세지를 주고 받는다. &lt;code class=&quot;highlighter-rouge&quot;&gt;from&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;message&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;stream&lt;/code&gt;개념이 도입됐고 응답은 순서에 상관없이 &lt;code class=&quot;highlighter-rouge&quot;&gt;stream&lt;/code&gt;으로 주고 받는다.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. Stream Prioritization  
- 리소스의 의존관계(우선순위)를 설정해 렌더링이 늦어지는 문제를 해결한다.
-
-2. Server Push 
-요청을 하지 않아도 클라이언트에게 리소스를 보내줄 수 있다. 클라이언트 요청을 최소화해 성능이 향상된다. push_promise를 통해 서버가 전송한 리소스에 대해서는 클라이언트는 요청하지 않는다.
-
-3. Header Compression
- Header Table, Huffman encoding 기법으로 Header 정보를 압축한다. 중복이 아닌 header 는 인코딩 해 전송한다.  Header 압축 명세: [RFC 7531](https://http2.github.io/http2-spec/compression.html)  
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;요약: HTTP/2.0은 한 &lt;code class=&quot;highlighter-rouge&quot;&gt;connection&lt;/code&gt;으로 여러개의 메세지를 주고 받는다. 응답의 순서를 기다리지 않고 처리한다. 클라이언트가 요청하지 않은 리소스를 미리 보내주고 header를 압축한다. 2.0은 response를 binary로 인코딩해 리턴한다.&lt;/p&gt;
-
-</description>
-        <pubDate>Sun, 08 Sep 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/network/2019/09/08/HTTP1-and-HTTP2/</link>
-        <guid isPermaLink="true">http://localhost:4000/network/2019/09/08/HTTP1-and-HTTP2/</guid>
-      </item>
-    
-      <item>
-        <title>파이선의 덕타이핑(Duck Typing)</title>
-        <description>&lt;p&gt;새처럼 생긴 동물이 있다. 정확하게 무슨 동물인지 알아보기 전에,&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;오리처럼 걷고&lt;/li&gt;
-  &lt;li&gt;오리처럼 꽥꽥거리면&lt;/li&gt;
-  &lt;li&gt;이 동물은 오리다.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;다음과 같은 논증을 거쳐 ‘이 동물은 오리다’ 라는 판단을 내리는 방법을 덕 테스트(Duck Test)라고 한다. 이 논증법은 프로그래밍 분야에 전파돼 Duck Typingg(덕 타이핑)이라는 개념이 됐다. 이 개념에 따라 파이썬은 본질적으로 다른 클래스라도 객체의 실제 유형이 아니라 특정 메소드와 속성의 존재 유무에 따라 결정한다.&lt;/p&gt;
-
-&lt;p&gt;예제코드 출처 https://en.wikipedia.org/wiki/Duck_typing&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Duck flying&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Airplane&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Airplane flying&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Whale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;swim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Whale swimming&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;animal&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Airplane&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Whale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;animal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;output:
-    Duck flying
-    Airplane flying
-    AttributeError: 'Whale' object has no attribute 'fly'
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Duck, Airplane은 서로 관계가 없는 클래스이지만 내부에 fly()라는 메소드가 있다는 공통점이 있이 때문에 같은 타입으로 본다. 만약 Java 였다면 Duck이라는 클래스를 상속받았다고 명시해야만 같은 타입이 될 수 있다.&lt;/p&gt;
-</description>
-        <pubDate>Fri, 06 Sep 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/python/2019/09/06/python-duck-typing/</link>
-        <guid isPermaLink="true">http://localhost:4000/python/2019/09/06/python-duck-typing/</guid>
-      </item>
-    
-      <item>
-        <title>대기업에 익스트림 프로그래밍 적용하기</title>
-        <description>&lt;p&gt;익스트림 프로그램은 애자일 개발 방법론의 한 방법이다. 최근 핫해진 스크럼과는 달리 많이 사용되지 않는다. 한번은 내가 어느 자리에서 방법론에 대한 발표를 할 기회가 있었다. 내가 주제를 XP(익스트림 프로그래밍) 선정했다고 하자 처음 들어본다는 말도 들었다. 
-내가 XP에 관심을 둔 이유는 현재 소속된 조직에서 XP 실천방법 중 여러 방법을 사용하고 있기 때문이다. XP를 실천하려는 의도가 있는 건 아니다. 프로젝트 개발을 도와줄 요소를 리서치하고 채택한 결과가 XP의 실천방법 중 몇가지를 적용하는 것이였다. 밑에서 12가지 방법을 모두 소개할건데, 현재 조직에서는 페어 프로그래밍, 단위테스트, 코드 공동 소유권등을 채택해 적용하고 있다.
-XP의 목표는 ‘고객이 원하는 양질의 소프트웨어를 빠르게 전달’ 하는 것이고, 비즈니스 상의 요구 변동이 심할 때 적합한 방법으로 알려져 있다. 그래서 XP의 장점은 고객의 요구사항이 개발 단계와 상관없이 계속 변경될 때 드러난다. 전통적인 워터폴에서는 소프트웨어가 개발이 진행되면서 변경비용이 증가한다.  XP 방법을 사용하면 소프트웨어 개발 진행 여부와 상관없이 변경 비용이 적게 든다. 예를 들어 전통적인 워터폴 방법 조직에서 어떤 프로젝트가 기획 단계를 통과하고 디자인이 이미 끝났다고 하자. 기획이 다시 변경된다면, 변경사항이 반영된 기획이 기획 단계를 다시 통과해야 하고 디자이너들이 다시 디자인을 변경해야 한다. XP 방법 조직에서는 일이 다르게 흘러간다. 프로젝트는 작은 단위로 쪼개지고, 하루에도 매번 지속적인 통합 작업이 이뤄진다. 그래서 기획이 변경되어도 변경 비용이 적게 된다. 
-지속적인 통합, 작은 단위의 배포, 현장에서 팀원과 소통하는 고객 등 12개의 XP 실천요소가 이를 가능하게 한다. 이런 강력한 장점이 있지만 많이 사용되지 않는 이유가 있다. XP는 대규모 프로젝트에 적용하기 어렵다.&lt;/p&gt;
-
-&lt;p&gt;켄트 벡(Kent Beck) 은 이렇게 말했다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;“You probably couldn’t run an XP project with a hundred programmers. Nor fifty. Nor twenty, probably. Ten is definitely doable.” &lt;br /&gt;
-“프로그래머 100으로는 XP 프로젝트 실행이 아마 힘들겁니다. 50명도, 아마 20명도 안될겁니다. 그러나 10명은 확실히 가능합니다.”&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;또다른 예를 들자면, 마틴 파울러(Fowler)는 25명의 개발자로 구성된 한 팀을 XP를 적용하려고 2팀으로 나눈 적이 있다.&lt;/p&gt;
-
-&lt;p&gt;XP가 이런 단점을 갖고 있는 이유는 그 태생 때문이다. XP는 단일 고객이 사용할 커스터마이즈된 소프트웨어를 빠르게 개발하기 위해 태어난 방법론이다. 켄트 벡은 다임러 크라이슬러 회사에서 프로젝트를 진행할 때 XP 를 탄생시켰다. 그리고 그 프로젝트는 크라이슬러 사내에서 사용할 투표 소프트웨어였다. 사내 소프트웨어를 사용할 고객은 단일 고객이라고 보아도 무방하다. 항상 현장에 있으면서 실시간으로 피드백을 줄것이고, 개발된 소프트웨어의 많은 부분을 검증하고 싶어 할 것이다. 그래서 XP 개발 방법론이 적합하다. 
-XP의 실천 방법중에는 어느것도 대규모 조직 적용을 제한하는 기술적 한계는 없다. 그러나 팀원의 수, 지리적인 위치등 비기술적인 이유들이 XP를 대규모 조직에 적용하기 어렵게 만든다. 그런데 이런 XP를 대규모의 프로젝트에 적용한 연구가 있었다.&lt;/p&gt;
-
-&lt;h3 id=&quot;a-study-of-extreme-programming-in-a-large-company&quot;&gt;A Study of Extreme Programming in a Large Company&lt;/h3&gt;
-&lt;h3 id=&quot;대기업의-익스트림-프로그래밍에-대한-연구&quot;&gt;대기업의 익스트림 프로그래밍에 대한 연구&lt;/h3&gt;
-
-&lt;p&gt;이 논문은 대기업의 프로젝트에 XP를 적용하고, XP를 경험한 개발자들을 인터뷰 했다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;ABSTRACT&lt;br /&gt;
-Agile software development is an approach to software that focuses on lightweight processes and adaptability to change. The best-known agile methodology is called Extreme Programming. It suggests twelve practices that include iterative development practices, automated unit testing, and pair programming. Extreme Programming is designed for small projects, but has been picked up through grassroots efforts in some large projects in large companies, including Avaya. We studied six such projects in Avaya. We were interested to learn how projects adapted Extreme Programming to their needs, and which of the twelve practices they used. Projects adopted iterative development practices, along with dynamic prioritization of work. Although Extreme Programming downplays architecture, every project retained focus on software architecture. They had mixed success moving to automated unit testing, and most used some form of pair programming. These practices appear to be both beneficial and practical for projects of various sizes in large companies, and we recommend them for those wishing to use agile development practices in large companies.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;초록&lt;br /&gt;
-애자일 소프트웨어 개발은 경량 프로세스와 변화 적응성에 중점을 둔 소프트웨어 접근 방식이다. 가장 잘 알려진 애자일 방법론은 익스트림 프로그래밍(Extreme Programming, 이하 XP)이다. 익스트림 프로그래밍은 반복적인 개발, 자동화된 단위 테스트 및 페어 프로그래밍을 포함한 12가지 실천방법을 제안한다. 익스트림 프로그래밍은 소규모 프로젝트를 위해 설계됐다. 그러나 Avaya(Avaya)를 포함한 대기업의 일부 대규모 프로젝트에서 프로젝트 소속원들이  XP를 프로젝트 개발 방법으로 선택했다. 우리는 Avaya에서 6개의 프로젝트를 연구했다. 프로젝트가 익스트림 프로그래밍을 그들의 요구에 맞게 어떻게 조정하는지, 12 가지 실천방법 중 어떤 것을 사용하는지에 대해 관심이 있었다. 프로젝트는 역동적인 작업 우선 순위와 반복적인 개발 방법을 채택했다. 익스트림 프로그래밍은 아키텍처를 과소평가 하는 경향이 있지만, Avaya의 각 프로젝트는 소프트웨어 아키텍처에 주의 집중했다. 그들은 자동화 된 단위 테스트로 성공적으로 전환했고, 대부분이 어떤 형태이든 페어 프로그래밍을 사용했다. 이러한 실천방법은 대기업 내 다양한 규모의 프로젝트에 유리하고 실용적이다. 우리는 대기업에서 애자일 개발 방법을 실천하려는 사람들에게 이러한 실천방법들을 추천한다.&lt;/p&gt;
-
-&lt;p&gt;참고로 &lt;a href=&quot;https://g.co/kgs/Jhanen&quot;&gt;Avaya&lt;/a&gt;는 미국에 본사를 둔 다국적 통신기업이다.&lt;/p&gt;
-
-&lt;p&gt;다음은 익스트림 프로그래밍을 프로젝트에 적용할 때 실천해야 할 사항들이다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;• The Planning Game – Quickly determine the scope of the next release by combining business priorities and technical estimates. As reality overtakes the plan, update the plan.&lt;br /&gt;
-• Small Releases – Put a simple system into production quickly, then release new versions on a very short cycle.&lt;br /&gt;
-• Metaphor – guide all development with a simple shared story of how the whole system works. &lt;br /&gt;
-• Simple design – The system should be designed as simply as possible at any given moment. Extra complexity is removed as soon as it is discovered.&lt;br /&gt;
-• Testing – Programmers continually write unit tests, which must run flawlessly for development to continue. Customers write tests demonstrating that features are finished. &lt;br /&gt;
-• Refactoring – Programmers restructure the system without changing its behavior to remove duplication, improve communication, simplify, or add flexibility. &lt;br /&gt;
-• Pair programming – All production code is written with two programmers at one machine. &lt;br /&gt;
-• Collective ownership – Anyone can change any code anywhere in the system at any time. &lt;br /&gt;
-• Continuous integration – Integrate and build the system many times a day, every time a task in completed. &lt;br /&gt;
-• 40-hour week – Work no more than 40 hours a week as a rule. Never work overtime a second week in a row. &lt;br /&gt;
-• On-site customer – Include a real, live user on the team, available full-time to answer questions.&lt;br /&gt;
-• Coding standards – Programmers write all code in accordance with rules emphasizing communication through the code.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;• 계획 게임 – 비즈니스 우선 순위와 기술 견적을 결합해 다음 배포 범위를 신속하게 결정한다. 개발 상황이 계획보다 앞서가면 계획을 업데이트한다.&lt;br /&gt;
-• 작은 배포 – 간단한 시스템을 빠르게 생산 한 다음 새 버전을 매우 짧은 주기로 배포한다.&lt;br /&gt;
-• 메타포(은유) – 전체 시스템 작동 방식에 대한 간단한 공유 스토리를 통해 모든 개발을 안내한다.&lt;br /&gt;
-• 단순한 설계 – 시스템은 주어진 순간에 가능한 한 간단하게 설계한다. 추가적인 복잡도는 발견 즉시 없앤다.&lt;br /&gt;
-• 테스트 – 프로그래머는 지속적으로 단위 테스트를 작성하며, 개발을 계속하려면 테스트가 완벽하게 실행돼야 한다. 고객은 기능이 개발  완료되었음을 나타내는 테스트를 작성한다.&lt;br /&gt;
-• 리팩토링 – 프로그래머는 동작을 변경하지 않고 시스템을 재구성해 반복을 제거하고, 의사 소통을 개선하거나, 유연성을 추가한다.&lt;br /&gt;
-• 페어 프로그래밍 – 모든 생산 코드는 한 머신에서 두 명의 프로그래머로 작성한다.&lt;br /&gt;
-• 공동 소유권 – 누구나 언제 어디서나 시스템의 모든 코드를 변경할 수 있다.&lt;br /&gt;
-• 지속적인 통합 – 작업이 완료 될 때마다 하루에 여러 번 시스템을 통합하고 구축한다. &lt;br /&gt;
-• 주당 40 시간 – 일반적으로 주당 40 시간을 넘기면 안된다.&lt;br /&gt;
-• 현장 고객 – 팀에 실제 사용자를 포함시켜 실시간 질문에 답변 할 수 있다.&lt;br /&gt;
-• 코딩 표준 – 프로그래머는 코드를 통한 소통을 중요시 여기는 규칙에 따라 모든 코드를 작성한다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;FINDINGS OF THE STUDY &lt;br /&gt;
-There was fairly strong agreement among the projects on which practices they followed, and which they felt were important. The following is a list of the findings from the study.
-As expected, no project followed XP exactly. A major reason for this was that most of the projects studied were small parts of larger projects. Therefore, they could not implement all the practices of XP; they did what they could in their own situation. It was not clear from the study which other XP practices they would have implemented if they had had the chance. However, since a large part what we wanted to learn was which practices work in our culture, we were interested in the empirical rather than the hypothetical, anyway. 
-Because of the position in the schedule, as well as the fact that they were in larger projects, it was impossible to collect reliable quality and productivity metrics. However, it appeared that their productivity compared favorably to standard development methodologies in the company. It was significant to note that every person interviewed was enthusiastic about the methodology. All intended to continue their practices, and expand them where possible. 
-The following list describes the teams followed each of the twelve XP practices: 
-• The Planning Game – No project implemented the Planning Game fully. While planning was flexible, it was required to be within the boundaries of the larger product plan. This had two major ramifications. First, an overall project plan was established. This was necessary not only for the project as a whole, but also for other teams, in particular documentation, sales, marketing, and product support. Second, others’ needs often constrained prioritization somewhat. 
-• Small Releases – All projects used small releases in some form. The size of the development intervals was from two to four weeks. Where the XP development was part of a larger project, the development intervals culminated in deliveries into the official code base of the project. 
-One team punctuated each interval with a demo to themselves and others on the project. They reported that this was a strong morale booster on the team. 
-One project’s data showed that they had not made substantial improvement in the accuracy of their development estimates over several iterations. They admitted, however, that they had not re-estimated after each iteration, but plan to do so in the future. 
-• Metaphor – No project had a metaphor. This is consistent with reports from Kent Beck , who stated that people tell him that they do XP, “..except metaphor, of course.”[18]. Others have also noted that people have difficulty understanding Metaphor [19]. This is certainly one major reason that no project used metaphor. 
-• Simple design – Projects did not highlight simple design as an important part of their XP process. This should not be construed to imply that they did not have simple designs, but rather that it was not an important difference from their traditional processes. 
-• Testing – All projects intended to require that tests be submitted along with code, creating a body of automated regression tests. One project followed this rigorously. Other projects followed it partially. The major reason for this was schedule pressure with focus on delivered functionality. A related reason was the time and effort were not available to set up an automated regression testing system, particularly where the XP project was part of a larger project. All projects were for software to be sold to multiple customers, so it was not realistic to have a customer write and execute acceptance tests. However, every project did have an extensive system verification program. In this model, the system testers functioned as “surrogate customers”, writing and executing acceptance tests.
-• Refactoring – Refactoring did not figure prominently in the projects. The only project to refactor frequently was a forward looking work project with three people on the team. The other projects indicated that they were not opposed to refactoring, but there really hadn’t been a need to do so. This may be a reflection of more up-front design than is typically done in an XP project
-• Pair programming – All projects did some form of pair programming, but each did it a little differently. No project required it for every line of code; in fact in every project, pair programming was voluntary. In one project, developers began by doing all programming as pairs, but found it was too inefficient. So they programmed the simple code individually, but paired up on the difficult code. Another project had two developers, located 2000 miles apart. They tended to write code individually, but debugged their code together, using a shared desktop. One developer pointed out that this was actually more convenient, because they weren’t crowded against each other. 
- • Code inspections are standard practice in Avaya. In one instance, pair programming was allowed to replace code inspections. The project did not have data to indicate whether one was more effective than the other in finding errors. 
- • Collective ownership – Code ownership practices varied from project to project, due in part to constraints of the surrounding projects. Where collective ownership was practiced, there was a practice of de facto code ownership: people gained natural expertise in certain parts of the system, and made the bulk of changes there. One project codified this practice into a 4 “lightweight ownership” policy: one could change any of the code, but needed to check with the owner of the code for advice. 
- • Continuous integration – In most cases, projects worked within the larger project methodology of integration. This was generally weekly integrations into the main software base, although the XP sub-projects were able to integrate more often. In one standalone case, the team members integrated continuously. 
- • 40-hour week – One or two projects made this a policy. However, no project appeared to have suffered extended periods of long hours. 
- • On-site customer – No project had an on-site customer. As stated above, this model is not practical where one has many customers or potential customers. In addition, it is usually not desirable; the project gets only a single view among many customers. Projects continued to use a surrogate customer model, where an aggregate view of customer needs is created. 
- • Coding standards – Avaya has had a tradition of coding standards. The XP projects followed their pre-existing coding standards
-In brief summary, projects followed XP most closely in the coding activities. As expected, where the projects touched other organizations in the company, XP practices were weak, or not followed at all.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;연구 결과
-그들이 실천한 실천사항과, 그들이 중요하다고 느낀 실천사항 사이에는 상당히 강력한 합의가 있었다. 연구를 통해 알게 된 사실은 다음과 같다.
-우리의 예상대로 XP를 정확히 따르는 프로젝트는 없었다. 이러한 현상의 발생한 주요한 이유는 연구한 대부분의 프로젝트가 더 큰 프로젝트의 작은 일부분이였기 때문이다. 따라서 XP의 모든 관행을 적용할 수 없었다. 대신, 프로젝트 참여자들은 자신의 상황에서 행할 수 있는 일을 했다. 그들에게 기회가 있었다면 어떤 XP 실천사항을 구현했는지는 명확하게 알 수 없다. 그러나 우리가 배우고 싶었던 부분은 바로 어떤 실행 요소가 우리 문화에서 작동하는 지에 관한 것이였고, 우리는 가설보다 경험에 더 관심이 많았기 때문에 상관이 없었다.
-근로자의 근무시간이 및 근무요일이 고정이였고(scheduled position), 그들이 큰 프로젝트에 포함돼 있었기 때문에, 신뢰할 수있는 품질 및 생산성 지표를 수집하는 게 불가능했다. 하지만 그들의 생산성을 회사의 기본 개발 방법에 비교하는 일은 순조로웠다. 인터뷰를 했던 모두가 개발 방법에 열정적이였다는 점을 잊지말자. XP의 12개 실천사항과, 해당 실천사항을 실천했던 팀의 모습을 아래에 정리했다.&lt;/p&gt;
-
-&lt;p&gt;• 계획 게임 - 계획 게임을 완전히 구현한 프로젝트가 없었다. 계획은 융통성이 있었지만
-더 큰 제품 계획의 경계 내에서만 변경할 수 있었다. 이것은 두 가지 큰 파급효과가 있었다. 첫째, 전체 프로젝트 계획이 설립됐다. 이것은 프로젝트 전체뿐만 아니라 다른 팀, 특히 문서, 영업, 마케팅 및 제품 지원등을 위해서라도 필요하다. 둘째, 다른 사람들의 요구는 종종 우선 순위가 다소 제한됐다.&lt;/p&gt;
-
-&lt;p&gt;• 작은 배포 - 모든 프로젝트가 어떤 형태로든 작은 단위의 배포를 했다. 개발 주기는 2주에서 4주였다. XP개발이 큰 프로젝의 일부분일 경우, 개발 단위는 프로젝트의 공식적인 코드 베이스로 전달하는데 절정을 이뤘다.
-한 팀은 프로젝트 개발 주기마다 해당 팀원과 다른 사람들에게 데모를 제공했다. 그들은 이것이 팀의 사기를 강하게 증진했다고 보고했다.
-• 메타포(은유) - 메타포가 있는 프로젝트는 없었다. 이러한 현상은 사람들이 켄트 벡(Kent Beck)의 보고서와 일치한다. 사람들은 그에게 XP를 한다고 할때 이렇게 말했다. “..당연히 메타포 빼고요.”[18]. 다른 이들은 사람들이 메타포를 이해하는 걸 어려워 했다고 보고했다[19] 그 어려움이 메타포를 적용한 프로젝트가 없는 주요 이유 중 하나다.&lt;/p&gt;
-
-&lt;p&gt;• 단순한 디자인 - 프로젝트는 XP를 적용해 개발하는 과정에서 단순한 디자인을 중요한 요소로 여기지 않았다. 단순한 디자인이 없었다는 뜻이 아니다. 그들이 하던 전통적인 개발 과정에서 크게 다른 요소가 아니었기 때문이었다.&lt;/p&gt;
-
-&lt;p&gt;• 테스트 - 모든 프로젝트는 코드와 함께 테스트를 제출하여 일련의 자동화 된 회귀 테스트를 작성해야 했다. 한 프로젝트는 이 규칙을 엄격하게 따랐다. 다른 프로젝트는 부분적으로 적용했다. 주요 이유는 제공되는 기능에 중점을 둔 일정 압력 때문이었다. 연관된 이유는 자동화된 회귀 테스트를 작성할 수 있는 시간과 노력 때문이었다. 특별하게는 XP 프로젝트가 더 큰 프로젝트의 부분이였기 때문이다. 모든 프로젝트가 다수의 고객에게 판매될 소프트웨어였다. 그래서 고객이 승인 테스트를 작성하고 실행하도록 하는 건 현실성이 없었다. 그러나, 개별 프로젝트는 프로그램을 검증할 확장된 시스템이 없었다. 이 모델에서, 시스템 테스터들은 “대리 고객”으로 일했다. “대리고객”들은 승인 테스트를 작성하고 실행했다.&lt;/p&gt;
-
-&lt;p&gt;• 리팩토링 - 이 프로젝트에서는 리팩토링이 눈에띄게 나타나지 않았다. 3 명의 팀원으로 구성된 미래 지향적인 프로젝트만이 유일하게 리팩토링을 자주 했다. 다른 프로젝트는 리팩토링에 반대하지 않았지만 실제로는 할 필요가 없었다. 이것은 XP 프로젝트에서 보통 작업하는 것보다 더 미래적인 디자인의 반영일 수 있다.&lt;/p&gt;
-
-&lt;p&gt;• 페어 프로그래밍 - 모든 프로젝트가 페어 프로그래밍을 어떤 형태로든 수행했는데, 각각 조금씩 달랐다. 모든 코드의 라인에 페어 프로그래밍이 필요한 건 아니였다. 사실 프로젝트마다 페어 프로그래밍은 자발적인 참여로 이뤄졌다. 한 프로젝트에서는, 개발자들이 모든 프로그래밍을 페어 프로그래밍으로 진행했다. 하지만 그게 비효율적이라는 걸 알았다. 그래서 간단한 코드는 각자 프로그래밍 하는 대신, 어려운 코드는 페어 프로그래밍을 했다. 또 다른 프로젝트는 2명의 개발자가 있었다. 그들 사이에는 2000 마일이라는 물리적 거리가 있었다. 그들은 주로 각자 코딩을 했는데, 디버깅을 할때는 한 데스크탑을 두고 함께 했다. 개발자 한명이 이것이 더 편리하다고 했다. 왜냐면 서로를 번잡스럽게 하지 않았기 때문이다. 
-코드 검사는 Avaya의 표준 관행 이었다. 페어 프로그래밍은 코드 검사를 대체 할 수 있었다. 이 프로젝트에서는 오류를 찾는 데 다른 것보다 더 효과적인지 여부를 나타내는 데이터가 없었다.&lt;/p&gt;
-
-&lt;p&gt;• 공동 소유권 – 코드 소유권은 주변 프로젝트의 제약으로 인해 프로젝트마다 달랐다. 공동 소유권이 실행된 곳에서는 사실 코드 소유의 관행이 있었다. 사람들은 시스템의 특정 부분에 대해 자연스런 전문 지식을 얻었고, 거기서 많은 부분을 변경했다. 한 프로젝트는 이 관행을 4 가지“경량 소유”정책으로 체계화했다. 개인은 어떤 코드든지 변경할 수 있지만, 코드 소유자에게 조언을 구해야 했다.&lt;/p&gt;
-
-&lt;p&gt;• 지속적인 통합 – 대부분의 경우 프로젝트는 더 큰 통합 프로젝트의 통합 방법 안에서 통합됐다. XP 하위 프로젝트가 더 자주 통합 될 수 있었지만, 일반적으로는 메인 소프트웨어를 기준으로 매주 통합했다. 한 독립적인 사례에서는 팀 구성원들이 지속적으로 시스템을 통합했다.&lt;/p&gt;
-
-&lt;p&gt;• 주 40 시간 – 한두 개의 프로젝트가 이것을 정책으로 만들었다. 그러나 장시간 추가 근무때문에 고통받은 프로젝트는 없었다.&lt;/p&gt;
-
-&lt;p&gt;• 현장의 고객 – 현장에 고객이 있었던 프로젝트는 없었다. 위에서 언급했듯이, 이 모델은 많은 고객 또는 잠재 고객을 가진 곳에서는 실용적이지도, 바람직하지도 않다. 이 프로젝트는 많은 고객들에게서 한가지 관점만 얻기 때문이였다. 프로젝트는 대리 고객 모델을 계속 활용해 고객의 요구에 대한 종합적인 관점을 작성했다.&lt;/p&gt;
-
-&lt;p&gt;• 코딩 표준 – Avaya는 전통적으로 코딩 표준을 가지고 있었다. XP 프로젝트는 그들이 기존에 갖고있던 코딩 표준을 따랐다.&lt;/p&gt;
-
-&lt;p&gt;간략하게 요약하자면, 프로젝트가 코딩 활동을 할때 XP의 실천요소들을 가장 원래 형태와 근접하게 따랐다. 예상한대로 프로젝트가 회사의 다른 조직과 연관되면 XP가 약하거나 실천요소들을 아예 따르지 않았다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;CONCLUSIONS&lt;br /&gt;
-Much of XP is proving to be useful to projects within Avaya. No project follows all of XP. There were two major reasons for deviance from all the XP practices. The first was that certain XP practices were not appropriate for large software projects. The second was that some practices did not fit with other practices in the existing projects. For the most part, the projects benefited
-from the practices they did adopt.
-Large projects in other companies may benefit from adapting the practices that the Avaya projects found useful.
-Those projects may wish to explore agile methodologies in general, rather than focus on XP, which is most appropriate for small projects.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;결론&lt;br /&gt;
-XP의 많은 부분이 Avaya 사내 프로젝트에 유용한 것으로 입증했다. XP의 모든 실천사항을 따르는 프로젝트는 없었다. XP의 모든 실천방법이 실천되지 않은 데에는 두 가지 중요한 이유가 있었다.
-첫 번째는 특정 XP 실천방법이 대규모 소프트웨어 프로젝트에 적합하지 않다는 것이다. 
-두 번째는 일부 실천방법이 기존 프로젝트의 다른 실천방법과 안맞다는 것이다. 대부분 프로젝트는 그들이 채택한 실천방법의 혜택을 봤다. 
-다른 회사의 대규모 프로젝트는 Avaya의 프로젝트가 유용하다고 생각한 관행을 채택함으로써 이익을 얻을 수 있습니다. 이러한 프로젝트는 소규모 프로젝트에 적합한  XP에 중점을 두는 것 보다, 일반적인 애자일 방법론을 탐색하는 것을 원할 수도 있다.&lt;/p&gt;
-
-&lt;p&gt;우선 해당 논문을 통해 알 수 있었던 것은 다음과 같다. XP를 대규모 프로젝트 전체에 적용하는 건 어렵다. 대규모 프로젝트의 작은 부분은 XP를 적용하기도 쉽고 혜택도 볼 수 있다. XP의 12가지 실천방법은 규모와 상관없이 현실에 전부 적용하기 힘들다. 현장 고객(on-site customer)은 소규모 프로젝트이더라도 실현하기 어렵다. 그리고 아이템에 따라 필요없을 수도 있다. 
-반면에 지속적인 통합, 테스트, 배포, 코딩 표준, 페어프로그래밍, 코드 공동소유는 프로젝트의 규모나 소프트웨어의 특징과 상관없이 유용하다. XP의 모든 실천방법을 실천하려고 하기 보다, 상황과 소프트웨어의 특징에 맞게 취사선택해 적용하는 방법이 프로젝트에 도움이 될 것이다.&lt;/p&gt;
-
-</description>
-        <pubDate>Mon, 19 Aug 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/agile/2019/08/19/XP-in-large-company/</link>
-        <guid isPermaLink="true">http://localhost:4000/agile/2019/08/19/XP-in-large-company/</guid>
-      </item>
-    
-      <item>
         <title>애자일과 생산성측정</title>
         <description>&lt;p&gt;&lt;a href=&quot;https://www.msn.com/ko-kr/money/topstories/%EB%8B%A8%EB%8F%85-%EB%B9%A8%EB%9D%BC%EC%95%BC-%EC%82%B4%EC%95%84%EB%82%A8%EB%8A%94%EB%8B%A4%E2%80%A6%EC%8B%A0%ED%95%9C%EA%B8%88%EC%9C%B5-%EC%95%A0%EC%9E%90%EC%9D%BC%EC%A1%B0%EC%A7%81-%EB%8F%84%EC%9E%85%ED%95%9C%EB%8B%A4/ar-AAzyXzC&quot;&gt;단독 “빨라야 살아남는다”…신한금융, 애자일조직 도입한다&lt;/a&gt;&lt;br /&gt;
 &lt;a href=&quot;http://www.fntimes.com/html/view.php?ud=201902282135037701dd55077bc2_18&quot;&gt;금융 빅5, 조직·인력 탈바꿈…신한 ‘사내벤처’ KB ‘애자일’&lt;/a&gt;&lt;/p&gt;
@@ -1361,111 +1337,6 @@ In summary, we could state that the present productivity measures are not effici
         <guid isPermaLink="true">http://localhost:4000/agile/2019/08/15/agile-and-productivity-using-scoping-study/</guid>
       </item>
     
-      <item>
-        <title>Django, Flask를 사용하는 개발자들이 REST를 생각할때 갖기 쉬운 오해들</title>
-        <description>&lt;ul&gt;
-  &lt;li&gt;제목을 지을때 고민을 많이 했다. Django, Flask를 사용한다고 해서 모두가 이런 오해를 하는게 아니다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;최근에 팀에서 플라스크 보일러플레이트와 관련된 이슈가 있었다. 몇가지 이슈중에 가장 인상깊었던 것은 API를 &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt; 로 할것인지, 아니면 &lt;code class=&quot;highlighter-rouge&quot;&gt;def&lt;/code&gt;로 할것인지에 대한 것이였다. 
-나는 결정이 빨리 나길 바랬다. 하지만 나의 바람과는 다른 방향으로 대화가 흘러갔다. &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt;를 지지하는 개발자들은 &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;를 적극 사용하고 싶어했다. &lt;code class=&quot;highlighter-rouge&quot;&gt;def&lt;/code&gt;를 지지하는 개발자들은 &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;가 현실세계를 반영하지 못하기 때문에 사용하기 싫어했다. 
-내 입장은 기본적으로 &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;아키텍쳐를 적극 활용하되, 대신 현실과 타협하는 것이다. 그러나 나는 그자리에서 내 의견을 밝히지 않았다. 왜냐면 &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt;와 &lt;code class=&quot;highlighter-rouge&quot;&gt;def&lt;/code&gt;에 대한 논의가 왜 &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;아키텍쳐 도입 여부로 흘러가는지 이해할 수 없었기 때문이다. 그리고 이 미스터리는 신입 개발자와의 대화로 풀렸다.&lt;/p&gt;
-
-&lt;p&gt;“우리 회사의 프로젝트들 대부분이 &lt;code class=&quot;highlighter-rouge&quot;&gt;flask&lt;/code&gt;를 기반으로 만들어져서 &lt;code class=&quot;highlighter-rouge&quot;&gt;def&lt;/code&gt;로 되어있고 단 몇개의 프로젝트만이 &lt;code class=&quot;highlighter-rouge&quot;&gt;django&lt;/code&gt;로 만들어졌습니다. 그래서 REST로 바꾸는 건 리소스가 많이 드는 일입니다. 그리고 플라스크에서 &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt;를 쓰려면 패키지를 따로 설치해야 합니다.” 
-내가 반문했다. “REST 아키텍쳐를 구현하기 위해서 꼭 class를 사용해야 하는 건 아닙니다. def를 사용해도 충분히 구현할 수 있습니다. 그리고 blueprint에 methodview가 있어요. 패키지 설치가 싫으면 그걸 쓰면 됩니다.”
-“def인데 어떻게 REST를 구현할 수 있죠?”
-“REST의 제약조건에는 무조건 class로 구현하라는 조건이 없습니다.”
-신입 개발자는 &lt;code class=&quot;highlighter-rouge&quot;&gt;django drf&lt;/code&gt;나 &lt;code class=&quot;highlighter-rouge&quot;&gt;flask-restplus&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;flask-restful&lt;/code&gt; 패키지에서 제공하는 &lt;code class=&quot;highlighter-rouge&quot;&gt;classview&lt;/code&gt;를 사용해야 &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;가 된다고 생각하고 있었다.&lt;/p&gt;
-
-&lt;p&gt;나는 그 자리에서 상대방에게 REST에 대해 설명을 하고 싶었지만, 여기서는 밝힐 수 없는 사정으로 그럴 수 없었다. 대신 몇가지 오해들을 글로 정리해야 할 필요성을 느꼈다.
-이 밑에 정리한 몇가지 오해들은 개발자 중에서도 REST에 익숙하지 않은 python 개발자들이 특히 자주 빠지기 쉬운 오해다.&lt;/p&gt;
-
-&lt;h3 id=&quot;1-django-drf-flask-rest-plus-flask-restful을-사용해야-restful-api-이다&quot;&gt;1. &lt;code class=&quot;highlighter-rouge&quot;&gt;django drf&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;flask rest-plus&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;flask-restful&lt;/code&gt;을 사용해야 RESTful api 이다.&lt;/h3&gt;
-&lt;p&gt;위의 패키지들은 RESTful한 API구현을 도와주는 패키지다. 해당 패키지를 사용하더라도 REST의 제약조건들을 충족하지 못하면 RESTful API가 아니다.
-예제를 통해 알아보자. REST는 uri로 자원을 표현하고, 자원에 대한 행위를 method를 통해 구현해야 한다는 제약 조건이 있다. 
-&lt;code class=&quot;highlighter-rouge&quot;&gt;drf&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;flask-restful&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;flask-restplus&lt;/code&gt; 패키지 중 하나를 사용해 회원 계정 삭제 API를 다음과 같이 구현했다고 하자.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt; DELETE /new/members/delete/account &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;uri&lt;/code&gt;에 자원에 행할 행위 &lt;code class=&quot;highlighter-rouge&quot;&gt;delete&lt;/code&gt;가 포함됐다. 제약조건에 위배되기 때문에 RESTful 하지 않다.
-참고로 &lt;code class=&quot;highlighter-rouge&quot;&gt;uri&lt;/code&gt;에서 행위를 표현할 수 없기 때문에 &lt;code class=&quot;highlighter-rouge&quot;&gt;uri&lt;/code&gt;에 동사를 사용하면 안된다.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt; GET /members/account/ &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;uri&lt;/code&gt;에 동사가 없다. 하지만 계정을 삭제(delete) 할 API를 get으로 호출하도록 개발했다. 나중에 client가 착각할 위험이 있다. 계정 정보를 갖고오려다가 계정을 삭제해버리는 불상사가 일어날 것이다.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt; DELETE /members/1 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;uri와 method가 정확하게 API를 설명한다.&lt;/p&gt;
-
-&lt;p&gt;보통 이런 오해는 REST를 개념이 아닌 패키지, 모듈, 또는 코드로 이해했을 때 발생한다.&lt;/p&gt;
-
-&lt;h3 id=&quot;2-restful-하게-api를-설계하면-status-code를-상황에-따라-다양하게-내려줘야-하기-때문에-비효율적이다&quot;&gt;2. RESTful 하게 API를 설계하면 status code를 상황에 따라 다양하게 내려줘야 하기 때문에 비효율적이다.&lt;/h3&gt;
-&lt;p&gt;status code는 REST 아키텍쳐가 아니라 http와 관련있다. http 통신을 한다면 status code를 반환해줘야 한다. 상황에 따라 다른 상태코드를 내려주는 행위가 불편하고 무의미 하다고 생각한다면 팀의 협의에 따라 사용하지 않을 수 있다.
-하지만 이럴 경우에 API는 어떤 상황에서든 200을 반환하게 될 것이고, 서버가 죽었을때는 500을 반환하니 결과적으로 200 아니면 500 코드만 존재하게 된다.&lt;/p&gt;
-
-&lt;p&gt;참고로 django drf &lt;a href=&quot;https://www.django-rest-framework.org/api-guide/status-codes/&quot;&gt;공식문서&lt;/a&gt;를 읽어보면 status code에 대한 정리가 잘 되어있다. 
-flask 공식문서에는 status code에 대한 설명이 부족하다. 그래서 이런 오해가 발생하는 것 같다.&lt;/p&gt;
-
-&lt;h3 id=&quot;3-rest는-단-4가지-methods-get-post-put-delete만을-허용한다&quot;&gt;3. &lt;code class=&quot;highlighter-rouge&quot;&gt;REST&lt;/code&gt;는 단 4가지 methods, &lt;code class=&quot;highlighter-rouge&quot;&gt;get&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;post&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;delete&lt;/code&gt;만을 허용한다.&lt;/h3&gt;
-&lt;p&gt;REST의 제약조건 중에 method 종류를 제한하는 조건은 없다. &lt;code class=&quot;highlighter-rouge&quot;&gt;patch&lt;/code&gt; 를 사용해도 된다.&lt;/p&gt;
-
-&lt;h3 id=&quot;4-rest를-따르게-되면-method-가-get일때-json을-못보내기-때문에-비효율적이다&quot;&gt;4. REST를 따르게 되면 method 가 get일때 json을 못보내기 때문에 비효율적이다.&lt;/h3&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt;통신은 &lt;code class=&quot;highlighter-rouge&quot;&gt;get&lt;/code&gt;을 사용할때 &lt;code class=&quot;highlighter-rouge&quot;&gt;request body&lt;/code&gt;를 보낼 수 있다. 기술적으로 get일때 json을 보내는 것은 가능하다. 하지만 시맨틱하게 바라보면 GET일때 뭔가를 보낸다는 건 안맞다.
-로이필딩이 &lt;code class=&quot;highlighter-rouge&quot;&gt;get&lt;/code&gt;일때 &lt;code class=&quot;highlighter-rouge&quot;&gt;request body&lt;/code&gt;를 추가하는 것에 대해 남긴 코멘트를 첨부한다. 최종 결정은 개발자에게 달려있다.&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;Yes. In other words, any HTTP request message is allowed to contain a message body, and thus must parse messages with that in mind. 
-Server semantics for GET, however, are restricted such that a body, if any, has no semantic meaning to the request. The requirements on parsing are separate from the requirements on method semantics.
-So, yes, you can send a body with GET, and no, it is never useful to do so.
-This is part of the layered design of HTTP/1.1 that will become clear again once the spec is partitioned (work in progress).
-….Roy&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;5-rest로는-현실세계의-모든-행위를-표현할-수-없다-표현이-불가능한-행위가-많기-때문에-rest를-도입하는-건-비효율적이다&quot;&gt;5. REST로는 현실세계의 모든 행위를 표현할 수 없다. 표현이 불가능한 행위가 많기 때문에 REST를 도입하는 건 비효율적이다.&lt;/h3&gt;
-&lt;p&gt;현실세계는 복잡하다. 그래서 이 의견에 어느정도 동의한다. 하지만 완전히 동의하는 건 아니다! 
-이 주장을 하는 사람이 생각하는 표현할 수 없는 행위가 무엇이냐에 따라 내 의견은 다르다. 나는 한번 이런 논의를 한 적이 있다.
-예를 들어, 고객이 물건을 구매하려고 한다. 고객은 구매 버튼을 누르고 가상계좌를 발급받는다. 
-돈을 지불하기 전이기 때문에 status 는 &lt;code class=&quot;highlighter-rouge&quot;&gt;ready&lt;/code&gt;로 표현하고 rds 에 저장한다. 
-그 후 고객이 돈을 지불하면 status를 &lt;code class=&quot;highlighter-rouge&quot;&gt;prepared&lt;/code&gt;로 변경해 저장한다. 왜 &lt;code class=&quot;highlighter-rouge&quot;&gt;paid&lt;/code&gt;가 아닐까? 왜냐면 pg사에서 결제 완료를 알리는 callback이 아직 안왔기 때문이다. callback을 받으면 status가 paid로 변한다.
-상대방은 이렇게 주장했다. “status가 paid가 아니고 prepared으로 변하는 현상은 get, post, put, delete 어디에도 맞지 않습니다. 그래서 REST를 도입하는건 비효율적입니다.” 
-REST를 사용하지 않더라도 현재 개발하는 API는 http통신을 하기 때문에 method를 get, post, put, patch, delete중에 선택해야 한다. 자원에 대한 행위에 대해 생각보면, status를 변경하는 행위는 동사 update로 표현할 수 있다. 그래서 put을 사용할 수 있다. 그리고 아키텍쳐를 적용하면 client 와 server가 지켜야 할 규칙이 생기는 것이고, 결국 커뮤니케이션 비용도 줄일 거라고 생각한다.&lt;/p&gt;
-
-&lt;p&gt;이렇게 REST에 대한 오해를 정리해봤다. 개발을 하면서 느낀점인데, REST는 널리 알려졌지만 그만큼 개발자들마다 이해도도 다르다. 이 글이 RESTful API개발을 하려는 개발자들에게 도움이 됐으면 좋겠다.&lt;/p&gt;
-</description>
-        <pubDate>Sun, 11 Aug 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/python/2019/08/11/misunderstandings-about-rest/</link>
-        <guid isPermaLink="true">http://localhost:4000/python/2019/08/11/misunderstandings-about-rest/</guid>
-      </item>
-    
-      <item>
-        <title>SQLAlchemy, Timeit으로 성능 측정하기</title>
-        <description>&lt;p&gt;데이터베이스와 연결하는 코드를 읽어보니, API에서 쿼리를 보낼때 마다 SQLAlchemy &lt;a href=&quot;https://docs.sqlalchemy.org/en/13/core/engines.html&quot;&gt;create_engine&lt;/a&gt; 을 사용해서 디비와 커넥션 부터 만들고 세션을 만든 다음 끊는 방식으로 되어있었다.
-만약 한 API에서 쿼리를 5번 보낸다면 engine을 5번 생성하게 된다. 그런데 engine을 여러번 생성하는게 성능에 큰 차이를 미칠까?
-성능을 측정하기 위해서 &lt;a href=&quot;https://docs.python.org/3/library/timeit.html&quot;&gt;timeit&lt;/a&gt;을 사용했다. timeit은 작은 크기의 파이선 코드의 실행시간을 측정할 때 사용할 수 있는 라이브러리다.&lt;/p&gt;
-
-&lt;p&gt;엔진을 한번만 만드는 경우&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; timeit &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;from sqlalchemy import create_engine&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;engine=create_engine('mysql://root:@localhost:3306/quicket');engine.execute('SELECT 1')&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;result:
-100 loops, best of 3: 5.55 msec per loop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;‌&lt;/p&gt;
-
-&lt;p&gt;엔진을 실행할때마다 매번 생성할 경우&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; timeit &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;from sqlalchemy import create_engine;engine=create_engine('mysql://root@localhost:3306/quicket')&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;engine.execute('SELECT 1')&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;result:
-10000 loops, best of 3: 135 usec per loop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;결과를 봤을때는 &lt;code class=&quot;highlighter-rouge&quot;&gt;app.run()&lt;/code&gt;으로 코드를 메모리에 올렸을 때 최초 한번 실행하는 게 제일 좋은 방법이다.&lt;/p&gt;
-
-</description>
-        <pubDate>Wed, 07 Aug 2019 00:00:00 +0900</pubDate>
-        <link>http://localhost:4000/python/2019/08/07/sqlalchemy-create-engine/</link>
-        <guid isPermaLink="true">http://localhost:4000/python/2019/08/07/sqlalchemy-create-engine/</guid>
-      </item>
-    
 
     
       
@@ -1485,25 +1356,25 @@ REST를 사용하지 않더라도 현재 개발하는 API는 http통신을 하�
       
     
       
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
+        
+          <item>
+            <title>Tags</title>
+            <description>{.% for tag in site.tags %} {.% assign t = tag | first %} {.% assign posts = tag
+| last %}
+
+&lt;h2&gt;#{{ t }}&lt;/h2&gt;
+&lt;ul&gt;
+    {.% for post in posts %} {.% if post.tags contains t %}
+    &lt;li&gt;
+        &lt;a href=&quot;{{ post.url }}&quot;&gt;{{ post.title }}&lt;/a&gt;
+        &lt;span class=&quot;post-meta&quot;&gt;{{ post.date | date: &quot;%b %-d, %Y&quot; }}&lt;/span&gt;
+    &lt;/li&gt;
+    {.% endif %} {.% endfor %}
+&lt;/ul&gt;
+{.% endfor %}</description>
+            <link>http://localhost:4000/tags/</link>
+          </item>
+        
       
     
       

@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang='en'>
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+
+  <meta name="description" content="A pythonist in startup">
+  <meta name="keywords" content="Python, Developer, startup">
+  <meta name="author" content="Suhyun Baik">
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+  <!-- facebook start -->
+  <meta property="og:type"          content="website" />
+  <meta property="og:title"         content="파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기" />
+  <meta property="og:description"   content="파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기" />
+
+  <!-- Twitter start -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기">
+  <meta name="twitter:description" content="파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기">
+
+  <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+  <meta itemprop="name" content="파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기">
+  <meta itemprop="description" content="파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기">
+
+  <title>파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기</title>
+  <meta name='description' content="목차">
+  <link rel='canonical' href="http://localhost:4000/architecture/2020/11/08/python-django-onion-structure/">
+  <link rel='alternate' type='application/rss+xml' title='A python developer' href="http://localhost:4000/feed.xml">
+  <!-- css   -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <style>
+    
+
+    html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */html{font-family:sans-serif;line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav,section{display:block}h1{font-size:2em;margin:0.67em 0}figcaption,figure,main{display:block}figure{margin:1em 40px}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace, monospace;font-size:1em}a{background-color:transparent;-webkit-text-decoration-skip:objects}a:active,a:hover{outline-width:0}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:inherit}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace, monospace;font-size:1em}dfn{font-style:italic}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-0.25em}sup{top:-0.5em}audio,video{display:inline-block}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}button,html [type="button"],[type="reset"],[type="submit"]{-webkit-appearance:button}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0}button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{display:inline-block;vertical-align:baseline}textarea{overflow:auto}[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0}[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto}[type="search"]{-webkit-appearance:textfield;outline-offset:-2px}[type="search"]::-webkit-search-cancel-button,[type="search"]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details,menu{display:block}summary{display:list-item}canvas{display:inline-block}template{display:none}[hidden]{display:none}body,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,dd,ol,ul,figure,hr,fieldset,legend{margin:0;padding:0}li>ol,li>ul{margin-bottom:0}table{border-collapse:collapse;border-spacing:0}address,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,ol,ul,figure,hr,table,fieldset{margin-bottom:32px}dd,ol,ul{list-style-position:inside;margin-left:16px}@-webkit-keyframes spin{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes spin{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.icon{position:relative;display:inline-block;width:25px;height:25px;overflow:hidden;fill:currentColor}.icon__cnt{width:100%;height:100%;background:inherit;fill:inherit;pointer-events:none;transform:translateX(0);-ms-transform:translate(0.5px, -0.3px)}.icon--m{width:50px;height:50px}.icon--l{width:100px;height:100px}.icon--xl{width:150px;height:150px}.icon--xxl{width:200px;height:200px}.icon__spinner{position:absolute;top:0;left:0;width:100%;height:100%}.icon--ei-spinner .icon__spinner,.icon--ei-spinner-2 .icon__spinner{-webkit-animation:spin 1s steps(12) infinite;animation:spin 1s steps(12) infinite}.icon--ei-spinner-3 .icon__spinner{-webkit-animation:spin 1.5s linear infinite;animation:spin 1.5s linear infinite}.icon--ei-sc-facebook{fill:#3b5998}.icon--ei-sc-github{fill:#333}.icon--ei-sc-google-plus{fill:#dd4b39}.icon--ei-sc-instagram{fill:#3f729b}.icon--ei-sc-linkedin{fill:#0976b4}.icon--ei-sc-odnoklassniki{fill:#ed812b}.icon--ei-sc-skype{fill:#00aff0}.icon--ei-sc-soundcloud{fill:#f80}.icon--ei-sc-tumblr{fill:#35465c}.icon--ei-sc-twitter{fill:#55acee}.icon--ei-sc-vimeo{fill:#1ab7ea}.icon--ei-sc-vk{fill:#45668e}.icon--ei-sc-youtube{fill:#e52d27}.icon--ei-sc-pinterest{fill:#bd081c}.icon--ei-sc-telegram{fill:#0088cc}.highlight{margin:0;background:#fff}.highlighter-rouge .highlight{border-radius:5px;background:#FAFAFA;font-family:'Noto Sans KR', sans-serif;font-size:14px}.highlight .c{color:#998;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#998;font-style:italic}.highlight .cp{color:#999;font-weight:bold}.highlight .c1{color:#998;font-style:italic}.highlight .cs{color:#999;font-weight:bold;font-style:italic}.highlight .gd{color:#000;background-color:#fdd}.highlight .gd .x{color:#000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000;background-color:#dfd}.highlight .gi .x{color:#000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaa}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#458;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:#008080}.highlight .nb{color:#0086B3}.highlight .nc{color:#458;font-weight:bold}.highlight .no{color:#008080}.highlight .ni{color:#800080}.highlight .ne{color:#900;font-weight:bold}.highlight .nf{color:#900;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:#000080}.highlight .nv{color:#008080}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#d14}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#990073}.highlight .bp{color:#999}.highlight .vc{color:#008080}.highlight .vg{color:#008080}.highlight .vi{color:#008080}.highlight .il{color:#099}body{color:#323232;font-size:19px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-weight:300;line-height:32px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}*::selection{color:#fff;background:#00A0FF}a{text-decoration:none;color:#323232;transition:.4s}a:hover,a:active,a:focus{text-decoration:underline}img{display:block;max-width:100%;font-style:italic}hr{height:1px;margin:32px 0;border:0;background-color:#E9EFF3}h1,h2,h3,h4,h5,h6{font-weight:inherit;line-height:initial;font-weight:600;font-family:'Noto Sans KR', sans-serif}h1{font-size:36px}h2{font-size:28px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}p,span{font-family:'Noto Sans KR', sans-serif}code{font-size:14px}blockquote{padding-left:16px;border-left:3px solid #2B5F72;font-style:italic;font-size:"Noto Serif KR",sans-serif}pre,code{font-family:Courier,monospace;background-color:#FAFAFA}pre{overflow:auto;padding:32px;margin-bottom:16px;font-size:16px;line-height:25px;white-space:pre-wrap;word-wrap:break-word}li code,p code{padding:4px 8px}input[type='text'],input[type='tel'],input[type='number'],input[type='email'],select,textarea{width:100%;padding:16px;border:1px solid #E9EFF3;border-radius:0;outline:none;background-color:#fff;font-size:14px;appearance:none;transition:.4s}input[type='text']:hover,input[type='text']:active,input[type='text']:focus,input[type='tel']:hover,input[type='tel']:active,input[type='tel']:focus,input[type='number']:hover,input[type='number']:active,input[type='number']:focus,input[type='email']:hover,input[type='email']:active,input[type='email']:focus,select:hover,select:active,select:focus,textarea:hover,textarea:active,textarea:focus{border:1px solid #323232}.o-grid{margin:0 auto;max-width:700px}.o-grid:after{content:'';display:table;clear:both}.o-grid .o-grid{margin-right:-16px;margin-left:-16px;padding:0}.o-grid--full{max-width:100vw}.o-grid__col{float:left;padding-right:16px;padding-left:16px}.o-grid__col--1-4-s{width:25%}.o-grid__col--1-3-s{width:33.3333333333%}.o-grid__col--2-4-s{width:50%}.o-grid__col--3-4-s{width:75%}.o-grid__col--4-4-s{width:100%}@media (min-width: 40em){.o-grid__col--1-4-m{width:25%}.o-grid__col--1-3-m{width:33.3333333333%}.o-grid__col--2-4-m{width:50%}.o-grid__col--3-4-m{width:75%}}@media (min-width: 64em){.o-grid__col--1-4-l{width:25%}.o-grid__col--1-3-l{width:33.3333333333%}.o-grid__col--2-4-l{width:50%}.o-grid__col--3-4-l{width:75%}}.o-grid__col--full{width:100%}.o-grid__col--center{margin:0 auto}.o-grid__col--end{margin-left:auto}.o-wrapper{padding:32px 0}.c-off-canvas-container{display:flex;min-height:100vh;flex-direction:column}.c-off-canvas-container .o-wrapper{flex:1 0 auto}.o-plain-list{margin:0;padding:0;list-style:none}.c-header__inner{padding:16px 0;border-bottom:1px solid #E9EFF3}.c-header__icon{vertical-align:middle}.c-logo__link{font-size:19px;font-weight:900;transition:.4s}.c-logo__link:hover,.c-logo__link:active,.c-logo__link:focus{color:#00A0FF;text-decoration:none}.c-nav__item{font-size:16px}.c-nav__link{display:block;transition:.4s}.c-nav__link--current{color:#00A0FF}.home-template .c-nav__link--current:not(:hover){color:#323232}.c-nav__link:hover,.c-nav__link:active,.c-nav__link:focus{color:#00A0FF;text-decoration:none}.c-off-canvas-toggle{float:right;position:relative;top:8px;z-index:10;height:19px;width:25px;cursor:pointer}.c-off-canvas-toggle__icon{position:absolute;left:0;height:1px;width:25px;background:#323232;cursor:pointer}.c-off-canvas-toggle__icon:before,.c-off-canvas-toggle__icon:after{content:'';display:block;height:100%;background-color:inherit;transition:.4s}.c-off-canvas-toggle__icon:before{transform:translateY(16px)}.c-off-canvas-toggle__icon:after{transform:translateY(7px)}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon{height:2px;background-color:transparent}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:before,.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:after{position:relative;visibility:visible;background:#323232}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:before{top:11px;transform:rotate(-45deg)}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:after{top:9px;transform:rotate(45deg)}.c-off-canvas-toggle--close{top:0;float:none;display:block;margin-left:auto}html,body{overflow-x:hidden}.c-off-canvas-content{position:fixed;top:0;right:0;width:300px;height:100%;padding:24px 32px;background-color:#fff;transform:translate3d(300px, 0, 0)}.c-off-canvas-container{transform:translate3d(0, 0, 0);transition:transform .4s cubic-bezier(0.16, 0.68, 0.43, 0.99)}.c-off-canvas-container.is-active{transform:translate3d(-300px, 0, 0)}.c-off-canvas-container.is-active:after{position:fixed;top:0;right:0;bottom:0;left:0;content:'';background-color:rgba(0,0,0,0.2)}.c-tags a{display:inline-block;padding:4px 16px;margin:0 8px 4px 0;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";line-height:25px;background-color:#FAFAFA;transition:.4s}.c-tags a:hover,.c-tags a:active,.c-tags a:focus{text-decoration:none;background-color:#FAFAFA}@media (max-width: 39.99em){.c-tags{margin-bottom:22px}}.c-btn{display:inline-block;padding:8px 32px;cursor:pointer;transition:.4s;text-align:center;vertical-align:middle;white-space:nowrap;line-height:inherit;border:0;border-radius:0;color:#fff;background-color:#207cdf;font-size:16px}.c-btn:hover,.c-btn:active,.c-btn:focus{text-decoration:none;background-color:#238cf6}.c-btn--full{width:100%}.c-btn--small{padding:4px 16px}.c-post-card{display:block;padding:32px 0;word-break:break-word;border-bottom:1px solid #E9EFF3}.c-post-card--first{padding-top:0}.c-post-card--last{padding-bottom:0;border-bottom:0}.c-post-card__title{margin-bottom:10px;font-size:19px;font-weight:600;transition:.4s}.c-post-card__excerpt{margin-bottom:10px}.c-post-card__date{display:block;color:#2B5F72;direction:ltr;font-size:12px;line-height:22px;text-transform:uppercase}.c-post-card:hover{color:#323232;text-decoration:none}.c-post-card:hover .c-post-card__title{color:#00A0FF}.c-pagination{text-transform:uppercase;transition:.4s}.c-pagination:hover,.c-pagination:active,.c-pagination:focus{color:#00A0FF;text-decoration:none}.c-pagination__text{position:relative;font-size:14px;letter-spacing:2px}.c-pagination__text--prev{left:-16px}.c-pagination__text--next{right:-16px}.c-pagination__icon{vertical-align:text-top}.c-pagination__icon--prev{left:-8px}.c-pagination__icon--next{right:-8px}.c-post{margin:0 auto;max-width:740px}.c-post__title{font-size:24px;margin-bottom:16px}@media (min-width: 40em){.c-post__title{font-size:28px;line-height:50px}}.c-post__date{position:relative;padding-top:16px;display:block;text-align:center;margin-bottom:16px;font-size:14px;line-height:22px;color:#2B5F72}.c-post__date:after{position:absolute;content:'';top:0;left:50%;height:1px;width:64px;background:#FAFAFA;transform:translateX(-50%)}.c-post__image{margin:0 auto 16px}.c-content{font-size:14px;font-family:"Noto Serif KR",sans-serif}.c-content a:not(.c-btn){text-decoration-skip:ink}.c-content a:not(.c-btn):hover,.c-content a:not(.c-btn):active,.c-content a:not(.c-btn):focus{color:#00A0FF}.twitter-tweet,.fluid-width-video-wrapper{margin-bottom:16px !important}.c-social-nav__item{display:inline-block}.c-social-nav__icon{fill:#323232;vertical-align:middle;transition:.4s}.c-social-nav__icon:hover,.c-social-nav__icon:active,.c-social-nav__icon:focus{fill:#00A0FF}.c-footer{padding:32px 0;background-color:#FAFAFA}.u-hidden{display:none}.u-hidden-visually{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.u-font-medium{font-size:16px;line-height:25px}.u-font-small{font-size:14px;line-height:22px}.noto-font-small{font-family:'Noto Serif KR', sans-serif;font-size:14px;line-height:22px}.u-font-tiny{font-size:12px;line-height:19px}.u-text-left{text-align:left}.u-text-right{text-align:right}.u-text-center{text-align:center}.u-text-justify{text-align:justify}.u-inline{display:inline}.u-block{display:block}.u-inline-block{display:inline-block}.u-left{float:left}.u-right{float:right}.u-clearfix:after{content:'';display:table;clear:both}
+
+    .c-post__image {display: none}
+  </style>
+</head>
+<!-- Global site tag (gtag.js) - Google Analytics start -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-153773360-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'UA-153773360-1');
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics end -->
+
+<body>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+
+<div class='js-off-canvas-container c-off-canvas-container'>
+    <header class='c-header'>
+
+    <div class='o-grid'>
+        <div class='o-grid__col o-grid__col--full'>
+            <div class='c-header__inner'>
+
+                <div class='o-grid'>
+                    <div class='o-grid__col o-grid__col--3-4-s'>
+                        <div class='c-logo u-text-left'>
+                            <!--              <a class='c-logo__link' href='/'>A python developer</a>-->
+                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">🔥</a>
+<!--                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">😈</a>-->
+<!--                            <a class='c-logo__link' href='https://docs.google.com/document/d/e/2PACX-1vRdClPBFE-3MOIp5wyACP41XoQIW35QC2x6js9nk4B2FbCM42bazcNXrQBrbm1VAclDoob8KFm-S8JU/pub' style="font-weight: bold; margin-left: 20px; font-size: 1rem">😈</a>-->
+                        </div>
+                    </div>
+
+                    <!--          <div class='o-grid__col o-grid__col&#45;&#45;1-4-s'>-->
+                    <!--            <label class='js-off-canvas-toggle c-off-canvas-toggle' aria-label='Toggle navigation'>-->
+                    <!--              <span class='c-off-canvas-toggle__icon'></span>-->
+                    <!--            </label>-->
+                    <!--          </div>-->
+
+                    <div class='o-grid__col o-grid__col--1-4-s'>
+                        <div class='c-off-canvas-content'>
+                            <label class='js-off-canvas-toggle c-off-canvas-toggle c-off-canvas-toggle--close'>
+                                <span class='c-off-canvas-toggle__icon'></span>
+                            </label>
+
+                            <ul class='c-nav o-plain-list '>
+                                
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/about.html'>About</a>
+      </li>
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/categories.html'>Categories</a>
+      </li>
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/tags/'>Tags</a>
+      </li>
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<!--    <p>목차</p>
+
+<ol>
+  <li>어니언 아키텍쳐 소개</li>
+  <li>어니언 아키텍쳐가 해결하는 문제</li>
+  <li>파이선, 장고로 구현한 어니언 아키텍쳐
+    <ul>
+      <li>Model, Service, View 구조</li>
+      <li>model과 domain model</li>
+      <li>service 와 application service, domain service</li>
+      <li>다이어그램과 코드</li>
+    </ul>
+  </li>
+  <li>DDD와 어니언 아키텍쳐와의 관계</li>
+  <li>References</li>
+</ol>
+
+<h5 id="어니언-아키텍쳐-소개">어니언 아키텍쳐 소개</h5>
+
+<p>어니언 아키텍쳐(onion architecture)는 2008년에 제프리 팔레르모가 만든 패턴 입니다. 어니언 아키텍쳐를 적용하기에 좋은 대상은 복잡한 기능이 많고 장기간 사용할 비즈니스 어플리케이션이며, 소규모 웹 어플리케이션에는 적합하지 않습니다. 이 아키텍쳐는 전통적인 계층적 아키텍쳐 (layered architecture)와 헥사고날 아키텍쳐(Hexagonal architecture)와 비슷한 부분이 많습니다. 계층적 아키텍쳐처럼 어니언 아키텍쳐도 계층이라는 단어를 사용하지만 의미는 약간 다르며, 3-tire 와 n-tier 아키텍쳐에 있는 문제점을 해결한 아키텍쳐입니다.</p>
+
+<p><img src="https://herbertograca.files.wordpress.com/2017/07/1980s-90s-layered-architecture.png?w=1100" alt="layered architecture" /></p>
+
+<p>전통적인 레이어드 아키텍쳐를 표현한 다이어그램</p>
+
+<p>전통적인 계층적 아키텍쳐는 계층(layer)으로 이뤄집니다. 각 계층은 자신보다 하위에 있는 계층에 의존합니다. 각 계층은 하위 계층만 호출할 수 있습니다다. 모든 계층은 소프트웨어에서 공통으로 사용하는 인프라나 유틸리티 서비스에 의존합니다.</p>
+
+<p>인프라, 유틸리티 서비스와 관련된 코드가 전 계층에 있기 때문에 모든 계층이 종국에는 뒤섞이면서 서로 강결합해버립니다. 이런 결합이 생기면, UI와 비즈니스 로직의 결합이 발생해 데이터 접근방식에 영향을 줍니다. 가장 흔히 발생하는 문제는 비즈니스 로직이 없어서 UI 도 없는 문제입니다. 데이터 접근 부분이 없어서 비즈니스 로직도 없는 경우도 생깁니다. 데이터 접근 방식은 업계 통상 2년마다 바뀌는데, 계층적 아키텍쳐가 적용된 소프트웨어라면 인프라와 강결합된 코드가 전 계층에 퍼져 있을테니 데이터베이스를 교체할때 비싼 유지보수 비용을 지불하게 됩니다.</p>
+
+<p>제프리 팔레르모가 제안한 어니언 아키텍쳐는 위에 언급된 단점을 개선한 아키텍쳐입니다.</p>
+
+<h5 id="어니언-아키텍쳐가-해결하는-문제">어니언 아키텍쳐가 해결하는 문제</h5>
+
+<p><img src="https://i0.wp.com/jeffreypalermo.com/wp-content/uploads/2018/06/image257b0257d255b59255d.png?resize=366%2C259&amp;ssl=1" alt="onion architecture" /></p>
+
+<p>어니언 아키텍쳐의 주 관심사는 내부/외부 구획을 짓기와 결합의 조종입니다. 모든 코드는 해당 영역보다 더 중심부에 가까운 영역에 있는 요소에 의존할 수 있지만, 바깥으로 향하는 영역에 있는 요소에 의존하면 안됩니다. 각 계층은 서로 소통할때 인터페이스를 사용합니다. 어니언 아키텍쳐는 기존의 n-tier 아키텍쳐와는 다르게 데이터 계층에 의존하지 않습니다. 대신 도메인 모델 계층에 의존합니다.</p>
+
+<p>아키텍쳐 중심부에는 도메인 모델이 있습니다. 도메인 모델은 다른 무엇과도 결합하지 않습니다. 도메인 모델 계층, 도메인 서비스계층, 어플리케이션 서비스 계층을 포함하는 어플리케이션 코어는 여러 계층으로 나눠질 수 있습니다. 나누는 계층 갯수는 제한이 없습니다. 필요한대로 나누면 됩니다. 그러나 도메인 모델 계층은 반드시 중심에 있어야 합니다.</p>
+
+<p>오브젝트를 저장하는 행위는 어플리케이션 코어에 없다. 인프라인 데이터베이스와 연관성이 있기 때문입니다. 어플리케이션 코어에는 인터페이스만 있어야 합니다. 바깥 원은 자주 바뀌는 요소들을 위한 자리입니다. UI, 인프라, 테스트 등이 여기에 속합니다. 변화가 자주 일어나는 요소들은 반드시 어플리케이션의 코어에서 분리되어야 합니다. 이러한 요소들 중에는 데이터 접근 방식이 있습니다. 데이터 접근 방식은 통상 2년 단위로 크게 바뀌고 데이터베이스에 강하게 의존하기 때문에 분리되야 합니다. 데이터베이스도 소프트웨어 구성에서 외부에 속해야 합니다. 데이터베이스, 파일시스템, 등등을 어플리케이션에서 결합되지 않게해 어플리케이션 유지 보수 비용을 줄입니다.</p>
+
+<p>어니언 아키텍쳐의 각 계층을 간략해게 정리하자면 다음과 같습니다.</p>
+
+<ul>
+  <li>도메인 모델 계층: 도메인 오브젝트와 도메인 인터페이스가 있는 계층. 의존성이 없습니다.</li>
+  <li>도메인 서비스 계층: 도메인 모델 계층과 어플리케이션 서비스 계층을 연결합니다. 이 계층에서 오브젝트를 갖고오거나 저장하는 등, 데이터베이스와 연관된 작업을 수행하는 인터페이스를 둡니다.</li>
+  <li>어플리케이션 서비스 계층: 어플리케이션 종속적인 비즈니스 로직이 있는 계층.  (예: usecase)</li>
+  <li>외부 계층: UI, 데이터베이스, 테스트와 같이 변화가 잦은 요소들이 있는 계층. 웹 어플리케이션일 경우에는 이 계층에 웹 API 또는 유닛 테스트가 있습니다. 이 계층은 인터페이스를 통해 내부 계층과 연결됩니다.</li>
+</ul>
+
+<p>계층들은 서로를 감싸면서 양파같은 모양을 형성합니다. 어니언은 외부 계층은 하위 계층에 의존할 수 있지만, 하위 계층은 외부 계층에 있는 코드를 직접 호출할 수 없다는 의존성 규칙이 있습니다. 각 계층은 의존성 규칙에 따라서 상호작용합니다.</p>
+
+<p>어니언 아키텍쳐의 주 특징을 간단하게 4가지로 정리하면 다음과 같습니다.</p>
+
+<ul>
+  <li>어플리케이션은 독립적인 오브젝트 모델로 개발해야 합니다.</li>
+  <li>내부 원은 인터페이스를 정의한다. 외부 원은 인터페이스를 구현합니다.</li>
+  <li>결합 방향은 중앙을 향해야 합니다.</li>
+  <li>모든 어플리케이션 코어 코드는 인프라와 별개로 컴파일될 수 있고 실행될 수 있어야 합니다.</li>
+</ul>
+
+<h5 id="파이선-장고로-구현한-어니언-아키텍쳐">파이선, 장고로 구현한 어니언 아키텍쳐</h5>
+
+<p>카페에서 커피 주문을 받거나 고객의 주문을 관리하는 시스템을 어니언 아키텍쳐로 구현해보기로 합니다.</p>
+
+<ul>
+  <li>Model, Service, View 구조</li>
+</ul>
+
+<p>먼저 보통 파이선 장고 프로젝트를 시작할떄 흔히 사용하는  model, service, view 구조로 개발해보도록 합니다. 카페, 고객, 주문 모델링은 장고 ORM 으로 구현합니다.</p>
+
+<p>models.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+
+<span class="k">class</span> <span class="nc">Cafe</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Customer</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Customer</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">cafe</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Cafe</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+  
+</code></pre></div></div>
+
+<p>카페에 커피를 주문하고, 주문을 관리할 수 있는 비즈니스 로직을 구현합니다. 카페와 고객의 아이디를 받아서 데이터베이스의 주문 테이블에 주문을 저장히고, 저장된 주문 데이터를 불러와 주문 객체로 만들어서 해당 객체를 가지고 비즈니스 로직을 수행해야 합니다. 데이터를 불러오거나 저장할때는 ORM을 사용합니다. ORM 을 사용하기 때문에 데이터 접근, 데이터 객체 변환 계층은 필요없다. ORM 이 그 역할을 동시에 수행합니다.</p>
+
+<p>service.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">OrderCoffeeService</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">order_coffee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">cafe_id</span><span class="o">=</span><span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="o">=</span><span class="n">customer_id</span><span class="p">)</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    
+
+<span class="k">class</span> <span class="nc">OrderService</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderDomainModel</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">order_id</span><span class="o">=</span><span class="n">order_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">order</span>
+</code></pre></div></div>
+
+<p>간단한 API를 작성합니다. API 는 service 에서 반환한 객체를 serializer 를 통해 직렬화 한뒤 외부에 반환합니다.</p>
+
+<p>serializer.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
+
+<span class="k">class</span> <span class="nc">OrderResponseSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+    <span class="n">cafe_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+    <span class="n">customer_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>views.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">JsonResponse</span>
+
+<span class="kn">from</span> <span class="nn">cafe.application_service</span> <span class="kn">import</span> <span class="n">order_coffee_service</span><span class="p">,</span> <span class="n">order_service</span>
+<span class="kn">from</span> <span class="nn">cafe.serializer</span> <span class="kn">import</span> <span class="n">OrderResponseSerializer</span>
+
+
+<span class="k">def</span> <span class="nf">order_coffee</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">):</span>
+    <span class="n">order_coffee_service</span><span class="o">.</span><span class="n">order_coffee</span><span class="p">(</span><span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">order_service</span><span class="o">.</span><span class="n">get_order</span><span class="p">(</span><span class="n">order_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">serializer</span> <span class="o">=</span> <span class="n">OrderResponseSerializer</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>보통 장고로 구현한 backend용 파이선 프로젝트는 위의 구조를 많이 사용하는 것 같습니다. 이제 위 코드를 어니언 아키텍쳐 다이어그램과 최대한 비슷하게 구현해봅시다.</p>
+
+<ul>
+  <li>model 과 domain model</li>
+</ul>
+
+<p>어니언 아키텍쳐 규칙에 따라 인프라와 연관된 코드를 다른 코드에서 분리해야 합니다. 여기서는 인프라 코드가 장고 ORM 입니다. ORM으로 작성한 model은 데이터베이스에 접근해서 데이터를 가져오는 용도로만 사용합니다. ORM으로 가져온 데이터는 객체상태로 존재하지만 해당 객체를 바로 쓰지 않습니다. 도메인 모델을 통해서 객체로 만듭니다.</p>
+
+<p>domain_models.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">cafe.models</span> <span class="kn">import</span> <span class="n">Order</span><span class="p">,</span> <span class="n">Cafe</span><span class="p">,</span> <span class="n">Customer</span>
+
+
+<span class="o">@</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">CafeDomainModel</span><span class="p">:</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="o">@</span><span class="nb">classmethod</span>
+    <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">cafe</span><span class="p">:</span> <span class="n">Cafe</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">cafe</span><span class="o">.</span><span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">cafe</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+
+<span class="o">@</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">OrderDomainModel</span><span class="p">:</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cafe_id</span> <span class="o">=</span> <span class="n">cafe_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customer_id</span> <span class="o">=</span> <span class="n">customer_id</span>
+
+    <span class="o">@</span><span class="nb">classmethod</span>
+    <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="nb">id</span><span class="p">,</span> <span class="n">customer_id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">customer_id</span><span class="p">,</span> <span class="n">cafe_id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">cafe_id</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<ul>
+  <li>service 와 application service, domain service</li>
+</ul>
+
+<p>Service 계층은 2가지의 다른 작업을 동시에 수행합니다. 하나는 비즈니스 로직이고 또 하나는 객체를 가지고 수행하는 작업입니다. Cafe 또는 Order 객체를 갖고오거나 객체를 삭제, 수정, 저장하는 행위는 어니언 아키텍쳐에서 Object Service에 해당합니다. 주문을 조회하고 커피 주문을 하는 행위는 Application Service 입니다. 먼저 Object service 에서 사용할 추상클래스를 정의합니다.</p>
+
+<p>object_service.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">abc</span>
+
+<span class="k">class</span> <span class="nc">ObjectService</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="o">@</span><span class="n">abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="o">@</span><span class="n">abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+</code></pre></div></div>
+
+<p>추상클래스를 상속해 cafe object service 와 order object service를 구현합니다.</p>
+
+<p>object_service.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">class</span> <span class="nc">CafeObjectService</span><span class="p">(</span><span class="n">ObjectService</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cafe</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Cafe</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">cafe_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe</span><span class="p">:</span> <span class="n">Cafe</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="n">cafe</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">OrderObjectService</span><span class="p">(</span><span class="n">ObjectService</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Order</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">order_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">Order</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">'Order Does not exist'</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<p>비즈니스 로직이 있는 application service 는 이제 object service 로 비즈니스 로직을 수행합니다.</p>
+
+<p>application_service.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">OrderCoffeeService</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_object_service</span><span class="p">:</span> <span class="n">CafeObjectService</span><span class="p">)</span>
+  	<span class="bp">self</span><span class="o">.</span><span class="n">_cafe_object_service</span> <span class="o">=</span> <span class="n">cafe_object_service</span>
+    
+  <span class="k">def</span> <span class="nf">order_coffee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">cafe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cafe_object_service</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cafe_id</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_cafe_object_service</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+    
+    
+<span class="k">class</span> <span class="nc">OrderService</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_object_service</span><span class="p">:</span> <span class="n">OrderObjectService</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order_object_service</span> <span class="o">=</span> <span class="n">order_object_service</span>
+
+    <span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderDomainModel</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_object_service</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">OrderDomainModel</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+     
+</code></pre></div></div>
+
+<ul>
+  <li>다이어그램</li>
+</ul>
+
+<p><img src="https://suhyunbaik.github.io/images/posts/python_django_onion.png" alt="python_django_onion" /></p>
+
+<p>완성된 코드는 <a href="https://github.com/suhyunbaik/python-django-onion">여기서</a> 확인할 수 있습니다.</p>
+
+<h5 id="ddd와의-관계">DDD와의 관계</h5>
+
+<p>어니언 아키텍쳐와 DDD는 성취하려는 목표가 다릅니다. 어니언 아키텍쳐는 도메인과 비즈니스 로직을 데이터 접근, UI, 인프라와 같은 영역에 의존하지 않고 독립적인 영역으로 만드는 게 목표입니다. 그래서 어니언 아키첵쳐에서는 도메인 모델에 대한 설명이 적습니다. 대신 도메인을 보호하는 방법에 대해 설명하는데 많은 부분을 할애합니다. 다이어그램에서 볼 수 있듯이, 어플리케이션을 내/외부로 구획을 짓고 서로 결합하지 않도록 강력하게 관리하는 방법이 어니언 아키텍쳐의 주요 관심사입니다.</p>
+
+<p>DDD는 도메인과 객체를 비즈니스 세계와 가장 가깝게 설계하고 비즈니스 세계와 코드상의 간극을 줄이는게 목표입니다. 도메인은 비즈니스 도메인과 직접적인 연관관계가 있어야 하며, 각 객체는 실제 환경에서 해당 객체가 상징하는 요소가 하는 행동과 동일한 행동을 해야 하고 동일한 규칙을 가져야 합니다. 어니언 아키텍쳐에서 Domain model, Domain Service 라고 부르는 영역을 설계하는 방법이 주요 관심사입니다.</p>
+
+<p>어니언 아키텍쳐와 DDD를 한 어플리케이션에 사용한다면 각 아키텍쳐의 장단점을 적절하게 취할 수 있다는 생각이 듭니다. 어니언 아키텍쳐로 내/외부 부분을 확실하게 구분지어 의존성을 조절하고, DDD로 비즈니스에 가장 가까운 도메인 및 객체 설계를 한다면 좋을 것 같습니다.</p>
+
+<p>현재 제트팀은 백엔드에 적용할 아키텍쳐를 검토 중입니다. 어니언 아키텍쳐도 논의 대상 중 하나이며, 향후 서비스에 이 아키텍쳐를 적용하는걸 기대해봅니다.</p>
+
+<h5 id="references">References</h5>
+
+<ul>
+  <li>https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/</li>
+  <li>https://alistair.cockburn.us/coming-soon/</li>
+  <li>https://jeffreypalermo.com</li>
+  <li>https://www.infoq.com/news/2014/10/ddd-onion-architecture/</li>
+</ul>
+-->
+
+
+
+
+
+<div class='o-wrapper'>
+
+  <div class='o-grid'>
+    <div class='o-grid__col'>
+      <article class='c-post' itemscope itemtype='http://schema.org/BlogPosting'>
+        <div style="display: flex; height: 25px">
+          <p style="margin-bottom:10px; font-size:14px; color:#7E8482;">Architecture&nbsp;&nbsp;| </p>
+          <time datetime='2020-11-08T00:00:00+09:00' itemprop='datePublished' style="text-align: left; padding-top: 0px; color:#7E8482; font-size: 14px;font-family: 'Noto Sans KR', sans-serif; padding-left: 10px">08 Nov 2020</time>
+<!--          <time class='c-post__date' datetime='2020-11-08T00:00:00+09:00' itemprop='datePublished' style="text-align: left; padding-top: 0px; color:#7E8482">08 Nov 2020</time>-->
+        </div>
+        <h1 class='c-post__title'>파이선, 장고로 제프리 팔레르모의 'onion architecture' 구현해보기</h1>
+
+        <div class='c-content' itemprop='articleBody'>
+          
+          <p>목차</p>
+
+<ol>
+  <li>어니언 아키텍쳐 소개</li>
+  <li>어니언 아키텍쳐가 해결하는 문제</li>
+  <li>파이선, 장고로 구현한 어니언 아키텍쳐
+    <ul>
+      <li>Model, Service, View 구조</li>
+      <li>model과 domain model</li>
+      <li>service 와 application service, domain service</li>
+      <li>다이어그램과 코드</li>
+    </ul>
+  </li>
+  <li>DDD와 어니언 아키텍쳐와의 관계</li>
+  <li>References</li>
+</ol>
+
+<h5 id="어니언-아키텍쳐-소개">어니언 아키텍쳐 소개</h5>
+
+<p>어니언 아키텍쳐(onion architecture)는 2008년에 제프리 팔레르모가 만든 패턴 입니다. 어니언 아키텍쳐를 적용하기에 좋은 대상은 복잡한 기능이 많고 장기간 사용할 비즈니스 어플리케이션이며, 소규모 웹 어플리케이션에는 적합하지 않습니다. 이 아키텍쳐는 전통적인 계층적 아키텍쳐 (layered architecture)와 헥사고날 아키텍쳐(Hexagonal architecture)와 비슷한 부분이 많습니다. 계층적 아키텍쳐처럼 어니언 아키텍쳐도 계층이라는 단어를 사용하지만 의미는 약간 다르며, 3-tire 와 n-tier 아키텍쳐에 있는 문제점을 해결한 아키텍쳐입니다.</p>
+
+<p><img src="https://herbertograca.files.wordpress.com/2017/07/1980s-90s-layered-architecture.png?w=1100" alt="layered architecture" /></p>
+
+<p>전통적인 레이어드 아키텍쳐를 표현한 다이어그램</p>
+
+<p>전통적인 계층적 아키텍쳐는 계층(layer)으로 이뤄집니다. 각 계층은 자신보다 하위에 있는 계층에 의존합니다. 각 계층은 하위 계층만 호출할 수 있습니다다. 모든 계층은 소프트웨어에서 공통으로 사용하는 인프라나 유틸리티 서비스에 의존합니다.</p>
+
+<p>인프라, 유틸리티 서비스와 관련된 코드가 전 계층에 있기 때문에 모든 계층이 종국에는 뒤섞이면서 서로 강결합해버립니다. 이런 결합이 생기면, UI와 비즈니스 로직의 결합이 발생해 데이터 접근방식에 영향을 줍니다. 가장 흔히 발생하는 문제는 비즈니스 로직이 없어서 UI 도 없는 문제입니다. 데이터 접근 부분이 없어서 비즈니스 로직도 없는 경우도 생깁니다. 데이터 접근 방식은 업계 통상 2년마다 바뀌는데, 계층적 아키텍쳐가 적용된 소프트웨어라면 인프라와 강결합된 코드가 전 계층에 퍼져 있을테니 데이터베이스를 교체할때 비싼 유지보수 비용을 지불하게 됩니다.</p>
+
+<p>제프리 팔레르모가 제안한 어니언 아키텍쳐는 위에 언급된 단점을 개선한 아키텍쳐입니다.</p>
+
+<h5 id="어니언-아키텍쳐가-해결하는-문제">어니언 아키텍쳐가 해결하는 문제</h5>
+
+<p><img src="https://i0.wp.com/jeffreypalermo.com/wp-content/uploads/2018/06/image257b0257d255b59255d.png?resize=366%2C259&amp;ssl=1" alt="onion architecture" /></p>
+
+<p>어니언 아키텍쳐의 주 관심사는 내부/외부 구획을 짓기와 결합의 조종입니다. 모든 코드는 해당 영역보다 더 중심부에 가까운 영역에 있는 요소에 의존할 수 있지만, 바깥으로 향하는 영역에 있는 요소에 의존하면 안됩니다. 각 계층은 서로 소통할때 인터페이스를 사용합니다. 어니언 아키텍쳐는 기존의 n-tier 아키텍쳐와는 다르게 데이터 계층에 의존하지 않습니다. 대신 도메인 모델 계층에 의존합니다.</p>
+
+<p>아키텍쳐 중심부에는 도메인 모델이 있습니다. 도메인 모델은 다른 무엇과도 결합하지 않습니다. 도메인 모델 계층, 도메인 서비스계층, 어플리케이션 서비스 계층을 포함하는 어플리케이션 코어는 여러 계층으로 나눠질 수 있습니다. 나누는 계층 갯수는 제한이 없습니다. 필요한대로 나누면 됩니다. 그러나 도메인 모델 계층은 반드시 중심에 있어야 합니다.</p>
+
+<p>오브젝트를 저장하는 행위는 어플리케이션 코어에 없다. 인프라인 데이터베이스와 연관성이 있기 때문입니다. 어플리케이션 코어에는 인터페이스만 있어야 합니다. 바깥 원은 자주 바뀌는 요소들을 위한 자리입니다. UI, 인프라, 테스트 등이 여기에 속합니다. 변화가 자주 일어나는 요소들은 반드시 어플리케이션의 코어에서 분리되어야 합니다. 이러한 요소들 중에는 데이터 접근 방식이 있습니다. 데이터 접근 방식은 통상 2년 단위로 크게 바뀌고 데이터베이스에 강하게 의존하기 때문에 분리되야 합니다. 데이터베이스도 소프트웨어 구성에서 외부에 속해야 합니다. 데이터베이스, 파일시스템, 등등을 어플리케이션에서 결합되지 않게해 어플리케이션 유지 보수 비용을 줄입니다.</p>
+
+<p>어니언 아키텍쳐의 각 계층을 간략해게 정리하자면 다음과 같습니다.</p>
+
+<ul>
+  <li>도메인 모델 계층: 도메인 오브젝트와 도메인 인터페이스가 있는 계층. 의존성이 없습니다.</li>
+  <li>도메인 서비스 계층: 도메인 모델 계층과 어플리케이션 서비스 계층을 연결합니다. 이 계층에서 오브젝트를 갖고오거나 저장하는 등, 데이터베이스와 연관된 작업을 수행하는 인터페이스를 둡니다.</li>
+  <li>어플리케이션 서비스 계층: 어플리케이션 종속적인 비즈니스 로직이 있는 계층.  (예: usecase)</li>
+  <li>외부 계층: UI, 데이터베이스, 테스트와 같이 변화가 잦은 요소들이 있는 계층. 웹 어플리케이션일 경우에는 이 계층에 웹 API 또는 유닛 테스트가 있습니다. 이 계층은 인터페이스를 통해 내부 계층과 연결됩니다.</li>
+</ul>
+
+<p>계층들은 서로를 감싸면서 양파같은 모양을 형성합니다. 어니언은 외부 계층은 하위 계층에 의존할 수 있지만, 하위 계층은 외부 계층에 있는 코드를 직접 호출할 수 없다는 의존성 규칙이 있습니다. 각 계층은 의존성 규칙에 따라서 상호작용합니다.</p>
+
+<p>어니언 아키텍쳐의 주 특징을 간단하게 4가지로 정리하면 다음과 같습니다.</p>
+
+<ul>
+  <li>어플리케이션은 독립적인 오브젝트 모델로 개발해야 합니다.</li>
+  <li>내부 원은 인터페이스를 정의한다. 외부 원은 인터페이스를 구현합니다.</li>
+  <li>결합 방향은 중앙을 향해야 합니다.</li>
+  <li>모든 어플리케이션 코어 코드는 인프라와 별개로 컴파일될 수 있고 실행될 수 있어야 합니다.</li>
+</ul>
+
+<h5 id="파이선-장고로-구현한-어니언-아키텍쳐">파이선, 장고로 구현한 어니언 아키텍쳐</h5>
+
+<p>카페에서 커피 주문을 받거나 고객의 주문을 관리하는 시스템을 어니언 아키텍쳐로 구현해보기로 합니다.</p>
+
+<ul>
+  <li>Model, Service, View 구조</li>
+</ul>
+
+<p>먼저 보통 파이선 장고 프로젝트를 시작할떄 흔히 사용하는  model, service, view 구조로 개발해보도록 합니다. 카페, 고객, 주문 모델링은 장고 ORM 으로 구현합니다.</p>
+
+<p>models.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+
+<span class="k">class</span> <span class="nc">Cafe</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Customer</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Customer</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">cafe</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Cafe</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+  
+</code></pre></div></div>
+
+<p>카페에 커피를 주문하고, 주문을 관리할 수 있는 비즈니스 로직을 구현합니다. 카페와 고객의 아이디를 받아서 데이터베이스의 주문 테이블에 주문을 저장히고, 저장된 주문 데이터를 불러와 주문 객체로 만들어서 해당 객체를 가지고 비즈니스 로직을 수행해야 합니다. 데이터를 불러오거나 저장할때는 ORM을 사용합니다. ORM 을 사용하기 때문에 데이터 접근, 데이터 객체 변환 계층은 필요없다. ORM 이 그 역할을 동시에 수행합니다.</p>
+
+<p>service.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">OrderCoffeeService</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">order_coffee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">cafe_id</span><span class="o">=</span><span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="o">=</span><span class="n">customer_id</span><span class="p">)</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    
+
+<span class="k">class</span> <span class="nc">OrderService</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderDomainModel</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">order_id</span><span class="o">=</span><span class="n">order_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">order</span>
+</code></pre></div></div>
+
+<p>간단한 API를 작성합니다. API 는 service 에서 반환한 객체를 serializer 를 통해 직렬화 한뒤 외부에 반환합니다.</p>
+
+<p>serializer.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
+
+<span class="k">class</span> <span class="nc">OrderResponseSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+    <span class="n">cafe_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+    <span class="n">customer_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>views.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">JsonResponse</span>
+
+<span class="kn">from</span> <span class="nn">cafe.application_service</span> <span class="kn">import</span> <span class="n">order_coffee_service</span><span class="p">,</span> <span class="n">order_service</span>
+<span class="kn">from</span> <span class="nn">cafe.serializer</span> <span class="kn">import</span> <span class="n">OrderResponseSerializer</span>
+
+
+<span class="k">def</span> <span class="nf">order_coffee</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">):</span>
+    <span class="n">order_coffee_service</span><span class="o">.</span><span class="n">order_coffee</span><span class="p">(</span><span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">order_service</span><span class="o">.</span><span class="n">get_order</span><span class="p">(</span><span class="n">order_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">serializer</span> <span class="o">=</span> <span class="n">OrderResponseSerializer</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>보통 장고로 구현한 backend용 파이선 프로젝트는 위의 구조를 많이 사용하는 것 같습니다. 이제 위 코드를 어니언 아키텍쳐 다이어그램과 최대한 비슷하게 구현해봅시다.</p>
+
+<ul>
+  <li>model 과 domain model</li>
+</ul>
+
+<p>어니언 아키텍쳐 규칙에 따라 인프라와 연관된 코드를 다른 코드에서 분리해야 합니다. 여기서는 인프라 코드가 장고 ORM 입니다. ORM으로 작성한 model은 데이터베이스에 접근해서 데이터를 가져오는 용도로만 사용합니다. ORM으로 가져온 데이터는 객체상태로 존재하지만 해당 객체를 바로 쓰지 않습니다. 도메인 모델을 통해서 객체로 만듭니다.</p>
+
+<p>domain_models.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">cafe.models</span> <span class="kn">import</span> <span class="n">Order</span><span class="p">,</span> <span class="n">Cafe</span><span class="p">,</span> <span class="n">Customer</span>
+
+
+<span class="o">@</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">CafeDomainModel</span><span class="p">:</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="o">@</span><span class="nb">classmethod</span>
+    <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">cafe</span><span class="p">:</span> <span class="n">Cafe</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">cafe</span><span class="o">.</span><span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">cafe</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+
+<span class="o">@</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">OrderDomainModel</span><span class="p">:</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cafe_id</span> <span class="o">=</span> <span class="n">cafe_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customer_id</span> <span class="o">=</span> <span class="n">customer_id</span>
+
+    <span class="o">@</span><span class="nb">classmethod</span>
+    <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="nb">id</span><span class="p">,</span> <span class="n">customer_id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">customer_id</span><span class="p">,</span> <span class="n">cafe_id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">cafe_id</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<ul>
+  <li>service 와 application service, domain service</li>
+</ul>
+
+<p>Service 계층은 2가지의 다른 작업을 동시에 수행합니다. 하나는 비즈니스 로직이고 또 하나는 객체를 가지고 수행하는 작업입니다. Cafe 또는 Order 객체를 갖고오거나 객체를 삭제, 수정, 저장하는 행위는 어니언 아키텍쳐에서 Object Service에 해당합니다. 주문을 조회하고 커피 주문을 하는 행위는 Application Service 입니다. 먼저 Object service 에서 사용할 추상클래스를 정의합니다.</p>
+
+<p>object_service.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">abc</span>
+
+<span class="k">class</span> <span class="nc">ObjectService</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="o">@</span><span class="n">abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="o">@</span><span class="n">abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+</code></pre></div></div>
+
+<p>추상클래스를 상속해 cafe object service 와 order object service를 구현합니다.</p>
+
+<p>object_service.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">class</span> <span class="nc">CafeObjectService</span><span class="p">(</span><span class="n">ObjectService</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cafe</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Cafe</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">cafe_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe</span><span class="p">:</span> <span class="n">Cafe</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="n">cafe</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">OrderObjectService</span><span class="p">(</span><span class="n">ObjectService</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Order</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">order_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">Order</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">'Order Does not exist'</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<p>비즈니스 로직이 있는 application service 는 이제 object service 로 비즈니스 로직을 수행합니다.</p>
+
+<p>application_service.py</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">OrderCoffeeService</span><span class="p">:</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_object_service</span><span class="p">:</span> <span class="n">CafeObjectService</span><span class="p">)</span>
+  	<span class="bp">self</span><span class="o">.</span><span class="n">_cafe_object_service</span> <span class="o">=</span> <span class="n">cafe_object_service</span>
+    
+  <span class="k">def</span> <span class="nf">order_coffee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">cafe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cafe_object_service</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cafe_id</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_cafe_object_service</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+    
+    
+<span class="k">class</span> <span class="nc">OrderService</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_object_service</span><span class="p">:</span> <span class="n">OrderObjectService</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order_object_service</span> <span class="o">=</span> <span class="n">order_object_service</span>
+
+    <span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderDomainModel</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_object_service</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">OrderDomainModel</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+     
+</code></pre></div></div>
+
+<ul>
+  <li>다이어그램</li>
+</ul>
+
+<p><img src="https://suhyunbaik.github.io/images/posts/python_django_onion.png" alt="python_django_onion" /></p>
+
+<p>완성된 코드는 <a href="https://github.com/suhyunbaik/python-django-onion">여기서</a> 확인할 수 있습니다.</p>
+
+<h5 id="ddd와의-관계">DDD와의 관계</h5>
+
+<p>어니언 아키텍쳐와 DDD는 성취하려는 목표가 다릅니다. 어니언 아키텍쳐는 도메인과 비즈니스 로직을 데이터 접근, UI, 인프라와 같은 영역에 의존하지 않고 독립적인 영역으로 만드는 게 목표입니다. 그래서 어니언 아키첵쳐에서는 도메인 모델에 대한 설명이 적습니다. 대신 도메인을 보호하는 방법에 대해 설명하는데 많은 부분을 할애합니다. 다이어그램에서 볼 수 있듯이, 어플리케이션을 내/외부로 구획을 짓고 서로 결합하지 않도록 강력하게 관리하는 방법이 어니언 아키텍쳐의 주요 관심사입니다.</p>
+
+<p>DDD는 도메인과 객체를 비즈니스 세계와 가장 가깝게 설계하고 비즈니스 세계와 코드상의 간극을 줄이는게 목표입니다. 도메인은 비즈니스 도메인과 직접적인 연관관계가 있어야 하며, 각 객체는 실제 환경에서 해당 객체가 상징하는 요소가 하는 행동과 동일한 행동을 해야 하고 동일한 규칙을 가져야 합니다. 어니언 아키텍쳐에서 Domain model, Domain Service 라고 부르는 영역을 설계하는 방법이 주요 관심사입니다.</p>
+
+<p>어니언 아키텍쳐와 DDD를 한 어플리케이션에 사용한다면 각 아키텍쳐의 장단점을 적절하게 취할 수 있다는 생각이 듭니다. 어니언 아키텍쳐로 내/외부 부분을 확실하게 구분지어 의존성을 조절하고, DDD로 비즈니스에 가장 가까운 도메인 및 객체 설계를 한다면 좋을 것 같습니다.</p>
+
+<p>현재 제트팀은 백엔드에 적용할 아키텍쳐를 검토 중입니다. 어니언 아키텍쳐도 논의 대상 중 하나이며, 향후 서비스에 이 아키텍쳐를 적용하는걸 기대해봅니다.</p>
+
+<h5 id="references">References</h5>
+
+<ul>
+  <li>https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/</li>
+  <li>https://alistair.cockburn.us/coming-soon/</li>
+  <li>https://jeffreypalermo.com</li>
+  <li>https://www.infoq.com/news/2014/10/ddd-onion-architecture/</li>
+</ul>
+
+        </div>
+
+        <div class='c-tags'>
+          
+            <a href='/tag/Architecture'>Architecture</a>
+          
+        </div>
+        <hr/>
+         <!-- Your share button code start-->
+<!--          <div class="fb-share-button"-->
+<!--            data-href="//architecture/2020/11/08/python-django-onion-structure/"-->
+<!--            data-layout="button_count">-->
+<!--          </div>-->
+        <!-- Your share button code end-->
+
+      </article>
+
+    </div>
+  </div>
+</div>
+
+    <!--<footer class='c-footer' style="background-color: #fff; border-top:1px solid gainsboro">-->
+<!--  <div class='o-grid'>-->
+<!--    <div class='o-grid__col o-grid__col&#45;&#45;full' style="font-size: 12px;-->
+<!--    color: gray;">-->
+<!--      Suhyun Baik-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</footer>-->
+</div>
+
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/evil-icons.min.js"></script>
+<script src="/js/jquery.fitvids.js"></script>
+<script src="/js/app.js"></script>
+<!-- Load Facebook SDK for JavaScript -->
+<div id="fb-root"></div>
+<script>(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+</body>
+
+</html>

@@ -1,8 +1,8 @@
 ---
 title: 2020년 회고
 layout: page
-tags: [retrospective]
-categories: [retrospective]
+tags: [Retrospective]
+categories: [Retrospective]
 ---
 
 

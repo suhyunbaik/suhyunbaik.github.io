@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang='en'>
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+
+  <meta name="description" content="A pythonist in startup">
+  <meta name="keywords" content="Python, Developer, startup">
+  <meta name="author" content="Suhyun Baik">
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+  <!-- facebook start -->
+  <meta property="og:type"          content="website" />
+  <meta property="og:title"         content="파이선으로 개발한 프롭테크 서비스 DDD 구조로 리팩토링" />
+  <meta property="og:description"   content="파이선으로 개발한 프롭테크 서비스 DDD 구조로 리팩토링" />
+
+  <!-- Twitter start -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="파이선으로 개발한 프롭테크 서비스 DDD 구조로 리팩토링">
+  <meta name="twitter:description" content="파이선으로 개발한 프롭테크 서비스 DDD 구조로 리팩토링">
+
+  <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
+  <meta itemprop="name" content="파이선으로 개발한 프롭테크 서비스 DDD 구조로 리팩토링">
+  <meta itemprop="description" content="파이선으로 개발한 프롭테크 서비스 DDD 구조로 리팩토링">
+
+  <title>파이선으로 개발한 프롭테크 서비스 DDD 구조로 리팩토링</title>
+  <meta name='description' content="목차">
+  <link rel='canonical' href="http://localhost:4000/ddd/2020/07/10/python-proptech-ddd/">
+  <link rel='alternate' type='application/rss+xml' title='A python developer' href="http://localhost:4000/feed.xml">
+  <!-- css   -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <style>
+    
+
+    html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */html{font-family:sans-serif;line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav,section{display:block}h1{font-size:2em;margin:0.67em 0}figcaption,figure,main{display:block}figure{margin:1em 40px}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace, monospace;font-size:1em}a{background-color:transparent;-webkit-text-decoration-skip:objects}a:active,a:hover{outline-width:0}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:inherit}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace, monospace;font-size:1em}dfn{font-style:italic}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-0.25em}sup{top:-0.5em}audio,video{display:inline-block}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}button,html [type="button"],[type="reset"],[type="submit"]{-webkit-appearance:button}button::-moz-focus-inner,[type="button"]::-moz-focus-inner,[type="reset"]::-moz-focus-inner,[type="submit"]::-moz-focus-inner{border-style:none;padding:0}button:-moz-focusring,[type="button"]:-moz-focusring,[type="reset"]:-moz-focusring,[type="submit"]:-moz-focusring{outline:1px dotted ButtonText}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{display:inline-block;vertical-align:baseline}textarea{overflow:auto}[type="checkbox"],[type="radio"]{box-sizing:border-box;padding:0}[type="number"]::-webkit-inner-spin-button,[type="number"]::-webkit-outer-spin-button{height:auto}[type="search"]{-webkit-appearance:textfield;outline-offset:-2px}[type="search"]::-webkit-search-cancel-button,[type="search"]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details,menu{display:block}summary{display:list-item}canvas{display:inline-block}template{display:none}[hidden]{display:none}body,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,dd,ol,ul,figure,hr,fieldset,legend{margin:0;padding:0}li>ol,li>ul{margin-bottom:0}table{border-collapse:collapse;border-spacing:0}address,h1,h2,h3,h4,h5,h6,blockquote,p,pre,dl,ol,ul,figure,hr,table,fieldset{margin-bottom:32px}dd,ol,ul{list-style-position:inside;margin-left:16px}@-webkit-keyframes spin{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes spin{100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.icon{position:relative;display:inline-block;width:25px;height:25px;overflow:hidden;fill:currentColor}.icon__cnt{width:100%;height:100%;background:inherit;fill:inherit;pointer-events:none;transform:translateX(0);-ms-transform:translate(0.5px, -0.3px)}.icon--m{width:50px;height:50px}.icon--l{width:100px;height:100px}.icon--xl{width:150px;height:150px}.icon--xxl{width:200px;height:200px}.icon__spinner{position:absolute;top:0;left:0;width:100%;height:100%}.icon--ei-spinner .icon__spinner,.icon--ei-spinner-2 .icon__spinner{-webkit-animation:spin 1s steps(12) infinite;animation:spin 1s steps(12) infinite}.icon--ei-spinner-3 .icon__spinner{-webkit-animation:spin 1.5s linear infinite;animation:spin 1.5s linear infinite}.icon--ei-sc-facebook{fill:#3b5998}.icon--ei-sc-github{fill:#333}.icon--ei-sc-google-plus{fill:#dd4b39}.icon--ei-sc-instagram{fill:#3f729b}.icon--ei-sc-linkedin{fill:#0976b4}.icon--ei-sc-odnoklassniki{fill:#ed812b}.icon--ei-sc-skype{fill:#00aff0}.icon--ei-sc-soundcloud{fill:#f80}.icon--ei-sc-tumblr{fill:#35465c}.icon--ei-sc-twitter{fill:#55acee}.icon--ei-sc-vimeo{fill:#1ab7ea}.icon--ei-sc-vk{fill:#45668e}.icon--ei-sc-youtube{fill:#e52d27}.icon--ei-sc-pinterest{fill:#bd081c}.icon--ei-sc-telegram{fill:#0088cc}.highlight{margin:0;background:#fff}.highlighter-rouge .highlight{border-radius:5px;background:#FAFAFA;font-family:'Noto Sans KR', sans-serif;font-size:14px}.highlight .c{color:#998;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#998;font-style:italic}.highlight .cp{color:#999;font-weight:bold}.highlight .c1{color:#998;font-style:italic}.highlight .cs{color:#999;font-weight:bold;font-style:italic}.highlight .gd{color:#000;background-color:#fdd}.highlight .gd .x{color:#000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000;background-color:#dfd}.highlight .gi .x{color:#000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaa}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#458;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:#008080}.highlight .nb{color:#0086B3}.highlight .nc{color:#458;font-weight:bold}.highlight .no{color:#008080}.highlight .ni{color:#800080}.highlight .ne{color:#900;font-weight:bold}.highlight .nf{color:#900;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:#000080}.highlight .nv{color:#008080}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#d14}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#990073}.highlight .bp{color:#999}.highlight .vc{color:#008080}.highlight .vg{color:#008080}.highlight .vi{color:#008080}.highlight .il{color:#099}body{color:#323232;font-size:19px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-weight:300;line-height:32px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}*::selection{color:#fff;background:#00A0FF}a{text-decoration:none;color:#323232;transition:.4s}a:hover,a:active,a:focus{text-decoration:underline}img{display:block;max-width:100%;font-style:italic}hr{height:1px;margin:32px 0;border:0;background-color:#E9EFF3}h1,h2,h3,h4,h5,h6{font-weight:inherit;line-height:initial;font-weight:600;font-family:'Noto Sans KR', sans-serif}h1{font-size:36px}h2{font-size:28px}h3{font-size:24px}h4{font-size:20px}h5{font-size:18px}h6{font-size:16px}p,span{font-family:'Noto Sans KR', sans-serif}code{font-size:14px}blockquote{padding-left:16px;border-left:3px solid #2B5F72;font-style:italic;font-size:"Noto Serif KR",sans-serif}pre,code{font-family:Courier,monospace;background-color:#FAFAFA}pre{overflow:auto;padding:32px;margin-bottom:16px;font-size:16px;line-height:25px;white-space:pre-wrap;word-wrap:break-word}li code,p code{padding:4px 8px}input[type='text'],input[type='tel'],input[type='number'],input[type='email'],select,textarea{width:100%;padding:16px;border:1px solid #E9EFF3;border-radius:0;outline:none;background-color:#fff;font-size:14px;appearance:none;transition:.4s}input[type='text']:hover,input[type='text']:active,input[type='text']:focus,input[type='tel']:hover,input[type='tel']:active,input[type='tel']:focus,input[type='number']:hover,input[type='number']:active,input[type='number']:focus,input[type='email']:hover,input[type='email']:active,input[type='email']:focus,select:hover,select:active,select:focus,textarea:hover,textarea:active,textarea:focus{border:1px solid #323232}.o-grid{margin:0 auto;max-width:700px}.o-grid:after{content:'';display:table;clear:both}.o-grid .o-grid{margin-right:-16px;margin-left:-16px;padding:0}.o-grid--full{max-width:100vw}.o-grid__col{float:left;padding-right:16px;padding-left:16px}.o-grid__col--1-4-s{width:25%}.o-grid__col--1-3-s{width:33.3333333333%}.o-grid__col--2-4-s{width:50%}.o-grid__col--3-4-s{width:75%}.o-grid__col--4-4-s{width:100%}@media (min-width: 40em){.o-grid__col--1-4-m{width:25%}.o-grid__col--1-3-m{width:33.3333333333%}.o-grid__col--2-4-m{width:50%}.o-grid__col--3-4-m{width:75%}}@media (min-width: 64em){.o-grid__col--1-4-l{width:25%}.o-grid__col--1-3-l{width:33.3333333333%}.o-grid__col--2-4-l{width:50%}.o-grid__col--3-4-l{width:75%}}.o-grid__col--full{width:100%}.o-grid__col--center{margin:0 auto}.o-grid__col--end{margin-left:auto}.o-wrapper{padding:32px 0}.c-off-canvas-container{display:flex;min-height:100vh;flex-direction:column}.c-off-canvas-container .o-wrapper{flex:1 0 auto}.o-plain-list{margin:0;padding:0;list-style:none}.c-header__inner{padding:16px 0;border-bottom:1px solid #E9EFF3}.c-header__icon{vertical-align:middle}.c-logo__link{font-size:19px;font-weight:900;transition:.4s}.c-logo__link:hover,.c-logo__link:active,.c-logo__link:focus{color:#00A0FF;text-decoration:none}.c-nav__item{font-size:16px}.c-nav__link{display:block;transition:.4s}.c-nav__link--current{color:#00A0FF}.home-template .c-nav__link--current:not(:hover){color:#323232}.c-nav__link:hover,.c-nav__link:active,.c-nav__link:focus{color:#00A0FF;text-decoration:none}.c-off-canvas-toggle{float:right;position:relative;top:8px;z-index:10;height:19px;width:25px;cursor:pointer}.c-off-canvas-toggle__icon{position:absolute;left:0;height:1px;width:25px;background:#323232;cursor:pointer}.c-off-canvas-toggle__icon:before,.c-off-canvas-toggle__icon:after{content:'';display:block;height:100%;background-color:inherit;transition:.4s}.c-off-canvas-toggle__icon:before{transform:translateY(16px)}.c-off-canvas-toggle__icon:after{transform:translateY(7px)}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon{height:2px;background-color:transparent}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:before,.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:after{position:relative;visibility:visible;background:#323232}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:before{top:11px;transform:rotate(-45deg)}.c-off-canvas-toggle--close .c-off-canvas-toggle__icon:after{top:9px;transform:rotate(45deg)}.c-off-canvas-toggle--close{top:0;float:none;display:block;margin-left:auto}html,body{overflow-x:hidden}.c-off-canvas-content{position:fixed;top:0;right:0;width:300px;height:100%;padding:24px 32px;background-color:#fff;transform:translate3d(300px, 0, 0)}.c-off-canvas-container{transform:translate3d(0, 0, 0);transition:transform .4s cubic-bezier(0.16, 0.68, 0.43, 0.99)}.c-off-canvas-container.is-active{transform:translate3d(-300px, 0, 0)}.c-off-canvas-container.is-active:after{position:fixed;top:0;right:0;bottom:0;left:0;content:'';background-color:rgba(0,0,0,0.2)}.c-tags a{display:inline-block;padding:4px 16px;margin:0 8px 4px 0;font-size:12px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";line-height:25px;background-color:#FAFAFA;transition:.4s}.c-tags a:hover,.c-tags a:active,.c-tags a:focus{text-decoration:none;background-color:#FAFAFA}@media (max-width: 39.99em){.c-tags{margin-bottom:22px}}.c-btn{display:inline-block;padding:8px 32px;cursor:pointer;transition:.4s;text-align:center;vertical-align:middle;white-space:nowrap;line-height:inherit;border:0;border-radius:0;color:#fff;background-color:#207cdf;font-size:16px}.c-btn:hover,.c-btn:active,.c-btn:focus{text-decoration:none;background-color:#238cf6}.c-btn--full{width:100%}.c-btn--small{padding:4px 16px}.c-post-card{display:block;padding:32px 0;word-break:break-word;border-bottom:1px solid #E9EFF3}.c-post-card--first{padding-top:0}.c-post-card--last{padding-bottom:0;border-bottom:0}.c-post-card__title{margin-bottom:10px;font-size:19px;font-weight:600;transition:.4s}.c-post-card__excerpt{margin-bottom:10px}.c-post-card__date{display:block;color:#2B5F72;direction:ltr;font-size:12px;line-height:22px;text-transform:uppercase}.c-post-card:hover{color:#323232;text-decoration:none}.c-post-card:hover .c-post-card__title{color:#00A0FF}.c-pagination{text-transform:uppercase;transition:.4s}.c-pagination:hover,.c-pagination:active,.c-pagination:focus{color:#00A0FF;text-decoration:none}.c-pagination__text{position:relative;font-size:14px;letter-spacing:2px}.c-pagination__text--prev{left:-16px}.c-pagination__text--next{right:-16px}.c-pagination__icon{vertical-align:text-top}.c-pagination__icon--prev{left:-8px}.c-pagination__icon--next{right:-8px}.c-post{margin:0 auto;max-width:740px}.c-post__title{font-size:24px;margin-bottom:16px}@media (min-width: 40em){.c-post__title{font-size:28px;line-height:50px}}.c-post__date{position:relative;padding-top:16px;display:block;text-align:center;margin-bottom:16px;font-size:14px;line-height:22px;color:#2B5F72}.c-post__date:after{position:absolute;content:'';top:0;left:50%;height:1px;width:64px;background:#FAFAFA;transform:translateX(-50%)}.c-post__image{margin:0 auto 16px}.c-content{font-size:14px;font-family:"Noto Serif KR",sans-serif}.c-content a:not(.c-btn){text-decoration-skip:ink}.c-content a:not(.c-btn):hover,.c-content a:not(.c-btn):active,.c-content a:not(.c-btn):focus{color:#00A0FF}.twitter-tweet,.fluid-width-video-wrapper{margin-bottom:16px !important}.c-social-nav__item{display:inline-block}.c-social-nav__icon{fill:#323232;vertical-align:middle;transition:.4s}.c-social-nav__icon:hover,.c-social-nav__icon:active,.c-social-nav__icon:focus{fill:#00A0FF}.c-footer{padding:32px 0;background-color:#FAFAFA}.u-hidden{display:none}.u-hidden-visually{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.u-font-medium{font-size:16px;line-height:25px}.u-font-small{font-size:14px;line-height:22px}.noto-font-small{font-family:'Noto Serif KR', sans-serif;font-size:14px;line-height:22px}.u-font-tiny{font-size:12px;line-height:19px}.u-text-left{text-align:left}.u-text-right{text-align:right}.u-text-center{text-align:center}.u-text-justify{text-align:justify}.u-inline{display:inline}.u-block{display:block}.u-inline-block{display:inline-block}.u-left{float:left}.u-right{float:right}.u-clearfix:after{content:'';display:table;clear:both}
+
+    .c-post__image {display: none}
+  </style>
+</head>
+<!-- Global site tag (gtag.js) - Google Analytics start -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-153773360-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'UA-153773360-1');
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics end -->
+
+<body>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+
+<div class='js-off-canvas-container c-off-canvas-container'>
+    <header class='c-header'>
+
+    <div class='o-grid'>
+        <div class='o-grid__col o-grid__col--full'>
+            <div class='c-header__inner'>
+
+                <div class='o-grid'>
+                    <div class='o-grid__col o-grid__col--3-4-s'>
+                        <div class='c-logo u-text-left'>
+                            <!--              <a class='c-logo__link' href='/'>A python developer</a>-->
+                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">🔥</a>
+<!--                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">😈</a>-->
+<!--                            <a class='c-logo__link' href='https://docs.google.com/document/d/e/2PACX-1vRdClPBFE-3MOIp5wyACP41XoQIW35QC2x6js9nk4B2FbCM42bazcNXrQBrbm1VAclDoob8KFm-S8JU/pub' style="font-weight: bold; margin-left: 20px; font-size: 1rem">😈</a>-->
+                        </div>
+                    </div>
+
+                    <!--          <div class='o-grid__col o-grid__col&#45;&#45;1-4-s'>-->
+                    <!--            <label class='js-off-canvas-toggle c-off-canvas-toggle' aria-label='Toggle navigation'>-->
+                    <!--              <span class='c-off-canvas-toggle__icon'></span>-->
+                    <!--            </label>-->
+                    <!--          </div>-->
+
+                    <div class='o-grid__col o-grid__col--1-4-s'>
+                        <div class='c-off-canvas-content'>
+                            <label class='js-off-canvas-toggle c-off-canvas-toggle c-off-canvas-toggle--close'>
+                                <span class='c-off-canvas-toggle__icon'></span>
+                            </label>
+
+                            <ul class='c-nav o-plain-list '>
+                                
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/about.html'>About</a>
+      </li>
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/categories.html'>Categories</a>
+      </li>
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+      <li class='c-nav__item' role='presentation'>
+        <a class='c-nav__link' href='/tags/'>Tags</a>
+      </li>
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<!--    <p>목차</p>
+
+<p>서비스를 context 로 분리하고 django app으로 구분<br />
+view, service, repository, model 로 분리<br />
+IoC Container 구현<br />
+부분적 경계를 facades 로 구현<br />
+밸류 오브젝트를 엔티티로 변경<br />
+후기</p>
+
+<p>깃허브 https://github.com/suhyunbaik/buba-service<br />
+몇년전에 프롭테크 서비스를 개발했었다. 사업적인 문제로 서비스를 접었는데 최근에 코드를 다시 살펴보니 개선할 부분이 많았다. 그 당시 서비스를 개발할때는 팀 내에 도메인 전문가가 없었고 구조에 대한 고민을 미처 못했다. 이번에는 리팩토링을 하면서 DDD를 적용해보기로 했다. 이 서비스는 프롭테크 서비스 이지만 직방, 다방과 타켓층이 다르다. 직방, 다방은 집을 알아보는 임차인이 타켓이지만, 이 서비스는 공인중개사가 타켓이다. 공인중개사의 업무 효율을 높이고 본인이 갖고있는 매물의 특징과 정보를 분석해서 영업에 도움이 되는 게 이 서비스의 목표다.</p>
+
+<p>서비스를 context 로 분리하고 django app으로 구분</p>
+
+<p><img src="/images/posts/context_map.png" alt="context_map" /></p>
+
+<p>기존 코드는 기능별로 경계가 없어서 마치 큰 진흙덩어리처럼 기능이 서로 단단하게 강결합 된 상태다. 코드를 분리하기 위해서 먼저 서비스를 정리한다. 해당 서비스의 기능은 크게 매물 관리, 고객관리, 공동중개망, 문자 서비스, 공인중개사 관리로 나눌 수 있다. DDD 에서 말하는 bounded context 로 서비스를 나눠보자면 customer(고객), listing(매물), sms(문자), realtor(공인중개사)로 나눌 수 있다. 여기서 매물 관리는 product(공간정보), listing(매물) 이라는 2개의 bounded context 로 나눈다. 그리고 listing(매물) 이라는 context 에는 multiple listing(공동중개망) 이라는 aggregate 을 만든다.  매물관리를 이렇게 나눈 이유는 밑에 나온다.</p>
+
+<ul>
+  <li>view, service, repository, model 로 분리</li>
+</ul>
+
+<p>기존 코드는 장고 공식문서에 설명하는 MVT(model view, template) 패턴을 따랐기 때문에 views.py 에 비즈니스 로직이 있었다. 이번에는 DDD를 적용하기로 했으므로, DDD에 맞춰서 코드를 나눈다. view는 요청을 받고 serialize, deserilaizer를 수행하며, 클라이언트에게 응답을 준다. service 는 여러 서비스와 리포지토리를 가지고 비즈니스 로직을 수행한다. repository 는 model 에서 밸류 오브젝트를 갖고온다. model 은 장고 내부 인프라 레이어와 연결되고, 그대로 RDS DB와 연결된다. 한개의 app은 4개 레이어 계층으로 구성한다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># views
+</span><span class="k">class</span> <span class="nc">RealtorMyselfView</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+    <span class="n">authentication_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">TokenAuthentication</span><span class="p">,)</span>
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'realtor_service'</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">realtor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">get_realtor</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="nb">id</span><span class="p">)</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">RealtorSerializer</span><span class="p">(</span><span class="n">realtor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s">'data'</span><span class="p">:</span> <span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">})</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># services 
+</span><span class="k">class</span> <span class="nc">RealtorService</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">realtor_repository</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span> <span class="o">=</span> <span class="n">realtor_repository</span>
+
+    <span class="k">def</span> <span class="nf">get_realtors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span><span class="o">.</span><span class="n">get_all_realtors</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span><span class="o">.</span><span class="n">get_realtor_by_realtor_id</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">register_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">SignUpRequestSerializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span><span class="o">.</span><span class="n">create_realtor</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'username'</span><span class="p">],</span> <span class="n">password</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'password'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'name'</span><span class="p">],</span>
+                                               <span class="n">email</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'email'</span><span class="p">],</span> <span class="n">phone_number</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'phone_number'</span><span class="p">])</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># repository
+</span>
+<span class="k">class</span> <span class="nc">RealtorRepository</span><span class="p">:</span>
+    <span class="n">realtor_dao</span> <span class="o">=</span> <span class="n">Realtor</span><span class="o">.</span><span class="n">objects</span>
+
+    <span class="k">def</span> <span class="nf">get_all_realtors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_dao</span><span class="o">.</span><span class="nb">all</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_realtor_by_realtor_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_dao</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">create_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">SignUpRequestSerializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">realtor_dao</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'username'</span><span class="p">],</span> <span class="n">password</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'password'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'name'</span><span class="p">],</span>
+                                     <span class="n">email</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'email'</span><span class="p">],</span> <span class="n">phone_number</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'phone_number'</span><span class="p">])</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># models
+</span><span class="k">class</span> <span class="nc">Realtor</span><span class="p">(</span><span class="n">AbstractBaseUser</span><span class="p">,</span> <span class="n">PermissionsMixin</span><span class="p">):</span>
+    <span class="n">REQUIRED_FIELDS</span> <span class="o">=</span> <span class="p">[</span><span class="s">'phone_number'</span><span class="p">]</span>
+    <span class="n">USERNAME_FIELD</span> <span class="o">=</span> <span class="s">'username'</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="s">'공인중개사'</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s">'아이디'</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s">'이름'</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">RealtorManager</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<ul>
+  <li>IoC Container 구현</li>
+</ul>
+
+<p><img src="/images/posts/container.png" alt="container" /></p>
+
+<p>해당 서비스를 개발할때 초반에는 어려움이 없었는데, 후반으로 갈수록 기능이 다양해지고 복잡도가 증가하면서 circualr import 처럼 잘못된 설계에서 기인하는 문제가 계속 터져서 고통을 겪었었다. 그 때 당시에는 의존성도 관리대상이라는 사실을 몰랐기 때문에 개발하다보니 import 에 import 가 꼬리를 물었고 이게 에러를 발생시켰다. 이번에는 의존성을 제어하기 위해 스프링 프레임워크를 참조했다.</p>
+
+<p>스프링 프레임워크에는 객체의 생성 및 생명주기를 관리하는 IoC 컨테이너가 있다. 스프링으로 프로덕션 개발을 한 경험이 없어서 깊이있게 알지 못하지만, 내가 아는 바로는 앱이 실행될때 컨테이너가 떠서 미리 필요한 객체들을 생성하고 이 객체들은 빈이라고 부르며, 자바 어노테이트를 사용해 미리 생성할 객체를 등록할 수 있다고 알고 있다. 장고에는 컨테이너가 없고 객체 등록용 어노테이트가 없기 때문에 직접 만들어서 써야한다. 각 앱마다 컨테이너를 1개씩 만들고, 컨테이너 클래스가 인스턴스화 되면 해당 앱에서 사용하는 객체들을 생성해서 들고있도록 한다. 의존성 주입 방법은 스프링에서는 setter, method, constructor 3가지 방법이 있는데, 이 프로젝트에서는 constructor 방식만 사용했다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Container</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deps</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">register_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_repository'</span><span class="p">]</span> <span class="o">=</span> <span class="n">RealtorRepository</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_service'</span><span class="p">]</span> <span class="o">=</span> <span class="n">RealtorService</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_repository'</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">component</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="nb">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s">'{name} instance does not exists'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">component</span>
+
+
+<span class="n">container</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
+<span class="n">container</span><span class="o">.</span><span class="n">register_all</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<ul>
+  <li>부분적 경계를 facades로 구현</li>
+</ul>
+
+<p><img src="/images/posts/facades.png" alt="facades" /></p>
+
+<p>가끔은 다른 bounded context에 있는 service에 접근할 필요한 경우가 있다. 해당 서비스에서는 customer 앱에서 listing 앱에 접근해 해당 customer가 관심을 보였던 매물정보를 갖고오는 기능이 있다. 클린 아키텍쳐 책 24장에서는 부분적 경계 구현 방법으로 크게 3가지를 제시하고 있는데, 첫번째는 단계를 건너뛰기, 두번째는 일차원 경계(boundary interface 사용), 세번째는 퍼사드 패턴을 이용하는 방법이다. 이 중에서 퍼사드를 사용하는 방법을 선택했다. 
+고객 상세 정보를 들고오는 API 는 고객이 보고 간 매물 정보도 같이 보여준다. 매물 정보는 매물 컨텍스트 안에 있기 때문에 다른 django app 으로 분리되어있다. customer service 에서 listing service 로 직접 접근하지 않고, listing facades 를 만들어서 파사드를 통해 리스팅 컨텍스트에 접근한다. 이런 방법을 쓰면 실수로 다른 개발자가 listing service 의 메소드를 수정했을 경우 다른 api 가 영향 받는 범위를 줄일 수 있고, listing app 을 MSA로 만들 경우 facade 는 다른 서버와 통신하는 부분으로 만든다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># views 
+</span><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">):</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">get_customer_detail</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
+    <span class="n">serializer</span> <span class="o">=</span> <span class="n">CustomerDetailResponseSerializer</span><span class="p">({</span><span class="s">'customer'</span><span class="p">:</span> <span class="n">customer</span><span class="p">,</span> <span class="s">'listings'</span><span class="p">:</span> <span class="n">customer</span><span class="o">.</span><span class="n">favorites</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># services
+</span><span class="k">class</span> <span class="nc">CustomerService</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer_repository</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">listing_facades</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customer_repository</span> <span class="o">=</span> <span class="n">customer_repository</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listing_facades</span> <span class="o">=</span> <span class="n">listing_facades</span>
+
+    <span class="k">def</span> <span class="nf">get_customer_favorites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">listing_facades</span><span class="o">.</span><span class="n">get_customer_favorites</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
+    
+<span class="c1"># facades 
+</span><span class="k">class</span> <span class="nc">ListingFacades</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listing_service</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listing_service</span> <span class="o">=</span> <span class="n">listing_service</span>
+
+    <span class="k">def</span> <span class="nf">get_customer_favorites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">listing_service</span><span class="o">.</span><span class="n">get_customer_favorites</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<ul>
+  <li>밸류 오브젝트에서 엔티티로 변경</li>
+</ul>
+
+<p>서비스를 개발하다가 사용자수가 어느정도 늘어나면서 유저가 본인이 사용하고 싶은 기능을 요구하는 경우도 있었는데, 기존 서비스의 구조와 맞지않거나 기능 개발에 필요한 시간이 많다는 이유로 개발하지 않고 그냥 지나간 경우가 있었다. 코드를 다시 뜯어보고 나니, 잘못된 모델링 때문에 이런저런 이유로 기능을 개발하지 못한 경우가 대부분이다. DDD에서 말하는 엔티티, 밸류 오브젝트에 대한 개념이 잡혀있었다면 저지르지 않았을 실수가 많이 보였다.</p>
+
+<ul>
+  <li>공간정보과 거래형태를 분리하고 거래형태를 밸류 오브젝트에서 엔티티로 변경</li>
+</ul>
+
+<p><img src="/images/posts/product.png" alt="product" /><br />
+ 가장 큰 실수는 공간에 대한 정보를 매물의 밸류 오브젝트로 모델링한 실수다. 당시에는 매물정보(전월세, 가격 등등 거래형태에 대한 정보)만 필요하다고 생각했고 공간정보(부동산 종류, 위치 등등)는 밸류 오브젝트라고 생각했다. 그런데 당시 서비스 유저가 해당 공간에 대한 내역이 쌓이는 기능을 원한다고 애기했을때 구현하기가 상당히 어려워졌다. 그래서 이번에는 매물과 공간정보를 분리하고 둘다 엔티티로 모델링 헀다. 예를 들어 대성 빌라 202동 101호 20평 전세 4억 매물이 있다면 대성빌라 202동 101호 20평은 product context 의 product entity 가 되고, 전세 3억은 listing context 의 listing entity 가 된다. product entity 는 listing entity 와 파트너 관게를 맺고, listing entity 는 customer 와 realtor entity 와 관계를 맺는다.</p>
+
+<ul>
+  <li>공인중개사와 공인중개사 사무소를 분리하고 사무소를 밸류 오브젝트에서 엔티티로 변경</li>
+</ul>
+
+<p>부동산 거래 경험이 없거나 공인중개사의 근무형태를 잘 모르는 사람들은 공인중개사의 근무 형태가 회사의 일반적인 정규직 형태와 같을 거라고 생각한다. 예를 들면, 공인중개사A 는  A 사무소를 차려서 거기에만 근무한다고 생각한다. 이런 생각과 다르게 공인중개사의 근무형태는 다양하다. 공인중개사 A가 B,C,D 사무소를 동시에 운영하는 경우도 있고, 공인중개사 B가 공인중개사 A의 사무소 A에 월,화 만 출근하고 공인중개사 C의 E사무소에 수, 목, 금요일만 출근하는 등 다양한 근무형태를 보인다.</p>
+
+<p>이런 사실을 모르고 개발했을때는 공인중개사를 엔티티, 공인중개사 사무소를 밸류 오브젝트로 간주했다. 이럴 경우 프롭테크 서비스를 사용하는 공인중개사 A가 본인 사무소 A가 아닌 다른 사무소 B 에 가서 서비스를 사용하려고 할 때 문제가 발생한다. 그래서 공인중개사와 공인중개소를 독립된 엔티티로 모델링한다.</p>
+
+<ul>
+  <li>고객과 고객의 정체성을 분리하고 정체성을 밸류 오브젝트에서 엔티티로 변경</li>
+</ul>
+
+<p><img src="/images/posts/customer.png" alt="customer" /><br />
+이 서비스에는 공인주개사무소를 방문했던 고객 정보를 입력해서 보는 기능이 있다. 당시 개발 할때는 고객 A가 원룸, 월세 매물을 문의하는 임차인일 경우만 상정했기 때문에 고객이라는 엔티티에 고객의 정체성은 밸류 오브젝트가 됐다. 그러나 현실 세계에서 고객은 계속 임차인이거나 임대인으로만 정체성을 유지하지 않는다. 고객B 는 A 공인중개사무소를 방문할때마다 계속 정체성이 계속 바뀐다. 몇 개월 전에는 빌라 매물을 구매할 의향이 있는 매수인이였지만, 지금은 빌라 매물을 전세로 시장에 내놓으려는 임대인이면서 동시에 다른 지역의 아파트 전세 매물을 알아보는 임차인이다. 미래에는 빌라 매물을 매도하고 아파트를 구매하려는 매도인 겸 매수인이 될지도 모른다. 고객의 정체성을 정리하면, 고객A는 시간의 흐름에 따라 매수인, 임대인, 임차인, 매도인, 매수인으로 변한다. 과거의 구조에서는 고객 A는 한개의 정체성만 갖고 있을 수 있어서 매수인A, 임대인 A, 임차인 A, 매도인 A, 매수인 A를 별개의 고객으로 간주했다. 이런 구조는 공인중개사의 업무에도 도움이 안된다. 고객 A의 과거 방문의도 및 내역을 알 수 없기 때문이다.</p>
+
+<p>그래서 이번에는 고객과 고객 정체성 모델을 분리했고 둘다 엔티티로 본다. 이제부터 고객 A는 메수인, 임대인, 임차인 등등 다양한 정체성을 가질 수 있다.</p>
+
+<p>후기</p>
+
+<p>에릭 에반스 책 DDD 에서는 DDD를 하기 위해서 도메인 전문가가 팀에 있어야 한다고 말한다. 이 서비스를 개발하면서 팀원중에는 꼭 도메인 전문가가 있어야 한다는 생각이 들었다. 해당 분야에 대한 기본 지식이 있었다면 모델링을 할때 실수를 줄일 수 있을거라고 생각했다. 코드를 다시 읽어봤을때 대부분의 문제는 서비스 특성상 엔티티로 봐야 하는 개념들을 밸류오브젝트로 모델링 했거나, 그 반대로 모델링 하는 등의 문제였기 때문이다.</p>
+
+<p>그리고 대부분의 DDD 나 설계 관련 책이 자바로 되어있어서 그런지 파이선 커뮤니티에서는 아키텍쳐에 대한 논의가 별로 없어보인다. 경험이 많진 않지만 이런 저런 서비스를 개발 및 운영해본 결과, 초반에는 그냥 개발해도 되지만 서비스가 발전하면 복잡도를 감당하기 위해서 설계가 필요하다. 장고, 플라스크 두 프레임워크에서 컨테이너나 의존성 관계 관리 등의 기능을 제공하지 않아 DDD를 하기가 불편한데 나중에는 이런 기능을 지원하지 않을까 생각한다.</p>
+
+-->
+
+
+
+
+
+<div class='o-wrapper'>
+
+  <div class='o-grid'>
+    <div class='o-grid__col'>
+      <article class='c-post' itemscope itemtype='http://schema.org/BlogPosting'>
+        <div style="display: flex; height: 25px">
+          <p style="margin-bottom:10px; font-size:14px; color:#7E8482;">DDD&nbsp;&nbsp;| </p>
+          <time datetime='2020-07-10T00:00:00+09:00' itemprop='datePublished' style="text-align: left; padding-top: 0px; color:#7E8482; font-size: 14px;font-family: 'Noto Sans KR', sans-serif; padding-left: 10px">10 Jul 2020</time>
+<!--          <time class='c-post__date' datetime='2020-07-10T00:00:00+09:00' itemprop='datePublished' style="text-align: left; padding-top: 0px; color:#7E8482">10 Jul 2020</time>-->
+        </div>
+        <h1 class='c-post__title'>파이선으로 개발한 프롭테크 서비스 DDD 구조로 리팩토링</h1>
+
+        <div class='c-content' itemprop='articleBody'>
+          
+          <p>목차</p>
+
+<p>서비스를 context 로 분리하고 django app으로 구분<br />
+view, service, repository, model 로 분리<br />
+IoC Container 구현<br />
+부분적 경계를 facades 로 구현<br />
+밸류 오브젝트를 엔티티로 변경<br />
+후기</p>
+
+<p>깃허브 https://github.com/suhyunbaik/buba-service<br />
+몇년전에 프롭테크 서비스를 개발했었다. 사업적인 문제로 서비스를 접었는데 최근에 코드를 다시 살펴보니 개선할 부분이 많았다. 그 당시 서비스를 개발할때는 팀 내에 도메인 전문가가 없었고 구조에 대한 고민을 미처 못했다. 이번에는 리팩토링을 하면서 DDD를 적용해보기로 했다. 이 서비스는 프롭테크 서비스 이지만 직방, 다방과 타켓층이 다르다. 직방, 다방은 집을 알아보는 임차인이 타켓이지만, 이 서비스는 공인중개사가 타켓이다. 공인중개사의 업무 효율을 높이고 본인이 갖고있는 매물의 특징과 정보를 분석해서 영업에 도움이 되는 게 이 서비스의 목표다.</p>
+
+<p>서비스를 context 로 분리하고 django app으로 구분</p>
+
+<p><img src="/images/posts/context_map.png" alt="context_map" /></p>
+
+<p>기존 코드는 기능별로 경계가 없어서 마치 큰 진흙덩어리처럼 기능이 서로 단단하게 강결합 된 상태다. 코드를 분리하기 위해서 먼저 서비스를 정리한다. 해당 서비스의 기능은 크게 매물 관리, 고객관리, 공동중개망, 문자 서비스, 공인중개사 관리로 나눌 수 있다. DDD 에서 말하는 bounded context 로 서비스를 나눠보자면 customer(고객), listing(매물), sms(문자), realtor(공인중개사)로 나눌 수 있다. 여기서 매물 관리는 product(공간정보), listing(매물) 이라는 2개의 bounded context 로 나눈다. 그리고 listing(매물) 이라는 context 에는 multiple listing(공동중개망) 이라는 aggregate 을 만든다.  매물관리를 이렇게 나눈 이유는 밑에 나온다.</p>
+
+<ul>
+  <li>view, service, repository, model 로 분리</li>
+</ul>
+
+<p>기존 코드는 장고 공식문서에 설명하는 MVT(model view, template) 패턴을 따랐기 때문에 views.py 에 비즈니스 로직이 있었다. 이번에는 DDD를 적용하기로 했으므로, DDD에 맞춰서 코드를 나눈다. view는 요청을 받고 serialize, deserilaizer를 수행하며, 클라이언트에게 응답을 준다. service 는 여러 서비스와 리포지토리를 가지고 비즈니스 로직을 수행한다. repository 는 model 에서 밸류 오브젝트를 갖고온다. model 은 장고 내부 인프라 레이어와 연결되고, 그대로 RDS DB와 연결된다. 한개의 app은 4개 레이어 계층으로 구성한다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># views
+</span><span class="k">class</span> <span class="nc">RealtorMyselfView</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
+    <span class="n">authentication_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">TokenAuthentication</span><span class="p">,)</span>
+    <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'realtor_service'</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">realtor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">get_realtor</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="nb">id</span><span class="p">)</span>
+        <span class="n">serializer</span> <span class="o">=</span> <span class="n">RealtorSerializer</span><span class="p">(</span><span class="n">realtor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s">'data'</span><span class="p">:</span> <span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">})</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># services 
+</span><span class="k">class</span> <span class="nc">RealtorService</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">realtor_repository</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span> <span class="o">=</span> <span class="n">realtor_repository</span>
+
+    <span class="k">def</span> <span class="nf">get_realtors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span><span class="o">.</span><span class="n">get_all_realtors</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span><span class="o">.</span><span class="n">get_realtor_by_realtor_id</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">register_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">SignUpRequestSerializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span><span class="o">.</span><span class="n">create_realtor</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'username'</span><span class="p">],</span> <span class="n">password</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'password'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'name'</span><span class="p">],</span>
+                                               <span class="n">email</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'email'</span><span class="p">],</span> <span class="n">phone_number</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'phone_number'</span><span class="p">])</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># repository
+</span>
+<span class="k">class</span> <span class="nc">RealtorRepository</span><span class="p">:</span>
+    <span class="n">realtor_dao</span> <span class="o">=</span> <span class="n">Realtor</span><span class="o">.</span><span class="n">objects</span>
+
+    <span class="k">def</span> <span class="nf">get_all_realtors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_dao</span><span class="o">.</span><span class="nb">all</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_realtor_by_realtor_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_dao</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">create_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">SignUpRequestSerializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">realtor_dao</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'username'</span><span class="p">],</span> <span class="n">password</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'password'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'name'</span><span class="p">],</span>
+                                     <span class="n">email</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'email'</span><span class="p">],</span> <span class="n">phone_number</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'phone_number'</span><span class="p">])</span>
+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># models
+</span><span class="k">class</span> <span class="nc">Realtor</span><span class="p">(</span><span class="n">AbstractBaseUser</span><span class="p">,</span> <span class="n">PermissionsMixin</span><span class="p">):</span>
+    <span class="n">REQUIRED_FIELDS</span> <span class="o">=</span> <span class="p">[</span><span class="s">'phone_number'</span><span class="p">]</span>
+    <span class="n">USERNAME_FIELD</span> <span class="o">=</span> <span class="s">'username'</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="s">'공인중개사'</span>
+
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s">'아이디'</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s">'이름'</span><span class="p">)</span>
+    <span class="o">...</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">RealtorManager</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<ul>
+  <li>IoC Container 구현</li>
+</ul>
+
+<p><img src="/images/posts/container.png" alt="container" /></p>
+
+<p>해당 서비스를 개발할때 초반에는 어려움이 없었는데, 후반으로 갈수록 기능이 다양해지고 복잡도가 증가하면서 circualr import 처럼 잘못된 설계에서 기인하는 문제가 계속 터져서 고통을 겪었었다. 그 때 당시에는 의존성도 관리대상이라는 사실을 몰랐기 때문에 개발하다보니 import 에 import 가 꼬리를 물었고 이게 에러를 발생시켰다. 이번에는 의존성을 제어하기 위해 스프링 프레임워크를 참조했다.</p>
+
+<p>스프링 프레임워크에는 객체의 생성 및 생명주기를 관리하는 IoC 컨테이너가 있다. 스프링으로 프로덕션 개발을 한 경험이 없어서 깊이있게 알지 못하지만, 내가 아는 바로는 앱이 실행될때 컨테이너가 떠서 미리 필요한 객체들을 생성하고 이 객체들은 빈이라고 부르며, 자바 어노테이트를 사용해 미리 생성할 객체를 등록할 수 있다고 알고 있다. 장고에는 컨테이너가 없고 객체 등록용 어노테이트가 없기 때문에 직접 만들어서 써야한다. 각 앱마다 컨테이너를 1개씩 만들고, 컨테이너 클래스가 인스턴스화 되면 해당 앱에서 사용하는 객체들을 생성해서 들고있도록 한다. 의존성 주입 방법은 스프링에서는 setter, method, constructor 3가지 방법이 있는데, 이 프로젝트에서는 constructor 방식만 사용했다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Container</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deps</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">register_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_repository'</span><span class="p">]</span> <span class="o">=</span> <span class="n">RealtorRepository</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_service'</span><span class="p">]</span> <span class="o">=</span> <span class="n">RealtorService</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_repository'</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">component</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="nb">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s">'{name} instance does not exists'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">component</span>
+
+
+<span class="n">container</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
+<span class="n">container</span><span class="o">.</span><span class="n">register_all</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<ul>
+  <li>부분적 경계를 facades로 구현</li>
+</ul>
+
+<p><img src="/images/posts/facades.png" alt="facades" /></p>
+
+<p>가끔은 다른 bounded context에 있는 service에 접근할 필요한 경우가 있다. 해당 서비스에서는 customer 앱에서 listing 앱에 접근해 해당 customer가 관심을 보였던 매물정보를 갖고오는 기능이 있다. 클린 아키텍쳐 책 24장에서는 부분적 경계 구현 방법으로 크게 3가지를 제시하고 있는데, 첫번째는 단계를 건너뛰기, 두번째는 일차원 경계(boundary interface 사용), 세번째는 퍼사드 패턴을 이용하는 방법이다. 이 중에서 퍼사드를 사용하는 방법을 선택했다. 
+고객 상세 정보를 들고오는 API 는 고객이 보고 간 매물 정보도 같이 보여준다. 매물 정보는 매물 컨텍스트 안에 있기 때문에 다른 django app 으로 분리되어있다. customer service 에서 listing service 로 직접 접근하지 않고, listing facades 를 만들어서 파사드를 통해 리스팅 컨텍스트에 접근한다. 이런 방법을 쓰면 실수로 다른 개발자가 listing service 의 메소드를 수정했을 경우 다른 api 가 영향 받는 범위를 줄일 수 있고, listing app 을 MSA로 만들 경우 facade 는 다른 서버와 통신하는 부분으로 만든다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># views 
+</span><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">):</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">get_customer_detail</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
+    <span class="n">serializer</span> <span class="o">=</span> <span class="n">CustomerDetailResponseSerializer</span><span class="p">({</span><span class="s">'customer'</span><span class="p">:</span> <span class="n">customer</span><span class="p">,</span> <span class="s">'listings'</span><span class="p">:</span> <span class="n">customer</span><span class="o">.</span><span class="n">favorites</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># services
+</span><span class="k">class</span> <span class="nc">CustomerService</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer_repository</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">listing_facades</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customer_repository</span> <span class="o">=</span> <span class="n">customer_repository</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listing_facades</span> <span class="o">=</span> <span class="n">listing_facades</span>
+
+    <span class="k">def</span> <span class="nf">get_customer_favorites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">listing_facades</span><span class="o">.</span><span class="n">get_customer_favorites</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
+    
+<span class="c1"># facades 
+</span><span class="k">class</span> <span class="nc">ListingFacades</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listing_service</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listing_service</span> <span class="o">=</span> <span class="n">listing_service</span>
+
+    <span class="k">def</span> <span class="nf">get_customer_favorites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">listing_service</span><span class="o">.</span><span class="n">get_customer_favorites</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<ul>
+  <li>밸류 오브젝트에서 엔티티로 변경</li>
+</ul>
+
+<p>서비스를 개발하다가 사용자수가 어느정도 늘어나면서 유저가 본인이 사용하고 싶은 기능을 요구하는 경우도 있었는데, 기존 서비스의 구조와 맞지않거나 기능 개발에 필요한 시간이 많다는 이유로 개발하지 않고 그냥 지나간 경우가 있었다. 코드를 다시 뜯어보고 나니, 잘못된 모델링 때문에 이런저런 이유로 기능을 개발하지 못한 경우가 대부분이다. DDD에서 말하는 엔티티, 밸류 오브젝트에 대한 개념이 잡혀있었다면 저지르지 않았을 실수가 많이 보였다.</p>
+
+<ul>
+  <li>공간정보과 거래형태를 분리하고 거래형태를 밸류 오브젝트에서 엔티티로 변경</li>
+</ul>
+
+<p><img src="/images/posts/product.png" alt="product" /><br />
+ 가장 큰 실수는 공간에 대한 정보를 매물의 밸류 오브젝트로 모델링한 실수다. 당시에는 매물정보(전월세, 가격 등등 거래형태에 대한 정보)만 필요하다고 생각했고 공간정보(부동산 종류, 위치 등등)는 밸류 오브젝트라고 생각했다. 그런데 당시 서비스 유저가 해당 공간에 대한 내역이 쌓이는 기능을 원한다고 애기했을때 구현하기가 상당히 어려워졌다. 그래서 이번에는 매물과 공간정보를 분리하고 둘다 엔티티로 모델링 헀다. 예를 들어 대성 빌라 202동 101호 20평 전세 4억 매물이 있다면 대성빌라 202동 101호 20평은 product context 의 product entity 가 되고, 전세 3억은 listing context 의 listing entity 가 된다. product entity 는 listing entity 와 파트너 관게를 맺고, listing entity 는 customer 와 realtor entity 와 관계를 맺는다.</p>
+
+<ul>
+  <li>공인중개사와 공인중개사 사무소를 분리하고 사무소를 밸류 오브젝트에서 엔티티로 변경</li>
+</ul>
+
+<p>부동산 거래 경험이 없거나 공인중개사의 근무형태를 잘 모르는 사람들은 공인중개사의 근무 형태가 회사의 일반적인 정규직 형태와 같을 거라고 생각한다. 예를 들면, 공인중개사A 는  A 사무소를 차려서 거기에만 근무한다고 생각한다. 이런 생각과 다르게 공인중개사의 근무형태는 다양하다. 공인중개사 A가 B,C,D 사무소를 동시에 운영하는 경우도 있고, 공인중개사 B가 공인중개사 A의 사무소 A에 월,화 만 출근하고 공인중개사 C의 E사무소에 수, 목, 금요일만 출근하는 등 다양한 근무형태를 보인다.</p>
+
+<p>이런 사실을 모르고 개발했을때는 공인중개사를 엔티티, 공인중개사 사무소를 밸류 오브젝트로 간주했다. 이럴 경우 프롭테크 서비스를 사용하는 공인중개사 A가 본인 사무소 A가 아닌 다른 사무소 B 에 가서 서비스를 사용하려고 할 때 문제가 발생한다. 그래서 공인중개사와 공인중개소를 독립된 엔티티로 모델링한다.</p>
+
+<ul>
+  <li>고객과 고객의 정체성을 분리하고 정체성을 밸류 오브젝트에서 엔티티로 변경</li>
+</ul>
+
+<p><img src="/images/posts/customer.png" alt="customer" /><br />
+이 서비스에는 공인주개사무소를 방문했던 고객 정보를 입력해서 보는 기능이 있다. 당시 개발 할때는 고객 A가 원룸, 월세 매물을 문의하는 임차인일 경우만 상정했기 때문에 고객이라는 엔티티에 고객의 정체성은 밸류 오브젝트가 됐다. 그러나 현실 세계에서 고객은 계속 임차인이거나 임대인으로만 정체성을 유지하지 않는다. 고객B 는 A 공인중개사무소를 방문할때마다 계속 정체성이 계속 바뀐다. 몇 개월 전에는 빌라 매물을 구매할 의향이 있는 매수인이였지만, 지금은 빌라 매물을 전세로 시장에 내놓으려는 임대인이면서 동시에 다른 지역의 아파트 전세 매물을 알아보는 임차인이다. 미래에는 빌라 매물을 매도하고 아파트를 구매하려는 매도인 겸 매수인이 될지도 모른다. 고객의 정체성을 정리하면, 고객A는 시간의 흐름에 따라 매수인, 임대인, 임차인, 매도인, 매수인으로 변한다. 과거의 구조에서는 고객 A는 한개의 정체성만 갖고 있을 수 있어서 매수인A, 임대인 A, 임차인 A, 매도인 A, 매수인 A를 별개의 고객으로 간주했다. 이런 구조는 공인중개사의 업무에도 도움이 안된다. 고객 A의 과거 방문의도 및 내역을 알 수 없기 때문이다.</p>
+
+<p>그래서 이번에는 고객과 고객 정체성 모델을 분리했고 둘다 엔티티로 본다. 이제부터 고객 A는 메수인, 임대인, 임차인 등등 다양한 정체성을 가질 수 있다.</p>
+
+<p>후기</p>
+
+<p>에릭 에반스 책 DDD 에서는 DDD를 하기 위해서 도메인 전문가가 팀에 있어야 한다고 말한다. 이 서비스를 개발하면서 팀원중에는 꼭 도메인 전문가가 있어야 한다는 생각이 들었다. 해당 분야에 대한 기본 지식이 있었다면 모델링을 할때 실수를 줄일 수 있을거라고 생각했다. 코드를 다시 읽어봤을때 대부분의 문제는 서비스 특성상 엔티티로 봐야 하는 개념들을 밸류오브젝트로 모델링 했거나, 그 반대로 모델링 하는 등의 문제였기 때문이다.</p>
+
+<p>그리고 대부분의 DDD 나 설계 관련 책이 자바로 되어있어서 그런지 파이선 커뮤니티에서는 아키텍쳐에 대한 논의가 별로 없어보인다. 경험이 많진 않지만 이런 저런 서비스를 개발 및 운영해본 결과, 초반에는 그냥 개발해도 되지만 서비스가 발전하면 복잡도를 감당하기 위해서 설계가 필요하다. 장고, 플라스크 두 프레임워크에서 컨테이너나 의존성 관계 관리 등의 기능을 제공하지 않아 DDD를 하기가 불편한데 나중에는 이런 기능을 지원하지 않을까 생각한다.</p>
+
+
+        </div>
+
+        <div class='c-tags'>
+          
+            <a href='/tag/DDD'>DDD</a>
+          
+        </div>
+        <hr/>
+         <!-- Your share button code start-->
+<!--          <div class="fb-share-button"-->
+<!--            data-href="//ddd/2020/07/10/python-proptech-ddd/"-->
+<!--            data-layout="button_count">-->
+<!--          </div>-->
+        <!-- Your share button code end-->
+
+      </article>
+
+    </div>
+  </div>
+</div>
+
+    <!--<footer class='c-footer' style="background-color: #fff; border-top:1px solid gainsboro">-->
+<!--  <div class='o-grid'>-->
+<!--    <div class='o-grid__col o-grid__col&#45;&#45;full' style="font-size: 12px;-->
+<!--    color: gray;">-->
+<!--      Suhyun Baik-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</footer>-->
+</div>
+
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/evil-icons.min.js"></script>
+<script src="/js/jquery.fitvids.js"></script>
+<script src="/js/app.js"></script>
+<!-- Load Facebook SDK for JavaScript -->
+<div id="fb-root"></div>
+<script>(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+</body>
+
+</html>
