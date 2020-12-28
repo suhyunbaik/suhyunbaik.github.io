@@ -1,16 +1,10 @@
 ---
 title: 재택근무에 대처하는 나의 자세 
 layout: page
-tags: [remote work]
-categories: [remote work]
+tags: [work]
+categories: [work]
 ---
 
-
-준비없는 재택근무는 전쟁같았다
-
-두번째 재택근무엔 마음만 준비했다
-
-재택근무를 잘 하려면 준비가 필요하다
 
 
 ##### 준비없는 재택근무는 전쟁같았다
