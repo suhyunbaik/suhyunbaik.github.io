@@ -1,4 +1,4 @@
-I"�o<p>목차</p>
+I"Mp<p>목차</p>
 
 <p>서비스를 context 로 분리하고 django app으로 구분<br />
 view, service, repository, model 로 분리<br />
@@ -26,12 +26,12 @@ IoC Container 구현<br />
 </span><span class="k">class</span> <span class="nc">RealtorMyselfView</span><span class="p">(</span><span class="n">APIView</span><span class="p">):</span>
     <span class="n">authentication_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">TokenAuthentication</span><span class="p">,)</span>
     <span class="n">permission_classes</span> <span class="o">=</span> <span class="p">(</span><span class="n">IsAuthenticated</span><span class="p">,)</span>
-    <span class="n">service</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'realtor_service'</span><span class="p">)</span>
+    <span class="n">service</span> <span class="o">=</span> <span class="n">container</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'realtor_service'</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">realtor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">get_realtor</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="nb">id</span><span class="p">)</span>
+        <span class="n">realtor</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">get_realtor</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">user</span><span class="p">.</span><span class="nb">id</span><span class="p">)</span>
         <span class="n">serializer</span> <span class="o">=</span> <span class="n">RealtorSerializer</span><span class="p">(</span><span class="n">realtor</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s">'data'</span><span class="p">:</span> <span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span><span class="s">'data'</span><span class="p">:</span> <span class="n">serializer</span><span class="p">.</span><span class="n">data</span><span class="p">})</span>
 
 </code></pre></div></div>
 
@@ -39,16 +39,16 @@ IoC Container 구현<br />
 </span><span class="k">class</span> <span class="nc">RealtorService</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">realtor_repository</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span> <span class="o">=</span> <span class="n">realtor_repository</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">realtor_repository</span> <span class="o">=</span> <span class="n">realtor_repository</span>
 
     <span class="k">def</span> <span class="nf">get_realtors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span><span class="o">.</span><span class="n">get_all_realtors</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">realtor_repository</span><span class="p">.</span><span class="n">get_all_realtors</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">get_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span><span class="o">.</span><span class="n">get_realtor_by_realtor_id</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">realtor_repository</span><span class="p">.</span><span class="n">get_realtor_by_realtor_id</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">register_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">SignUpRequestSerializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">realtor_repository</span><span class="o">.</span><span class="n">create_realtor</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'username'</span><span class="p">],</span> <span class="n">password</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'password'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'name'</span><span class="p">],</span>
+    <span class="k">def</span> <span class="nf">register_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">SignUpRequestSerializer</span><span class="p">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">realtor_repository</span><span class="p">.</span><span class="n">create_realtor</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'username'</span><span class="p">],</span> <span class="n">password</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'password'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'name'</span><span class="p">],</span>
                                                <span class="n">email</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'email'</span><span class="p">],</span> <span class="n">phone_number</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'phone_number'</span><span class="p">])</span>
 
 </code></pre></div></div>
@@ -56,16 +56,16 @@ IoC Container 구현<br />
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># repository
 </span>
 <span class="k">class</span> <span class="nc">RealtorRepository</span><span class="p">:</span>
-    <span class="n">realtor_dao</span> <span class="o">=</span> <span class="n">Realtor</span><span class="o">.</span><span class="n">objects</span>
+    <span class="n">realtor_dao</span> <span class="o">=</span> <span class="n">Realtor</span><span class="p">.</span><span class="n">objects</span>
 
     <span class="k">def</span> <span class="nf">get_all_realtors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_dao</span><span class="o">.</span><span class="nb">all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">realtor_dao</span><span class="p">.</span><span class="nb">all</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">get_realtor_by_realtor_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Realtor</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtor_dao</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">realtor_dao</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">create_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">SignUpRequestSerializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">realtor_dao</span><span class="o">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'username'</span><span class="p">],</span> <span class="n">password</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'password'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'name'</span><span class="p">],</span>
+    <span class="k">def</span> <span class="nf">create_realtor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">SignUpRequestSerializer</span><span class="p">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">realtor_dao</span><span class="p">.</span><span class="n">create_user</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'username'</span><span class="p">],</span> <span class="n">password</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'password'</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'name'</span><span class="p">],</span>
                                      <span class="n">email</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'email'</span><span class="p">],</span> <span class="n">phone_number</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s">'phone_number'</span><span class="p">])</span>
 
 </code></pre></div></div>
@@ -78,10 +78,10 @@ IoC Container 구현<br />
     <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
         <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="s">'공인중개사'</span>
 
-    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-    <span class="n">username</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s">'아이디'</span><span class="p">)</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s">'이름'</span><span class="p">)</span>
-    <span class="o">...</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">UUIDField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">uuid</span><span class="p">.</span><span class="n">uuid4</span><span class="p">,</span> <span class="n">editable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s">'아이디'</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="s">'이름'</span><span class="p">)</span>
+    <span class="p">...</span>
     <span class="n">objects</span> <span class="o">=</span> <span class="n">RealtorManager</span><span class="p">()</span>
 
 </code></pre></div></div>
@@ -98,21 +98,21 @@ IoC Container 구현<br />
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Container</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">deps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">deps</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">register_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_repository'</span><span class="p">]</span> <span class="o">=</span> <span class="n">RealtorRepository</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_service'</span><span class="p">]</span> <span class="o">=</span> <span class="n">RealtorService</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_repository'</span><span class="p">])</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_repository'</span><span class="p">]</span> <span class="o">=</span> <span class="n">RealtorRepository</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_service'</span><span class="p">]</span> <span class="o">=</span> <span class="n">RealtorService</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">deps</span><span class="p">[</span><span class="s">'realtor_repository'</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">component</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">deps</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">component</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="nb">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s">'{name} instance does not exists'</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="nb">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s"> instance does not exists'</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">component</span>
 
 
 <span class="n">container</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
-<span class="n">container</span><span class="o">.</span><span class="n">register_all</span><span class="p">()</span>
+<span class="n">container</span><span class="p">.</span><span class="n">register_all</span><span class="p">()</span>
 
 </code></pre></div></div>
 
@@ -127,27 +127,27 @@ IoC Container 구현<br />
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># views 
 </span><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">):</span>
-    <span class="n">customer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">get_customer_detail</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
-    <span class="n">serializer</span> <span class="o">=</span> <span class="n">CustomerDetailResponseSerializer</span><span class="p">({</span><span class="s">'customer'</span><span class="p">:</span> <span class="n">customer</span><span class="p">,</span> <span class="s">'listings'</span><span class="p">:</span> <span class="n">customer</span><span class="o">.</span><span class="n">favorites</span><span class="p">})</span>
-    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">service</span><span class="p">.</span><span class="n">get_customer_detail</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
+    <span class="n">serializer</span> <span class="o">=</span> <span class="n">CustomerDetailResponseSerializer</span><span class="p">({</span><span class="s">'customer'</span><span class="p">:</span> <span class="n">customer</span><span class="p">,</span> <span class="s">'listings'</span><span class="p">:</span> <span class="n">customer</span><span class="p">.</span><span class="n">favorites</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="n">serializer</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
 
 <span class="c1"># services
 </span><span class="k">class</span> <span class="nc">CustomerService</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer_repository</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">listing_facades</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">customer_repository</span> <span class="o">=</span> <span class="n">customer_repository</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">listing_facades</span> <span class="o">=</span> <span class="n">listing_facades</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">customer_repository</span> <span class="o">=</span> <span class="n">customer_repository</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">listing_facades</span> <span class="o">=</span> <span class="n">listing_facades</span>
 
     <span class="k">def</span> <span class="nf">get_customer_favorites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">listing_facades</span><span class="o">.</span><span class="n">get_customer_favorites</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">listing_facades</span><span class="p">.</span><span class="n">get_customer_favorites</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
     
 <span class="c1"># facades 
 </span><span class="k">class</span> <span class="nc">ListingFacades</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">listing_service</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">listing_service</span> <span class="o">=</span> <span class="n">listing_service</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">listing_service</span> <span class="o">=</span> <span class="n">listing_service</span>
 
     <span class="k">def</span> <span class="nf">get_customer_favorites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">listing_service</span><span class="o">.</span><span class="n">get_customer_favorites</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">listing_service</span><span class="p">.</span><span class="n">get_customer_favorites</span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span>
 
 </code></pre></div></div>
 

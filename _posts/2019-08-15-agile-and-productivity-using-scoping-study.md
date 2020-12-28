@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: page
 title: 애자일과 생산성측정  
 tags: [Agile, Productivity]
 categories: [Agile]

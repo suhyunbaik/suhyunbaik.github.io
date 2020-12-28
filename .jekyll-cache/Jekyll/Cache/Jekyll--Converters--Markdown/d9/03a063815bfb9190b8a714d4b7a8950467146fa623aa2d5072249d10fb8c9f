@@ -74,20 +74,20 @@
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
 
 
-<span class="k">class</span> <span class="nc">Cafe</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Cafe</span><span class="p">(</span><span class="n">models</span><span class="p">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">Customer</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Customer</span><span class="p">(</span><span class="n">models</span><span class="p">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">customer</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Customer</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
-    <span class="n">cafe</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Cafe</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">models</span><span class="p">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">AutoField</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">customer</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Customer</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="p">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">cafe</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">Cafe</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="p">.</span><span class="n">CASCADE</span><span class="p">)</span>
   
 </code></pre></div></div>
 
@@ -97,13 +97,13 @@
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">OrderCoffeeService</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">order_coffee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">cafe_id</span><span class="o">=</span><span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="o">=</span><span class="n">customer_id</span><span class="p">)</span>
-        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="n">cafe_id</span><span class="o">=</span><span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="o">=</span><span class="n">customer_id</span><span class="p">)</span>
+        <span class="n">order</span><span class="p">.</span><span class="n">save</span><span class="p">()</span>
     
 
 <span class="k">class</span> <span class="nc">OrderService</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderDomainModel</span><span class="p">:</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">order_id</span><span class="o">=</span><span class="n">order_id</span><span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">order_id</span><span class="o">=</span><span class="n">order_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">order</span>
 </code></pre></div></div>
 
@@ -113,10 +113,10 @@
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">rest_framework</span> <span class="kn">import</span> <span class="n">serializers</span>
 
-<span class="k">class</span> <span class="nc">OrderResponseSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">Serializer</span><span class="p">):</span>
-    <span class="nb">id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
-    <span class="n">cafe_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
-    <span class="n">customer_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">OrderResponseSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="p">.</span><span class="n">Serializer</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">serializers</span><span class="p">.</span><span class="n">IntegerField</span><span class="p">()</span>
+    <span class="n">cafe_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="p">.</span><span class="n">IntegerField</span><span class="p">()</span>
+    <span class="n">customer_id</span> <span class="o">=</span> <span class="n">serializers</span><span class="p">.</span><span class="n">IntegerField</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>views.py</p>
@@ -128,14 +128,14 @@
 
 
 <span class="k">def</span> <span class="nf">order_coffee</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">):</span>
-    <span class="n">order_coffee_service</span><span class="o">.</span><span class="n">order_coffee</span><span class="p">(</span><span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">)</span>
+    <span class="n">order_coffee_service</span><span class="p">.</span><span class="n">order_coffee</span><span class="p">(</span><span class="n">cafe_id</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="n">order_service</span><span class="o">.</span><span class="n">get_order</span><span class="p">(</span><span class="n">order_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">order_service</span><span class="p">.</span><span class="n">get_order</span><span class="p">(</span><span class="n">order_id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">serializer</span> <span class="o">=</span> <span class="n">OrderResponseSerializer</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="n">serializer</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">(</span><span class="n">serializer</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
 
 </code></pre></div></div>
 
@@ -159,12 +159,12 @@
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="p">.</span><span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
     <span class="o">@</span><span class="nb">classmethod</span>
     <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">cafe</span><span class="p">:</span> <span class="n">Cafe</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">cafe</span><span class="o">.</span><span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">cafe</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">cafe</span><span class="p">.</span><span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">cafe</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
 
 
 <span class="o">@</span><span class="n">dataclass</span>
@@ -174,13 +174,13 @@
     <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cafe_id</span> <span class="o">=</span> <span class="n">cafe_id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">customer_id</span> <span class="o">=</span> <span class="n">customer_id</span>
+        <span class="bp">self</span><span class="p">.</span><span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">cafe_id</span> <span class="o">=</span> <span class="n">cafe_id</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">customer_id</span> <span class="o">=</span> <span class="n">customer_id</span>
 
     <span class="o">@</span><span class="nb">classmethod</span>
     <span class="k">def</span> <span class="nf">of</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="nb">id</span><span class="p">,</span> <span class="n">customer_id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">customer_id</span><span class="p">,</span> <span class="n">cafe_id</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">cafe_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">order</span><span class="p">.</span><span class="nb">id</span><span class="p">,</span> <span class="n">customer_id</span><span class="o">=</span><span class="n">order</span><span class="p">.</span><span class="n">customer_id</span><span class="p">,</span> <span class="n">cafe_id</span><span class="o">=</span><span class="n">order</span><span class="p">.</span><span class="n">cafe_id</span><span class="p">)</span>
 
 </code></pre></div></div>
 
@@ -194,12 +194,12 @@
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">abc</span>
 
-<span class="k">class</span> <span class="nc">ObjectService</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="o">@</span><span class="n">abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+<span class="k">class</span> <span class="nc">ObjectService</span><span class="p">(</span><span class="n">abc</span><span class="p">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="o">@</span><span class="n">abc</span><span class="p">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="k">pass</span>
 
-    <span class="o">@</span><span class="n">abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="o">@</span><span class="n">abc</span><span class="p">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
         <span class="k">pass</span>
 
@@ -212,21 +212,21 @@
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 <span class="k">class</span> <span class="nc">CafeObjectService</span><span class="p">(</span><span class="n">ObjectService</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Cafe</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">Cafe</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">cafe_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Cafe</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">cafe_id</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe</span><span class="p">:</span> <span class="n">Cafe</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
-        <span class="n">cafe</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">cafe</span><span class="p">.</span><span class="n">save</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">OrderObjectService</span><span class="p">(</span><span class="n">ObjectService</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Order</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Order</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">order_id</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">Order</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Order</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">order_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">Order</span><span class="p">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
             <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">'Order Does not exist'</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoReturn</span><span class="p">:</span>
-        <span class="n">order</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">order</span><span class="p">.</span><span class="n">save</span><span class="p">()</span>
 
 </code></pre></div></div>
 
@@ -236,21 +236,21 @@
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">OrderCoffeeService</span><span class="p">:</span>
   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_object_service</span><span class="p">:</span> <span class="n">CafeObjectService</span><span class="p">)</span>
-  	<span class="bp">self</span><span class="o">.</span><span class="n">_cafe_object_service</span> <span class="o">=</span> <span class="n">cafe_object_service</span>
+  	<span class="bp">self</span><span class="p">.</span><span class="n">_cafe_object_service</span> <span class="o">=</span> <span class="n">cafe_object_service</span>
     
   <span class="k">def</span> <span class="nf">order_coffee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cafe_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">customer_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-    <span class="n">cafe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cafe_object_service</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cafe_id</span><span class="p">)</span>
-    <span class="o">...</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_cafe_object_service</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+    <span class="n">cafe</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">cafe_object_service</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">cafe_id</span><span class="p">)</span>
+    <span class="p">...</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">_cafe_object_service</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
     
     
 <span class="k">class</span> <span class="nc">OrderService</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_object_service</span><span class="p">:</span> <span class="n">OrderObjectService</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">order_object_service</span> <span class="o">=</span> <span class="n">order_object_service</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">order_object_service</span> <span class="o">=</span> <span class="n">order_object_service</span>
 
     <span class="k">def</span> <span class="nf">get_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderDomainModel</span><span class="p">:</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_object_service</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">OrderDomainModel</span><span class="o">.</span><span class="n">of</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">order_object_service</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">order_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">OrderDomainModel</span><span class="p">.</span><span class="n">of</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
      
 </code></pre></div></div>
 

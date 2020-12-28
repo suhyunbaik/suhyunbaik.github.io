@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: page
 title: Sentry를 Ubuntu에 self-hosted로 구축하기
 tags: [DevOps]
 categories: [DevOps]

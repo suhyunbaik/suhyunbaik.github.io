@@ -30,11 +30,11 @@
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="n">EC2_PRIVATE_IP</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="n">METADATA_URI</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ECS_CONTAINER_METADATA_URI'</span><span class="p">,</span> <span class="s">'http://169.254.170.2/v2/metadata'</span><span class="p">)</span>
+<span class="n">METADATA_URI</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ECS_CONTAINER_METADATA_URI'</span><span class="p">,</span> <span class="s">'http://169.254.170.2/v2/metadata'</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">METADATA_URI</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">METADATA_URI</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="p">.</span><span class="n">json</span><span class="p">()</span>
     <span class="c1"># print(data)
 </span>
     <span class="n">container_meta</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">'Containers'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -46,7 +46,7 @@
 <span class="k">if</span> <span class="n">EC2_PRIVATE_IP</span><span class="p">:</span>
     <span class="c1"># Be sure your ALLOWED_HOSTS is a list NOT a tuple
 </span>    <span class="c1"># or .append() will fail
-</span>    <span class="n">ALLOWED_HOSTS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC2_PRIVATE_IP</span><span class="p">)</span>
+</span>    <span class="n">ALLOWED_HOSTS</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC2_PRIVATE_IP</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>왜 컨테이너를 사용할떄는 ALLOWED HOST에 IP 주소를 추가해야 할까? ECS 에이전트는 작업정의의 컨테이너에서 각 작업을 위한 ‘정지’ 상태의 컨테이너를 만든다. 그러고 난 후 ‘정지’ 컨테이너를 위해서 네트워크 네임스페이스를 세팅하고, 작업 내 다른 컨테이너도 시작해 정지된 컨테이너와 같은 네트워크를 공유하게 만든다. 그래서 컨테이너에 IPv4 주소를 추가만 해주면 문제가 해결되는 것이다.</p>

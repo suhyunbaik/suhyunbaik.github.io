@@ -5,29 +5,29 @@
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
 
-  <meta name="description" content="A pythonist in startup">
+  <meta name="description" content="">
   <meta name="keywords" content="Python, Developer, startup">
   <meta name="author" content="Suhyun Baik">
   <meta name='viewport' content='width=device-width, initial-scale=1'>
 
   <!-- facebook start -->
   <meta property="og:type"          content="website" />
-  <meta property="og:title"         content="django 서버에서 동시접속자 증가시 502 발생 문제" />
-  <meta property="og:description"   content="django 서버에서 동시접속자 증가시 502 발생 문제" />
+  <meta property="og:title"         content="Django 서버에서 동시접속자 증가시 502 발생 문제" />
+  <meta property="og:description"   content="Django 서버에서 동시접속자 증가시 502 발생 문제" />
 
   <!-- Twitter start -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="django 서버에서 동시접속자 증가시 502 발생 문제">
-  <meta name="twitter:description" content="django 서버에서 동시접속자 증가시 502 발생 문제">
+  <meta name="twitter:title" content="Django 서버에서 동시접속자 증가시 502 발생 문제">
+  <meta name="twitter:description" content="Django 서버에서 동시접속자 증가시 502 발생 문제">
 
   <!-- Google / Search Engine Tags / 구글 검색 엔진 -->
-  <meta itemprop="name" content="django 서버에서 동시접속자 증가시 502 발생 문제">
-  <meta itemprop="description" content="django 서버에서 동시접속자 증가시 502 발생 문제">
+  <meta itemprop="name" content="Django 서버에서 동시접속자 증가시 502 발생 문제">
+  <meta itemprop="description" content="Django 서버에서 동시접속자 증가시 502 발생 문제">
 
-  <title>django 서버에서 동시접속자 증가시 502 발생 문제</title>
-  <meta name='description' content="1.문제2.uWSGI worker 갯수 증가3.db connection pool 도입4.mysqlclient에서 pymyql 로 변경5.uWSGI 에서 gunicorn 으로 변경">
-  <link rel='canonical' href="http://localhost:4000/devops/2020/05/19/django-concurrent-user-and-502-error/">
-  <link rel='alternate' type='application/rss+xml' title='A python developer' href="http://localhost:4000/feed.xml">
+  <title>Django 서버에서 동시접속자 증가시 502 발생 문제</title>
+  <meta name='description' content="1.문제2.uWSGI worker 갯수 증가 3.db connection pool 도입4.mysqlclient에서 pymyql 로 변경5.uWSGI 에서 gunicorn 으로 변경">
+  <link rel='canonical' href="https://suhyunbaik.github.io/devops/2020/05/19/django-concurrent-user-and-502-error/">
+  <link rel='alternate' type='application/rss+xml' title='Developer' href="https://suhyunbaik.github.io/feed.xml">
   <!-- css   -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <style>
@@ -72,11 +72,10 @@
     <div class='o-grid'>
         <div class='o-grid__col o-grid__col--full'>
             <div class='c-header__inner'>
-
                 <div class='o-grid'>
                     <div class='o-grid__col o-grid__col--3-4-s'>
                         <div class='c-logo u-text-left'>
-                            <!--              <a class='c-logo__link' href='/'>A python developer</a>-->
+                            <!--              <a class='c-logo__link' href='/'>Developer</a>-->
                             <a class='c-logo__link' href='/'
                                style="font-weight: bold; font-size: 1rem">🔥</a>
                             <!--                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">😈</a>-->
@@ -87,7 +86,6 @@
                     <div class='o-grid__col o-grid__col--1-4-s'>
                         <label class='js-off-canvas-toggle c-off-canvas-toggle' aria-label='Toggle navigation'>
                             =
-<!--                            <span class='c-off-canvas-toggle__icon'></span>-->
                         </label>
                     </div>
 
@@ -96,7 +94,6 @@
                             <label class='js-off-canvas-toggle c-off-canvas-toggle c-off-canvas-toggle--close'>
                                 <span class='c-off-canvas-toggle__icon'></span>
                             </label>
-
                             <ul class='c-nav o-plain-list '>
                                 
 
@@ -177,10 +174,6 @@
 
 
 
-
-
-
-
                             </ul>
                         </div>
                     </div>
@@ -192,13 +185,13 @@
 
 </header>
 
-<!--    <p>1.문제<br />
-2.uWSGI worker 갯수 증가<br />
+<!--    <p><a href="#1.문제">1.문제</a><br />
+<a href="#2.uWSGI worker 갯수 증가">2.uWSGI worker 갯수 증가</a> <br />
 3.db connection pool 도입<br />
 4.mysqlclient에서 pymyql 로 변경<br />
 5.uWSGI 에서 gunicorn 으로 변경</p>
 
-<h5 id="1-문제">1. 문제</h5>
+<h5 id="1문제">1.문제</h5>
 
 <p>현재 문제가 있는 서버는 평균적으로 분당 1.9만의 리퀘스트를 소화하는데, 동시접속수가 증가하면 ELB 에서 502가 자주 발생한다. 대략 5분당 평균 13개의 502가 발생한다.</p>
 
@@ -213,15 +206,15 @@
 
 <p>이 문제를 해결하려고 여러가지 시도를 해봤다.</p>
 
-<h5 id="2-uwsgi-worker-갯수-증가">2. uWSGI worker 갯수 증가</h5>
+<h5 id="2uwsgi-worker-갯수-증가">2.uWSGI worker 갯수 증가</h5>
 
-<p>기존 worker 갯수는 2개였다. 이전부터 이 worker 들은 <code class="highlighter-rouge">max-requests</code> 옵션에 지정된 리퀘스트를 소화한뒤 정상적으로 종료되는게 아니라, 갑자기 어디선가 발생한 <code class="highlighter-rouge">signal 9</code>을 받고 죽는 문제가 있었다. <code class="highlighter-rouge">signal 9</code> 이 발생하는 이유는 보통 메모리 부족인데, 파게이트 컨테이너 측정치를 봤을때는 메모리 사용량이 대체로 30%여서 메모리 문제는 아닌 것 같았다. 내 추측에는 아마 worker 가 2개 뿐이니 <code class="highlighter-rouge">max-request</code>에 지정된 리퀘스트 수 보다 더 많은 리퀘스트를 받아서 uWSGI에서 signal 9  을 발생시켜 worker 를 강제로 죽이고, worker 가 둘 다 죽어서 워커가 다시 respawn 될때까지 기다리는 상황이 빈번하게 발생하고, 이렇게 spawn된 worker가 없을때 들어온 리퀘스트가 502가 발생한다고 생각했다. 이러한 상황을 방지하기 위해서 <code class="highlighter-rouge">max-requests-delta</code> 옵션이 있지만 효과가 없는 것 같았다. (나중에 알게 되었는데 <code class="highlighter-rouge">max-requests-delta</code> 옵션은 <code class="highlighter-rouge">uWSGI &gt;= 2.1</code> 부터 효과가 있다고 한다.) 그래서 스테이징에 worker 수를 증가시켜 테스트를 했는데 2, 4, 6개였을때는 별 차이가 없었지만 8, 12, 16 등등 수를 크게 증가시킬수록 500대 에러 발생률이 크게 낮아졌다. <code class="highlighter-rouge">signal 9</code> 문제도 더이상 발생하지 않았다.</p>
+<p>기존 worker 갯수는 2개였다. 이전부터 이 worker 들은 <code class="language-plaintext highlighter-rouge">max-requests</code> 옵션에 지정된 리퀘스트를 소화한뒤 정상적으로 종료되는게 아니라, 갑자기 어디선가 발생한 <code class="language-plaintext highlighter-rouge">signal 9</code>을 받고 죽는 문제가 있었다. <code class="language-plaintext highlighter-rouge">signal 9</code> 이 발생하는 이유는 보통 메모리 부족인데, 파게이트 컨테이너 측정치를 봤을때는 메모리 사용량이 대체로 30%여서 메모리 문제는 아닌 것 같았다. 내 추측에는 아마 worker 가 2개 뿐이니 <code class="language-plaintext highlighter-rouge">max-request</code>에 지정된 리퀘스트 수 보다 더 많은 리퀘스트를 받아서 uWSGI에서 signal 9  을 발생시켜 worker 를 강제로 죽이고, worker 가 둘 다 죽어서 워커가 다시 respawn 될때까지 기다리는 상황이 빈번하게 발생하고, 이렇게 spawn된 worker가 없을때 들어온 리퀘스트가 502가 발생한다고 생각했다. 이러한 상황을 방지하기 위해서 <code class="language-plaintext highlighter-rouge">max-requests-delta</code> 옵션이 있지만 효과가 없는 것 같았다. (나중에 알게 되었는데 <code class="language-plaintext highlighter-rouge">max-requests-delta</code> 옵션은 <code class="language-plaintext highlighter-rouge">uWSGI &gt;= 2.1</code> 부터 효과가 있다고 한다.) 그래서 스테이징에 worker 수를 증가시켜 테스트를 했는데 2, 4, 6개였을때는 별 차이가 없었지만 8, 12, 16 등등 수를 크게 증가시킬수록 500대 에러 발생률이 크게 낮아졌다. <code class="language-plaintext highlighter-rouge">signal 9</code> 문제도 더이상 발생하지 않았다.</p>
 
-<p>그런데 worker 수를 증가시키지 말자는 의견이 있어서 이 방법은 가장 마지막에 시도할 해결방법으로 제쳐두었다. 반대 이유는 보통 이상적인 worker 갯수 산정을 <code class="highlighter-rouge">core x 2</code> 로 계산하기 때문에, worker 수가 너무 낮게 잡혀있는건 맞지만, 워커 갯수를 12, 15 정도로 증가시킬거라면 그냥 파게이트 컨테이너를 1대 더 띄우는게 낫다는 이유였다.</p>
+<p>그런데 worker 수를 증가시키지 말자는 의견이 있어서 이 방법은 가장 마지막에 시도할 해결방법으로 제쳐두었다. 반대 이유는 보통 이상적인 worker 갯수 산정을 <code class="language-plaintext highlighter-rouge">core x 2</code> 로 계산하기 때문에, worker 수가 너무 낮게 잡혀있는건 맞지만, 워커 갯수를 12, 15 정도로 증가시킬거라면 그냥 파게이트 컨테이너를 1대 더 띄우는게 낫다는 이유였다.</p>
 
 <h5 id="3-db-connection-pool-도입">3. db connection pool 도입</h5>
 
-<p>uWSGI 에서 몽키 패치를 해도 디비 커넥션이 병목현상이 디비 커넥션에서 일어난다고 생각했다. 그래서 <code class="highlighter-rouge">sqlalchemy</code> 디비 커넥션 풀링을 도입해서 스테이징에서 테스트 했다.
+<p>uWSGI 에서 몽키 패치를 해도 디비 커넥션이 병목현상이 디비 커넥션에서 일어난다고 생각했다. 그래서 <code class="language-plaintext highlighter-rouge">sqlalchemy</code> 디비 커넥션 풀링을 도입해서 스테이징에서 테스트 했다.
 <img src="/images/posts/db_connection_with_pooling.png" alt="db connection with pooling" /><br />
 커넥션 풀링 도입 전과 후과 다르다. 그러나 동시접속자 수가 증가하면 여전히 502가 발생했다.</p>
 
@@ -250,21 +243,21 @@
     <div class='o-grid__col'>
       <article class='c-post' itemscope itemtype='http://schema.org/BlogPosting'>
         <div style="display: flex; height: 25px">
-          <p style="margin-bottom:10px; font-size:14px; color:#7E8482;">Devops&nbsp;&nbsp;| </p>
+          <p style="margin-bottom:10px; font-size:14px; color:#7E8482;">DevOps&nbsp;&nbsp;| </p>
           <time datetime='2020-05-19T00:00:00+09:00' itemprop='datePublished' style="text-align: left; padding-top: 0px; color:#7E8482; font-size: 14px;font-family: 'Noto Sans KR', sans-serif; padding-left: 10px">19 May 2020</time>
 <!--          <time class='c-post__date' datetime='2020-05-19T00:00:00+09:00' itemprop='datePublished' style="text-align: left; padding-top: 0px; color:#7E8482">19 May 2020</time>-->
         </div>
-        <h1 class='c-post__title'>django 서버에서 동시접속자 증가시 502 발생 문제</h1>
+        <h1 class='c-post__title'>Django 서버에서 동시접속자 증가시 502 발생 문제</h1>
 
         <div class='c-content' itemprop='articleBody'>
           
-          <p>1.문제<br />
-2.uWSGI worker 갯수 증가<br />
+          <p><a href="#1.문제">1.문제</a><br />
+<a href="#2.uWSGI worker 갯수 증가">2.uWSGI worker 갯수 증가</a> <br />
 3.db connection pool 도입<br />
 4.mysqlclient에서 pymyql 로 변경<br />
 5.uWSGI 에서 gunicorn 으로 변경</p>
 
-<h5 id="1-문제">1. 문제</h5>
+<h5 id="1문제">1.문제</h5>
 
 <p>현재 문제가 있는 서버는 평균적으로 분당 1.9만의 리퀘스트를 소화하는데, 동시접속수가 증가하면 ELB 에서 502가 자주 발생한다. 대략 5분당 평균 13개의 502가 발생한다.</p>
 
@@ -279,15 +272,15 @@
 
 <p>이 문제를 해결하려고 여러가지 시도를 해봤다.</p>
 
-<h5 id="2-uwsgi-worker-갯수-증가">2. uWSGI worker 갯수 증가</h5>
+<h5 id="2uwsgi-worker-갯수-증가">2.uWSGI worker 갯수 증가</h5>
 
-<p>기존 worker 갯수는 2개였다. 이전부터 이 worker 들은 <code class="highlighter-rouge">max-requests</code> 옵션에 지정된 리퀘스트를 소화한뒤 정상적으로 종료되는게 아니라, 갑자기 어디선가 발생한 <code class="highlighter-rouge">signal 9</code>을 받고 죽는 문제가 있었다. <code class="highlighter-rouge">signal 9</code> 이 발생하는 이유는 보통 메모리 부족인데, 파게이트 컨테이너 측정치를 봤을때는 메모리 사용량이 대체로 30%여서 메모리 문제는 아닌 것 같았다. 내 추측에는 아마 worker 가 2개 뿐이니 <code class="highlighter-rouge">max-request</code>에 지정된 리퀘스트 수 보다 더 많은 리퀘스트를 받아서 uWSGI에서 signal 9  을 발생시켜 worker 를 강제로 죽이고, worker 가 둘 다 죽어서 워커가 다시 respawn 될때까지 기다리는 상황이 빈번하게 발생하고, 이렇게 spawn된 worker가 없을때 들어온 리퀘스트가 502가 발생한다고 생각했다. 이러한 상황을 방지하기 위해서 <code class="highlighter-rouge">max-requests-delta</code> 옵션이 있지만 효과가 없는 것 같았다. (나중에 알게 되었는데 <code class="highlighter-rouge">max-requests-delta</code> 옵션은 <code class="highlighter-rouge">uWSGI &gt;= 2.1</code> 부터 효과가 있다고 한다.) 그래서 스테이징에 worker 수를 증가시켜 테스트를 했는데 2, 4, 6개였을때는 별 차이가 없었지만 8, 12, 16 등등 수를 크게 증가시킬수록 500대 에러 발생률이 크게 낮아졌다. <code class="highlighter-rouge">signal 9</code> 문제도 더이상 발생하지 않았다.</p>
+<p>기존 worker 갯수는 2개였다. 이전부터 이 worker 들은 <code class="language-plaintext highlighter-rouge">max-requests</code> 옵션에 지정된 리퀘스트를 소화한뒤 정상적으로 종료되는게 아니라, 갑자기 어디선가 발생한 <code class="language-plaintext highlighter-rouge">signal 9</code>을 받고 죽는 문제가 있었다. <code class="language-plaintext highlighter-rouge">signal 9</code> 이 발생하는 이유는 보통 메모리 부족인데, 파게이트 컨테이너 측정치를 봤을때는 메모리 사용량이 대체로 30%여서 메모리 문제는 아닌 것 같았다. 내 추측에는 아마 worker 가 2개 뿐이니 <code class="language-plaintext highlighter-rouge">max-request</code>에 지정된 리퀘스트 수 보다 더 많은 리퀘스트를 받아서 uWSGI에서 signal 9  을 발생시켜 worker 를 강제로 죽이고, worker 가 둘 다 죽어서 워커가 다시 respawn 될때까지 기다리는 상황이 빈번하게 발생하고, 이렇게 spawn된 worker가 없을때 들어온 리퀘스트가 502가 발생한다고 생각했다. 이러한 상황을 방지하기 위해서 <code class="language-plaintext highlighter-rouge">max-requests-delta</code> 옵션이 있지만 효과가 없는 것 같았다. (나중에 알게 되었는데 <code class="language-plaintext highlighter-rouge">max-requests-delta</code> 옵션은 <code class="language-plaintext highlighter-rouge">uWSGI &gt;= 2.1</code> 부터 효과가 있다고 한다.) 그래서 스테이징에 worker 수를 증가시켜 테스트를 했는데 2, 4, 6개였을때는 별 차이가 없었지만 8, 12, 16 등등 수를 크게 증가시킬수록 500대 에러 발생률이 크게 낮아졌다. <code class="language-plaintext highlighter-rouge">signal 9</code> 문제도 더이상 발생하지 않았다.</p>
 
-<p>그런데 worker 수를 증가시키지 말자는 의견이 있어서 이 방법은 가장 마지막에 시도할 해결방법으로 제쳐두었다. 반대 이유는 보통 이상적인 worker 갯수 산정을 <code class="highlighter-rouge">core x 2</code> 로 계산하기 때문에, worker 수가 너무 낮게 잡혀있는건 맞지만, 워커 갯수를 12, 15 정도로 증가시킬거라면 그냥 파게이트 컨테이너를 1대 더 띄우는게 낫다는 이유였다.</p>
+<p>그런데 worker 수를 증가시키지 말자는 의견이 있어서 이 방법은 가장 마지막에 시도할 해결방법으로 제쳐두었다. 반대 이유는 보통 이상적인 worker 갯수 산정을 <code class="language-plaintext highlighter-rouge">core x 2</code> 로 계산하기 때문에, worker 수가 너무 낮게 잡혀있는건 맞지만, 워커 갯수를 12, 15 정도로 증가시킬거라면 그냥 파게이트 컨테이너를 1대 더 띄우는게 낫다는 이유였다.</p>
 
 <h5 id="3-db-connection-pool-도입">3. db connection pool 도입</h5>
 
-<p>uWSGI 에서 몽키 패치를 해도 디비 커넥션이 병목현상이 디비 커넥션에서 일어난다고 생각했다. 그래서 <code class="highlighter-rouge">sqlalchemy</code> 디비 커넥션 풀링을 도입해서 스테이징에서 테스트 했다.
+<p>uWSGI 에서 몽키 패치를 해도 디비 커넥션이 병목현상이 디비 커넥션에서 일어난다고 생각했다. 그래서 <code class="language-plaintext highlighter-rouge">sqlalchemy</code> 디비 커넥션 풀링을 도입해서 스테이징에서 테스트 했다.
 <img src="/images/posts/db_connection_with_pooling.png" alt="db connection with pooling" /><br />
 커넥션 풀링 도입 전과 후과 다르다. 그러나 동시접속자 수가 증가하면 여전히 502가 발생했다.</p>
 
@@ -309,31 +302,23 @@
 
         <div class='c-tags'>
           
-            <a href='/tag/Devops'>Devops</a>
+            <a href='/tag/DevOps'>DevOps</a>
           
         </div>
         <hr/>
-         <!-- Your share button code start-->
-<!--          <div class="fb-share-button"-->
-<!--            data-href="//devops/2020/05/19/django-concurrent-user-and-502-error/"-->
-<!--            data-layout="button_count">-->
-<!--          </div>-->
-        <!-- Your share button code end-->
-
       </article>
-
     </div>
   </div>
 </div>
 
-    <!--<footer class='c-footer' style="background-color: #fff; border-top:1px solid gainsboro">-->
-<!--  <div class='o-grid'>-->
-<!--    <div class='o-grid__col o-grid__col&#45;&#45;full' style="font-size: 12px;-->
-<!--    color: gray;">-->
-<!--      Suhyun Baik-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</footer>-->
+    <footer class='c-footer' style="background-color: #fff;">
+  <div class='o-grid'>
+    <div class='o-grid__col o-grid__col--full' style="font-size: 12px;
+    color: gray;">
+      Suhyun Baik © 2020
+    </div>
+  </div>
+</footer>
 </div>
 
 <script src="/js/jquery-3.1.1.min.js"></script>

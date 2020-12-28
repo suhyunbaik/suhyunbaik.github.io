@@ -5,7 +5,7 @@
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
 
-  <meta name="description" content="A pythonist in startup">
+  <meta name="description" content="">
   <meta name="keywords" content="Python, Developer, startup">
   <meta name="author" content="Suhyun Baik">
   <meta name='viewport' content='width=device-width, initial-scale=1'>
@@ -26,8 +26,8 @@
 
   <title>장고, EC2 Fargate 사용시 ALLOWED HOST 문제 + 조언은 어떻게 하는게 가장 효율적일까?</title>
   <meta name='description' content="목차">
-  <link rel='canonical' href="http://localhost:4000/devops/2020/03/08/django-fargate-allowed-host/">
-  <link rel='alternate' type='application/rss+xml' title='A python developer' href="http://localhost:4000/feed.xml">
+  <link rel='canonical' href="https://suhyunbaik.github.io/devops/2020/03/08/django-fargate-allowed-host/">
+  <link rel='alternate' type='application/rss+xml' title='Developer' href="https://suhyunbaik.github.io/feed.xml">
   <!-- css   -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <style>
@@ -72,11 +72,10 @@
     <div class='o-grid'>
         <div class='o-grid__col o-grid__col--full'>
             <div class='c-header__inner'>
-
                 <div class='o-grid'>
                     <div class='o-grid__col o-grid__col--3-4-s'>
                         <div class='c-logo u-text-left'>
-                            <!--              <a class='c-logo__link' href='/'>A python developer</a>-->
+                            <!--              <a class='c-logo__link' href='/'>Developer</a>-->
                             <a class='c-logo__link' href='/'
                                style="font-weight: bold; font-size: 1rem">🔥</a>
                             <!--                            <a class='c-logo__link' href='/' style="font-weight: bold; font-size: 1rem">😈</a>-->
@@ -87,7 +86,6 @@
                     <div class='o-grid__col o-grid__col--1-4-s'>
                         <label class='js-off-canvas-toggle c-off-canvas-toggle' aria-label='Toggle navigation'>
                             =
-<!--                            <span class='c-off-canvas-toggle__icon'></span>-->
                         </label>
                     </div>
 
@@ -96,7 +94,6 @@
                             <label class='js-off-canvas-toggle c-off-canvas-toggle c-off-canvas-toggle--close'>
                                 <span class='c-off-canvas-toggle__icon'></span>
                             </label>
-
                             <ul class='c-nav o-plain-list '>
                                 
 
@@ -126,10 +123,6 @@
 <li class='c-nav__item' role='presentation'>
     <a class='c-nav__link' href='/tags/'>Tags</a>
 </li>
-
-
-
-
 
 
 
@@ -224,11 +217,11 @@
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="n">EC2_PRIVATE_IP</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="n">METADATA_URI</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ECS_CONTAINER_METADATA_URI'</span><span class="p">,</span> <span class="s">'http://169.254.170.2/v2/metadata'</span><span class="p">)</span>
+<span class="n">METADATA_URI</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ECS_CONTAINER_METADATA_URI'</span><span class="p">,</span> <span class="s">'http://169.254.170.2/v2/metadata'</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">METADATA_URI</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">METADATA_URI</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="p">.</span><span class="n">json</span><span class="p">()</span>
     <span class="c1"># print(data)
 </span>
     <span class="n">container_meta</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">'Containers'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -240,7 +233,7 @@
 <span class="k">if</span> <span class="n">EC2_PRIVATE_IP</span><span class="p">:</span>
     <span class="c1"># Be sure your ALLOWED_HOSTS is a list NOT a tuple
 </span>    <span class="c1"># or .append() will fail
-</span>    <span class="n">ALLOWED_HOSTS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC2_PRIVATE_IP</span><span class="p">)</span>
+</span>    <span class="n">ALLOWED_HOSTS</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC2_PRIVATE_IP</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>왜 컨테이너를 사용할떄는 ALLOWED HOST에 IP 주소를 추가해야 할까? ECS 에이전트는 작업정의의 컨테이너에서 각 작업을 위한 ‘정지’ 상태의 컨테이너를 만든다. 그러고 난 후 ‘정지’ 컨테이너를 위해서 네트워크 네임스페이스를 세팅하고, 작업 내 다른 컨테이너도 시작해 정지된 컨테이너와 같은 네트워크를 공유하게 만든다. 그래서 컨테이너에 IPv4 주소를 추가만 해주면 문제가 해결되는 것이다.</p>
@@ -308,11 +301,11 @@
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="n">EC2_PRIVATE_IP</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="n">METADATA_URI</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ECS_CONTAINER_METADATA_URI'</span><span class="p">,</span> <span class="s">'http://169.254.170.2/v2/metadata'</span><span class="p">)</span>
+<span class="n">METADATA_URI</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'ECS_CONTAINER_METADATA_URI'</span><span class="p">,</span> <span class="s">'http://169.254.170.2/v2/metadata'</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">METADATA_URI</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">METADATA_URI</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">resp</span><span class="p">.</span><span class="n">json</span><span class="p">()</span>
     <span class="c1"># print(data)
 </span>
     <span class="n">container_meta</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s">'Containers'</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -324,7 +317,7 @@
 <span class="k">if</span> <span class="n">EC2_PRIVATE_IP</span><span class="p">:</span>
     <span class="c1"># Be sure your ALLOWED_HOSTS is a list NOT a tuple
 </span>    <span class="c1"># or .append() will fail
-</span>    <span class="n">ALLOWED_HOSTS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC2_PRIVATE_IP</span><span class="p">)</span>
+</span>    <span class="n">ALLOWED_HOSTS</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">EC2_PRIVATE_IP</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p>왜 컨테이너를 사용할떄는 ALLOWED HOST에 IP 주소를 추가해야 할까? ECS 에이전트는 작업정의의 컨테이너에서 각 작업을 위한 ‘정지’ 상태의 컨테이너를 만든다. 그러고 난 후 ‘정지’ 컨테이너를 위해서 네트워크 네임스페이스를 세팅하고, 작업 내 다른 컨테이너도 시작해 정지된 컨테이너와 같은 네트워크를 공유하게 만든다. 그래서 컨테이너에 IPv4 주소를 추가만 해주면 문제가 해결되는 것이다.</p>
@@ -353,27 +346,19 @@
           
         </div>
         <hr/>
-         <!-- Your share button code start-->
-<!--          <div class="fb-share-button"-->
-<!--            data-href="//devops/2020/03/08/django-fargate-allowed-host/"-->
-<!--            data-layout="button_count">-->
-<!--          </div>-->
-        <!-- Your share button code end-->
-
       </article>
-
     </div>
   </div>
 </div>
 
-    <!--<footer class='c-footer' style="background-color: #fff; border-top:1px solid gainsboro">-->
-<!--  <div class='o-grid'>-->
-<!--    <div class='o-grid__col o-grid__col&#45;&#45;full' style="font-size: 12px;-->
-<!--    color: gray;">-->
-<!--      Suhyun Baik-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</footer>-->
+    <footer class='c-footer' style="background-color: #fff;">
+  <div class='o-grid'>
+    <div class='o-grid__col o-grid__col--full' style="font-size: 12px;
+    color: gray;">
+      Suhyun Baik © 2020
+    </div>
+  </div>
+</footer>
 </div>
 
 <script src="/js/jquery-3.1.1.min.js"></script>

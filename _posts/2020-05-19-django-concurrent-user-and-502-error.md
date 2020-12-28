@@ -1,18 +1,17 @@
 ---
-title: django 서버에서 동시접속자 증가시 502 발생 문제
+title: Django 서버에서 동시접속자 증가시 502 발생 문제
 layout: page
-tags: [Devops]
-categories: [Devops]
+tags: [DevOps]
+categories: [DevOps]
 ---
-
-1.문제  
-2.uWSGI worker 갯수 증가  
+[1.문제](#1.문제)  
+[2.uWSGI worker 갯수 증가](#2.uWSGI worker 갯수 증가)   
 3.db connection pool 도입  
 4.mysqlclient에서 pymyql 로 변경  
 5.uWSGI 에서 gunicorn 으로 변경  
 
 
-##### 1. 문제
+##### 1.문제
 
 현재 문제가 있는 서버는 평균적으로 분당 1.9만의 리퀘스트를 소화하는데, 동시접속수가 증가하면 ELB 에서 502가 자주 발생한다. 대략 5분당 평균 13개의 502가 발생한다. 
 
@@ -27,7 +26,7 @@ Sever
 
 
 
-##### 2. uWSGI worker 갯수 증가
+##### 2.uWSGI worker 갯수 증가
 
 기존 worker 갯수는 2개였다. 이전부터 이 worker 들은 `max-requests` 옵션에 지정된 리퀘스트를 소화한뒤 정상적으로 종료되는게 아니라, 갑자기 어디선가 발생한 `signal 9`을 받고 죽는 문제가 있었다. `signal 9` 이 발생하는 이유는 보통 메모리 부족인데, 파게이트 컨테이너 측정치를 봤을때는 메모리 사용량이 대체로 30%여서 메모리 문제는 아닌 것 같았다. 내 추측에는 아마 worker 가 2개 뿐이니 `max-request`에 지정된 리퀘스트 수 보다 더 많은 리퀘스트를 받아서 uWSGI에서 signal 9  을 발생시켜 worker 를 강제로 죽이고, worker 가 둘 다 죽어서 워커가 다시 respawn 될때까지 기다리는 상황이 빈번하게 발생하고, 이렇게 spawn된 worker가 없을때 들어온 리퀘스트가 502가 발생한다고 생각했다. 이러한 상황을 방지하기 위해서 `max-requests-delta` 옵션이 있지만 효과가 없는 것 같았다. (나중에 알게 되었는데 `max-requests-delta` 옵션은 `uWSGI >= 2.1` 부터 효과가 있다고 한다.) 그래서 스테이징에 worker 수를 증가시켜 테스트를 했는데 2, 4, 6개였을때는 별 차이가 없었지만 8, 12, 16 등등 수를 크게 증가시킬수록 500대 에러 발생률이 크게 낮아졌다. `signal 9` 문제도 더이상 발생하지 않았다. 
 
